@@ -23,7 +23,7 @@ BiocStyle::markdown(css.files = c('custom.css'))
 
 # Getting started
 
-The default tRNAscan-SE [@tRNAscanSE] output is formated text document containg 
+The default tRNAscan-SE [@Lowe1997] output is formatted text document containing
 text blocks per tRNA delimited by an empty line.
 
 ```{r}
