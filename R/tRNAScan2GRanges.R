@@ -164,7 +164,7 @@ tRNAscan2GRanges <- function(file,
 # cuts out introns from sequence and structure
 .cut_introns <- function(df){
   .cut_intron <- function(df, name){
-    unlist(lapply(1:nrow(df), function(i){
+    unlist(lapply(seq_along(nrow(df)), function(i){
       paste0(substring(df[i,name], 
                        1, 
                        as.numeric(tmp[i,]$intron.locstart)-1),

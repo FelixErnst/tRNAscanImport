@@ -57,10 +57,9 @@ test_that("input failure test:",
               tRNAscan2GRanges:::.parse_tRNAscan_block(),
               'argument "lines" is missing'
             )
-            expect_error(
-              tRNAscan2GRanges:::.parse_tRNAscan_block(list()),
-              "a character vector argument expected"
-            )
+            actual <- tRNAscan2GRanges:::.parse_tRNAscan_block(list())
+            expected <- c("trna","type","seq","str")
+            expect_named(actual, expected)
             actual <- tRNAscan2GRanges:::.parse_tRNAscan_block(c())
             expected <- c("trna","type","seq","str")
             expect_named(actual, expected)

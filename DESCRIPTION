@@ -1,27 +1,32 @@
 Package: tRNAscan2GRanges
 Title: Imports a tRNAscan-SE result file as GRanges object
-Version: 0.2.1
+Version: 0.99.0
 Authors@R: person("Felix G.M.", 
                   "Ernst", 
                   email = "felix.gm.ernst@outlook.com", 
                   role = c("aut", "cre"))
 Description: The package imports the result of tRNAscan-SE as a GRanges object.
-Depends: R (>= 3.4.2)
+Depends: R (>= 3.5)
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
+biocViews:
+  Software,
+  WorkflowStep,
+  Preprocessing
 Imports:
-    BiocGenerics,
-    Biostrings,
-    GenomicRanges,
-    GenomeInfoDb,
-    assertive,
-    S4Vectors
+  BiocGenerics,
+  Biostrings,
+  GenomicRanges,
+  GenomeInfoDb,
+  assertive,
+  S4Vectors
 Collate:
   tRNAScan2GRanges.R
 RoxygenNote: 6.0.1
-Suggests: BiocStyle, 
-    knitr,
-    rmarkdown,
-    testthat
+Suggests: 
+  BiocStyle, 
+  knitr,
+  rmarkdown,
+  testthat
 VignetteBuilder: knitr
