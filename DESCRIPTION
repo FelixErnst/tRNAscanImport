@@ -7,17 +7,21 @@ Authors@R: person("Felix G.M.",
                   role = c("aut", "cre"))
 Description: The package imports the result of tRNAscan-SE as a GRanges object.
 Depends: R (>= 3.4.2)
-License: GPL v3
+License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-    GenomicRanges,
     BiocGenerics,
-    GenomeInfoDb
+    Biostrings,
+    GenomicRanges,
+    GenomeInfoDb,
+    assertive,
+    S4Vectors
 Collate:
   tRNAScan2GRanges.R
 RoxygenNote: 6.0.1
-Suggests: knitr,
+Suggests: BiocStyle, 
+    knitr,
     rmarkdown,
     testthat
 VignetteBuilder: knitr

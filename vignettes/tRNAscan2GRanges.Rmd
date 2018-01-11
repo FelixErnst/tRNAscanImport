@@ -1,65 +1,61 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
+title: "Convert tRNAscan-SE output to GRanges"
+author: "Felix G.M. Ernst"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+package: tRNAscan2GRanges
+abstract: >
+  Example conversion of tRNAscan-SE output for sacCer3 to a GRanges object
+output: 
+  BiocStyle::html_document:
+    toc: true
+    toc_float: true
+    df_print: paged
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{tRNAscan2GRanges}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: references.bib
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+```{r style, echo = FALSE, results = 'asis'}
+BiocStyle::markdown(css.files = c('custom.css'))
 ```
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+# Getting started
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+The default tRNAscan-SE [@tRNAscanSE] output is formated text document containg 
+text blocks per tRNA delimited by an empty line.
 
-## Vignette Info
+```{r}
+file <- system.file("extdata", 
+                    file = "tRNAscan.sort", 
+                    package = "tRNAscan2GRanges")
 
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+# output for sacCer3
+# Before
+readLines(con = file, n = 7L)
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
+# Converting to GRanges
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
+To access the information in a BioC context the conversion to a GRanges object 
+comes to mind. This task is performed by `tRNAscan2GRanges()`, which uses 
+regular expressions to extract the information from the text blocks. The result
+can be used directly or saved as gff3 file for further use.
 
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+```{r}
+# After
+gr <- tRNAscan2GRanges::tRNAscan2GRanges(file)
+head(gr, 2)
 ```
 
-Also a quote using `>`:
+# Session info
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+```{r}
+sessionInfo()
+```
+
+# Literature
+
+Depending on the development on tRNAscan-SE this might become redundant, since
+a gff3 export by tRNAscan-SE might resolve the conversion issue. 

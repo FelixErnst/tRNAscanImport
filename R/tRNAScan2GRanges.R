@@ -1,9 +1,11 @@
-#' @name tRNAScan2GRanges
+#' @name tRNAscan2GRanges
 #' 
-#' @title tRNAScan2GRanges
+#' @title tRNAscan2GRanges
 #' 
+#' @description
 #' \code{tRNAScan2GRanges} will convert a tRNAscan-SE output file into a 
-#' GRanges object.
+#' GRanges object. tRNAscan-SE 1.3.1 output is expected. Intron sequences are 
+#' removed by default, but can also returned untouched.
 #'
 #' @param file tRNAscan-SE input file
 #' @param trim_intron optional logical: remove intron sequences
@@ -16,13 +18,34 @@
 #' @importFrom Biostrings DNAStringSet
 #' @importFrom BiocGenerics start
 #' @importFrom GenomeInfoDb seqnames
+#' @importFrom S4Vectors mcols
 #'
 #' @examples
-#' tRNAScan2GRanges(system.file("tRNAscan.txt",package="tRNAScan2GRanges"))
-tRNAScan2GRanges <- function(file,
+#' tRNAscan2GRanges(system.file("extdata", 
+#'                              file = "tRNAscan.sort", 
+#'                              package = "tRNAscan2GRanges"))
+tRNAscan2GRanges <- function(file,
                               trim_intron = TRUE) {
   if(!assertive::is_a_bool(trim_intron)) trim_intron <- TRUE
   
+  # get tRNAscan as data.frame
+  df <- .read_tRNAscan(file)
+  
+  # optional: remove intron sequences
+  if(trim_intron){
+    df <- .cut_introns(df)
+  }
+  
+  # Contruct GRanges object
+  gr <- GRanges(df)
+  S4Vectors::mcols(gr)$seq <- DNAStringSet(S4Vectors::mcols(gr)$seq)
+  # sort GRanges object
+  gr <- gr[order(GenomeInfoDb::seqnames(gr), BiocGenerics::start(gr))]
+  return(gr)
+}
+
+# create data.frame from tRNAscan file
+.read_tRNAscan <- function(file){
   result <- .parse_tRNAscan(file)
   result <- lapply(result, function(trna){
     res <- list(no = trna$trna[3],
@@ -42,9 +65,9 @@ tRNAScan2GRanges <- function(file,
     res <- append(res,
                   list(length = trna$trna[6],
                        type = trna$type[2],
-                       ac = trna$type[3],
-                       ac.start = trna$type[4],
-                       ac.end = trna$type[5],
+                       anticodon = trna$type[3],
+                       anticodon.start = trna$type[4],
+                       anticodon.end = trna$type[5],
                        score = trna$type[6],
                        seq = trna$seq[2],
                        str = trna$str[2],
@@ -59,24 +82,16 @@ tRNAScan2GRanges <- function(file,
     return(res)
   })
   # create data.frame
-  df <- setNames(lapply(names(result[[1]]), 
-                        function(name){ unlist(lapply(result, 
-                                                      function(x){unlist(x[[name]])})
-                                               )}
-                        ),
-                 names(result[[1]]))
+  df <- lapply(names(result[[1]]), 
+               function(name){ 
+                 unlist(lapply(result, 
+                               function(x){
+                                 unlist(x[[name]])
+                               }))
+               })
+  names(df) <- names(result[[1]])
   df <- data.frame(df,
-                  stringsAsFactors = FALSE)
-  
-  # optional: remove intron sequences
-  if(trim_intron){
-    df <- .cut_introns(df)
-  }
-  # Contruct GRanges object
-  gr <- GRanges(df)
-  S4Vectors::mcols(gr)$seq <- DNAStringSet(S4Vectors::mcols(gr)$seq)
-  gr <- gr[order(GenomeInfoDb::seqnames(gr), BiocGenerics::start(gr))]
-  return(gr)
+                   stringsAsFactors = FALSE)
 }
 
 # parse information on a tRNAscan file
@@ -112,11 +127,9 @@ tRNAScan2GRanges <- function(file,
                       regexec(regex_string, 
                               line)))
   }
-  
   offset <- 0
   result <- list(trna = .regex_custom(lines[1], "([a-zA-Z0-9.:^*$@!+_?-|]+).trna([A-Z,-,_,0-9]+) \\(([0-9]+)-([0-9]+)\\).*Length: ([0-9]+) bp"),
                  type = .regex_custom(lines[2], "Type: ([A-z]{3}).*Anticodon: ([A-z]{3}) at ([0-9]+)-([0-9]+) .*Score: (.*)$"))
-  
   intron <- .regex_custom(lines[3], "Possible intron: ([0-9]+)-([0-9]+) \\(([0-9]+)-([0-9]+)\\).*$")
   if(length(intron) != 0 ){
     offset <- offset+1
@@ -131,7 +144,6 @@ tRNAScan2GRanges <- function(file,
   }
   seq <- .regex_custom(lines[(4+offset)], "Seq: ([A,G,C,T,a,g,c,t]+)$")
   str <- .regex_custom(lines[(5+offset)], "Str: ([<,>,.]+)$")
-  
   result <- append(result, list(seq = seq,
                                 str = str))
   return(result)
@@ -161,13 +173,10 @@ tRNAScan2GRanges <- function(file,
                        nchar(tmp[i,name])))
     }))
   }
-  
   tmp <- df[!is.na(df$intron.start),]
   seq <- .cut_intron(tmp,"seq")
   str <- .cut_intron(tmp,"str")
-  
   df[!is.na(df$intron.start),"seq"] <- seq
   df[!is.na(df$intron.start),"str"] <- str
   return(df)
 }
-
