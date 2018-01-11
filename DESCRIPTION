@@ -6,12 +6,12 @@ Authors@R: person("Felix G.M.",
                   email = "felix.gm.ernst@outlook.com", 
                   role = c("aut", "cre"))
 Description: The package imports the result of tRNAscan-SE as a GRanges object.
-Depends: R (>= 3.4.3)
+Depends: R (>= 3.4.2)
 License: GPL v3
 Encoding: UTF-8
 LazyData: true
 Imports:
     GenomicRanges
 Collate:
-  tRNAscan2gffAndFa.R
+  tRNAScan2GRanges.R
 RoxygenNote: 6.0.1
