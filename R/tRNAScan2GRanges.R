@@ -14,6 +14,8 @@
 #' @importFrom GenomicRanges GRanges
 #' @importFrom assertive is_a_bool is_an_empty_string
 #' @importFrom Biostrings DNAStringSet
+#' @importFrom BiocGenerics start
+#' @importFrom rtracklayer chrom
 #'
 #' @examples
 #' tRNAScan2GRanges(system.file("tRNAscan.txt",package="tRNAScan2GRanges"))
@@ -70,11 +72,10 @@ tRNAScan2GRanges <- function(file,
   if(trim_intron){
     df <- .cut_introns(df)
   }
-  browser()
   # Contruct GRanges object
   gr <- GRanges(df)
   S4Vectors::mcols(gr)$seq <- DNAStringSet(S4Vectors::mcols(gr)$seq)
-  
+  gr <- gr[order(rtracklayer::chrom(gr), BiocGenerics::start(gr))]
   return(gr)
 }
 
