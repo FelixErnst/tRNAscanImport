@@ -57,9 +57,9 @@ test_that("input failure test:",
               tRNAscan2GRanges:::.parse_tRNAscan_block(),
               'argument "lines" is missing'
             )
-            actual <- tRNAscan2GRanges:::.parse_tRNAscan_block(list())
-            expected <- c("trna","type","seq","str")
-            expect_named(actual, expected)
+            # actual <- tRNAscan2GRanges:::.parse_tRNAscan_block(list())
+            # expected <- c("trna","type","seq","str")
+            # expect_named(actual, expected)
             actual <- tRNAscan2GRanges:::.parse_tRNAscan_block(c())
             expected <- c("trna","type","seq","str")
             expect_named(actual, expected)
