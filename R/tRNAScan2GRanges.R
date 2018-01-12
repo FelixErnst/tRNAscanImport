@@ -28,6 +28,7 @@
 #' @importFrom BiocGenerics start
 #' @importFrom GenomeInfoDb seqnames
 #' @importFrom S4Vectors mcols
+#' @importFrom stringr str_trim
 #'
 #' @examples
 #' tRNAscan2GRanges(system.file("extdata", 
@@ -105,40 +106,49 @@ tRNAscan2GRanges <- function(file,
   return(df)
 }
 
+# generates number for factor used for splitting
+.get_factor_numbers <- function(x,i){
+  if(is.na(x[(i+1)])) return(NULL)
+  return(c(rep_len(i,(x[i+1]-x[i])),.get_factor_numbers(x,(i+1))))
+}
+
 # parse information on a tRNAscan file
 .parse_tRNAscan <- function(file) {
   # open handle and read all lines
   handle <- file(file, "r")
   res <- list()
   lines <- readLines(handle) 
-  # extract lines per text block and parse this block
-  n <- 1
-  repeat { 
-    # read lines until empty line
-    nextLines <- c()
-    repeat {
-      line <- lines[n]
-      if(is.na(line) ||
-         assertive::is_an_empty_string(line)) break
-      nextLines <- c(nextLines,line)
-      n <- n+1
-    }
-    if (length(nextLines) == 0 || n > length(lines)) break
-    n <- n+1
-    # parse the lines for tRNA data
-    res <- append(res, list(.parse_tRNAscan_block(nextLines)))
-  }
   close(handle)
+  if(length(lines) <= 1) stop("Empty file.", call. = FALSE)
+  # determine empty line positions
+  cuts <- unlist(lapply(seq_along(lines), function(i){
+    if(stringr::str_trim(lines[i]) == "") return(i)
+  }))
+  # generate splitting factor
+  cuts <- c(1,cuts,(max(cuts)+1))
+  f <- as.factor(.get_factor_numbers(cuts,1))
+  # parse the blocks for tRNA data
+  res <- lapply(split(lines, f),function(nextLines){
+    .parse_tRNAscan_block(nextLines[stringr::str_trim(nextLines) != ""])
+  })
+  res <- res[!vapply(res,is.null,logical(1))]
+  if(length(res) == 0 ) stop("No tRNA information detected. Please make sure, ",
+                             "that each tRNA is delimited by an empty line.",
+                             call. = FALSE)
   return(res)
 }
 
 # parse information on a single tRNA using regular expressions
 .parse_tRNAscan_block <- function(lines) {
+  # valid tRNA block has 6 lines minimum
+  if(length(lines) <= 5) return(NULL)
+  # regex wrapper
   .regex_custom <- function(line,regex_string){
     unlist(regmatches(line, 
                       regexec(regex_string, 
                               line)))
   }
+  
   offset <- 0
   result <- list(trna = .regex_custom(lines[1], "([a-zA-Z0-9.:^*$@!+_?-|]+).trna([A-Z,-,_,0-9]+) \\(([0-9]+)-([0-9]+)\\).*Length: ([0-9]+) bp"),
                  type = .regex_custom(lines[2], "Type: ([A-z]{3}).*Anticodon: ([A-z]{3}) at ([0-9]+)-([0-9]+) .*Score: (.*)$"))
