@@ -57,30 +57,32 @@ tRNAscan2GRanges <- function(file,
   result <- .parse_tRNAscan(file)
   # aggregate the data
   result <- lapply(result, function(trna){
-    res <- list(no = trna$trna[3],
-                chr = trna$trna[2])
+    res <- list(no = as.numeric(trna$trna[3]),
+                chr = as.character(trna$trna[2]))
     # If on minus strand
     if( as.numeric(trna$trna[5]) < as.numeric(trna$trna[4])){
       res <- append(res,
-                    list(start = trna$trna[5],
-                         end = trna$trna[4],
+                    list(start = as.numeric(trna$trna[5]),
+                         end = as.numeric(trna$trna[4]),
                          strand = "-"))  
     } else {
       res <- append(res,
-                    list(start = trna$trna[4],
-                         end = trna$trna[5],
+                    list(start = as.numeric(trna$trna[4]),
+                         end = as.numeric(trna$trna[5]),
                          strand = "+"))  
     }
     res <- append(res,
-                  list(length = trna$trna[6],
-                       type = trna$type[2],
-                       anticodon = trna$type[3],
-                       anticodon.start = trna$type[4],
-                       anticodon.end = trna$type[5],
-                       score = trna$type[6],
-                       seq = trna$seq[2],
-                       str = trna$str[2],
-                       CCA.end = .has_CCA_end(trna$seq[2], trna$str[2]),
+                  list(length = as.numeric(trna$trna[6]),
+                       type = as.character(trna$type[2]),
+                       anticodon = as.character(trna$type[3]),
+                       anticodon.start = as.numeric(trna$type[4]),
+                       anticodon.end = as.numeric(trna$type[5]),
+                       score = as.numeric(trna$type[6]),
+                       seq = as.character(trna$seq[2]),
+                       str = as.character(trna$str[2]),
+                       CCA.end = as.logical(.has_CCA_end(trna$seq[2], 
+                                                         trna$str[2])),
+                       # do not force type - optional data
                        intron.start = trna$intron[4],
                        intron.end = trna$intron[5],
                        intron.locstart = trna$intron[2],
@@ -103,6 +105,12 @@ tRNAscan2GRanges <- function(file,
   names(df) <- names(result[[1]])
   df <- data.frame(df,
                    stringsAsFactors = FALSE)
+  df$intron.start <- as.numeric(df$intron.start)
+  df$intron.end <- as.numeric(df$intron.end)
+  df$intron.locstart <- as.numeric(df$intron.locstart)
+  df$intron.locend <- as.numeric(df$intron.locend)
+  df$hmm.score <- as.numeric(df$hmm.score)
+  df$sec.str.score <- as.numeric(df$sec.str.score)
   return(df)
 }
 
@@ -186,13 +194,13 @@ tRNAscan2GRanges <- function(file,
 # cuts out introns from sequence and structure
 .cut_introns <- function(df){
   .cut_intron <- function(df, name){
-    unlist(lapply(seq_along(nrow(df)), function(i){
+    unlist(lapply(seq_len(nrow(df)), function(i){
       paste0(substring(df[i,name], 
                        1, 
-                       as.numeric(tmp[i,]$intron.locstart)-1),
+                       (as.numeric(df[i,]$intron.locstart)-1)),
              substring(df[i,name], 
-                       as.numeric(tmp[i,]$intron.locend)+1, 
-                       nchar(tmp[i,name])))
+                       (as.numeric(df[i,]$intron.locend)+1), 
+                       nchar(df[i,name])))
     }))
   }
   tmp <- df[!is.na(df$intron.start),]
