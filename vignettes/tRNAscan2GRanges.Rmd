@@ -67,6 +67,8 @@ use, including processing the sequences for HTS read mapping or statistical
 analysis on tRNA content of the analyzed genome.
 
 ```{r}
+library(rtracklayer)
+
 # After
 Biostrings::writeXStringSet(gr$seq, filepath = tempfile())
 # convert DNAStringSet to character require for gff3 file saving
