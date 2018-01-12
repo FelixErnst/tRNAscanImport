@@ -24,3 +24,12 @@ tRNAscan2GRanges(system.file("extdata",
                              file = "tRNAscan.sort", 
                              package = "tRNAscan2GRanges"))
 }
+\references{
+Chan, Patricia P., and Todd M. Lowe. 2016. “GtRNAdb 2.0: An Expanded Database
+of Transfer Rna Genes Identified in Complete and Draft Genomes.” Nucleic
+Acids Research 44 (D1): D184–9. doi:10.1093/nar/gkv1309.
+
+Lowe, T. M., and S. R. Eddy. 1997. “TRNAscan-Se: A Program for Improved
+Detection of Transfer Rna Genes in Genomic Sequence.” Nucleic Acids Research
+25 (5): 955–64.
+}

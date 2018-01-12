@@ -7,6 +7,15 @@
 #' GRanges object. tRNAscan-SE 1.3.1 output is expected. Intron sequences are 
 #' removed by default, but can also returned untouched.
 #'
+#' @references 
+#' Chan, Patricia P., and Todd M. Lowe. 2016. “GtRNAdb 2.0: An Expanded Database
+#' of Transfer Rna Genes Identified in Complete and Draft Genomes.” Nucleic
+#' Acids Research 44 (D1): D184–9. doi:10.1093/nar/gkv1309.
+#'
+#' Lowe, T. M., and S. R. Eddy. 1997. “TRNAscan-Se: A Program for Improved
+#' Detection of Transfer Rna Genes in Genomic Sequence.” Nucleic Acids Research
+#' 25 (5): 955–64. 
+#' 
 #' @param file tRNAscan-SE input file
 #' @param trim_intron optional logical: remove intron sequences
 #'
@@ -27,15 +36,12 @@
 tRNAscan2GRanges <- function(file,
                               trim_intron = TRUE) {
   if(!assertive::is_a_bool(trim_intron)) trim_intron <- TRUE
-  
-  # get tRNAscan as data.frame
+    # get tRNAscan as data.frame
   df <- .read_tRNAscan(file)
-  
   # optional: remove intron sequences
   if(trim_intron){
     df <- .cut_introns(df)
   }
-  
   # Contruct GRanges object
   gr <- GRanges(df)
   S4Vectors::mcols(gr)$seq <- DNAStringSet(S4Vectors::mcols(gr)$seq)
@@ -46,7 +52,9 @@ tRNAscan2GRanges <- function(file,
 
 # create data.frame from tRNAscan file
 .read_tRNAscan <- function(file){
+  # parse the information as a list of named lists
   result <- .parse_tRNAscan(file)
+  # aggregate the data
   result <- lapply(result, function(trna){
     res <- list(no = trna$trna[3],
                 chr = trna$trna[2])
@@ -78,6 +86,8 @@ tRNAscan2GRanges <- function(file,
                        intron.locend = trna$intron[3],
                        hmm.score = trna$hmm[2],
                        sec.str.score = trna$hmm[3]))
+    # if a field returns NULL because it is not set switch to NA, since this
+    # will persist for data.frame creation
     res <- lapply(res, function(x){if(is.null(x)) return(NA);x})
     return(res)
   })
@@ -92,13 +102,16 @@ tRNAscan2GRanges <- function(file,
   names(df) <- names(result[[1]])
   df <- data.frame(df,
                    stringsAsFactors = FALSE)
+  return(df)
 }
 
 # parse information on a tRNAscan file
 .parse_tRNAscan <- function(file) {
+  # open handle and read all lines
   handle <- file(file, "r")
   res <- list()
   lines <- readLines(handle) 
+  # extract lines per text block and parse this block
   n <- 1
   repeat { 
     # read lines until empty line
@@ -112,7 +125,6 @@ tRNAscan2GRanges <- function(file,
     }
     if (length(nextLines) == 0 || n > length(lines)) break
     n <- n+1
-    
     # parse the lines for tRNA data
     res <- append(res, list(.parse_tRNAscan_block(nextLines)))
   }
@@ -120,7 +132,7 @@ tRNAscan2GRanges <- function(file,
   return(res)
 }
 
-# parse information on a single tRNA
+# parse information on a single tRNA using regular expressions
 .parse_tRNAscan_block <- function(lines) {
   .regex_custom <- function(line,regex_string){
     unlist(regmatches(line, 
