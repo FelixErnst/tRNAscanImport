@@ -22,12 +22,17 @@ Imports:
   assertive,
   S4Vectors,
   stringr
-Collate:
-  tRNAScan2GRanges.R
+Collate: 
+    'tRNAScan2GRanges.R'
+    'AllGenerics-export.R'
+    'tRNAScan2GRanges-plot.R'
 RoxygenNote: 6.0.1
 Suggests: 
   BiocStyle, 
   knitr,
   rmarkdown,
-  testthat
+  testthat,
+  grDevices,
+  ggplot2,
+  gridExtra
 VignetteBuilder: knitr
