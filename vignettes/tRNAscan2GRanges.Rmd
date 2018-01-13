@@ -41,13 +41,14 @@ text document containing individual text blocks per tRNA delimited by an empty
 line.
 
 ```{r}
-file <- system.file("extdata", 
-                    file = "tRNAscan.sort", 
-                    package = "tRNAscan2GRanges")
+library(tRNAscan2GRanges)
+sacCer3_file <- system.file("extdata", 
+                           file = "sacCer3-tRNAs.ss.sort", 
+                           package = "tRNAscan2GRanges")
 
 # output for sacCer3
 # Before
-readLines(con = file, n = 7L)
+readLines(con = sacCer3_file, n = 7L)
 ```
 
 # Converting to GRanges
@@ -57,8 +58,9 @@ comes to mind. This task is performed by `tRNAscan2GRanges()`, which uses
 regular expressions to extract the information from the text blocks. 
 
 ```{r}
+# output for sacCer3
 # After
-gr <- tRNAscan2GRanges::tRNAscan2GRanges(file)
+gr <- tRNAscan2GRanges::tRNAscan2GRanges(sacCer3_file)
 head(gr, 2)
 ```
 
@@ -67,7 +69,7 @@ use, including processing the sequences for HTS read mapping or statistical
 analysis on tRNA content of the analyzed genome.
 
 ```{r}
-library(rtracklayer)
+suppressMessages(library(rtracklayer, quietly = TRUE))
 
 # After
 Biostrings::writeXStringSet(gr$seq, filepath = tempfile())
@@ -75,6 +77,42 @@ Biostrings::writeXStringSet(gr$seq, filepath = tempfile())
 gff <- gr
 S4Vectors::mcols(gff)$seq <- as.character(S4Vectors::mcols(gff)$seq)
 rtracklayer::export.gff3(gff, con = tempfile())
+```
+
+# Visualization
+
+
+
+```{r}
+# tRNAscan-SE output for hg38
+hg38_file <- system.file("extdata", 
+                        file = "hg38-tRNAs.ss.sort", 
+                        package = "tRNAscan2GRanges")
+# tRNAscan-SE output for E. coli MG1655
+eco_file <- system.file("extdata", 
+                       file = "eschColi_K_12_MG1655-tRNAs.ss.sort", 
+                       package = "tRNAscan2GRanges")
+# import tRNAscan-SE files
+gr_hg <- tRNAscan2GRanges::tRNAscan2GRanges(hg38_file)
+gr_eco <- tRNAscan2GRanges::tRNAscan2GRanges(eco_file)
+
+# get summary plots if ggplot2 is installed
+grl <- GenomicRanges::GRangesList(Sce = gr, 
+                                  Hsa = gr_hg, 
+                                  Eco = gr_eco)
+plots <- tRNAscan2GRanges::plottRNAscanSummary(grl)
+```
+```{r, fig.cap = "tRNA length."}
+plots$length
+```
+```{r, fig.cap = "tRNAscan-SE scores."}
+plots$score
+```
+```{r, fig.cap = "tRNA GC content."}
+plots$gc
+```
+```{r, fig.cap = "tRNAs with introns."}
+plots$introns
 ```
 
 # Session info

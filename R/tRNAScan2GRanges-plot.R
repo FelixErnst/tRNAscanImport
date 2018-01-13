@@ -1,13 +1,16 @@
-#' @include AllGenerics-export.R
+#' @include tRNAScan2GRanges.R
 NULL
 
 #' @name gettRNAscanSummary
-#' @title tRNAscan2 Summary
+#' 
+#' @title tRNAscan2GRanges Summary
 #'
-#' @aliases plottRNAscanSummary
+#' @aliases gettRNAscanSummary plottRNAscanSummary
 #' 
 #' @param gr a GRanges object created by the tRNAscan2GRanges or GRanges with
 #' equivalent information. 
+#' @param grl a GRangesList object created with GRanges created by the 
+#' tRNAscan2GRanges or GRanges with equivalent information. 
 #'
 #' @description
 #' \code{gettRNAscanSummary()}: creates an DataFrame with aggregates of 
@@ -21,15 +24,33 @@ NULL
 #' 
 #' @export
 #' 
+#' @import methods
 #' @importFrom S4Vectors DataFrame
 #' @importFrom Biostrings alphabetFrequency
+#' @importFrom reshape2 melt
 #' 
 #' @examples
 #' gr <- tRNAscan2GRanges(system.file("extdata", 
 #'                              file = "sacCer3-tRNAs.ss.sort", 
 #'                              package = "tRNAscan2GRanges"))
 #' gettRNAscanSummary(gr)
-#' plottRNAscanSummary(gr)
+#' plots <- plottRNAscanSummary(GenomicRanges::GRangesList(Sce = gr))
+setGeneric ( 
+  name = "gettRNAscanSummary",
+  def = function(gr){standardGeneric("gettRNAscanSummary")} 
+) 
+
+#' @rdname gettRNAscanSummary
+#' 
+#' @export
+setGeneric ( 
+  name = "plottRNAscanSummary",
+  def = function(grl){standardGeneric("plottRNAscanSummary")} 
+) 
+
+#' @rdname gettRNAscanSummary
+#' 
+#' @export
 setMethod(
   f = "gettRNAscanSummary",
   signature = signature(gr = "GRanges"),
@@ -38,7 +59,7 @@ setMethod(
     checkCols <- c("length","type","anticodon","anticodon.start",
                    "anticodon.end","score","seq","str","CCA.end","intron.start",
                    "intron.end","intron.locstart","intron.locend","hmm.score",
-                   "sec.str.score")
+                   "sec.str.score","infernal")
     if(length(intersect(checkCols,colnames(S4Vectors::mcols(gr)))) !=
        length(checkCols)){
       stop("Input GRanges object does not meet the requirements of the ",
@@ -49,6 +70,7 @@ setMethod(
     df <- S4Vectors::DataFrame(length = .get_lengths(gr),
                                gc = .get_gc_content(gr),
                                cca = .get_cca_ends(gr),
+                               pseudogene = .get_potential_pseudogene(gr),
                                introns = .get_introns(gr),
                                .get_scores(gr))
     return(df)
@@ -89,6 +111,7 @@ setMethod(
 
 # get frequence for the two first two bases in the amino acid stem of the tRNA
 .get_freq_aa_stem_content <- function(gr){
+  # requireNamespace("reshape2")
   m <- Biostrings::oligonucleotideFrequency(
     Biostrings::subseq(S4Vectors::mcols(gr)$seq, 1, 2), 
     width = 2)
@@ -104,6 +127,12 @@ setMethod(
   as.numeric(CCA)
 }
 
+# fractions of tRNA with pseudogene
+.get_potential_pseudogene <- function(gr){
+  pseudogene <- S4Vectors::mcols(gr)$potential.pseudogene
+  as.numeric(pseudogene)
+}
+
 # fractions of tRNA with introns
 .get_introns <- function(gr){
   introns <- S4Vectors::mcols(gr)$intron.start
@@ -116,7 +145,8 @@ setMethod(
 .get_scores <- function(gr){
   as.list(S4Vectors::mcols(gr)[,c("score",
                                   "hmm.score",
-                                  "sec.str.score")])
+                                  "sec.str.score",
+                                  "infernal")])
 }
 
 
@@ -128,81 +158,110 @@ setMethod(
   signature = signature(grl = "GRangesList"),
   definition = function(grl) {
     if(!requireNamespace("ggplot2")){
-      stop("ggplot2 is not installed.", call. = FALSE)
+      stop("Package 'ggplot2' is not installed.", call. = FALSE)
     }
-    if(!requireNamespace("grDevices")){
-      stop("ggplot2 is not installed.", call. = FALSE)
+    if(!requireNamespace("scales")){
+      stop("Package 'scales' is not installed.", call. = FALSE)
     }
-    if(!requireNamespace("gridExtra")){
-      stop("ggplot2 is not installed.", call. = FALSE)
-    }
-    
     if(length(grl) == 0)
       stop("GRangesList of length == 0 provided.",
            call. = FALSE)
-    browser()
+    
+    # aggregate data
     data <- lapply(seq_len(length(grl)), function(i){
-      
+      mcoldata <- gettRNAscanSummary(grl[[i]])
+      name <- names(grl[i])
+      coldata <- lapply(seq_len(ncol(mcoldata)), function(i){
+        column <- mcoldata[,i]
+        column <- column[!is.na(column)]
+        if(length(column) == 0) return(NULL)
+        data.frame(id = name,
+                   value = column)
+      })
+      names(coldata) <- colnames(mcoldata)
+      return(coldata)
     })
-    
-    
-    
-    # don't plot during grid.arrange
-    grDevices::pdf(file = NULL)
-    
-    plots <- lapply(data, function(plotData){
-      plot <- .get_plot(plotData)
+    datanames <- unique(unlist(lapply(data, names)))
+    data <- lapply(datanames, function(name){
+      do.call(rbind, lapply(data, "[[", name))
     })
-    # don't plot during grid.arrange
-    grDevices::dev.off()
-    names(plots)
+    names(data) <- datanames
+    # plot data
+    plots <- lapply(seq_len(length(data)), function(i){
+      if(is.null(data[[i]])){
+        return(NULL)
+      }
+      .get_plot(data[i])
+    })
+    names(plots) <- datanames
+    plots <- plots[!vapply(plots, is.null, logical(1))]
     return(plots)
   }
 )
 
-.get_plot <- function(df, name){
-  browser()
-  colNames <- colnames(df)
-  df$id <- "tRNA"
-  lapply(colNames, function(name){
-    browser()
-    if(name %in% c("cca","introns")){
-      data <- df[,c("id",name)]
-      colnames(data) <- c("id","value")
-      data <- reshape2::dcast(data, id ~ value, fun.aggregate = length )
-      data <- reshape2::melt(data, id = "id")
-      return(ggplot2::ggplot(data, 
-                             ggplot2::aes_(x = ~variable,
-                                           y = ~value)) +
-               ggplot2::geom_bar(stat = "identity") +
-               ggplot2::coord_polar(theta="y"))
-    }
-    ggplot2::ggplot(df[,c("id",name)], 
-                    ggplot2::aes_(x = ~id)) +
-      ggplot2::geom_jitter(mapping = ggplot2::aes_string(y = name)) +
-      ggplot2::scale_x_discrete(name = "") +
-      ggplot2::ylim(0,NA)
-  })
+# get a plot for one data type
+.get_plot <- function(df){
+  writtenNames <- list(length = "Length [nt]",
+                       gc = "GC content [%]",
+                       cca = "genomically encoded 3'-CCA ends [%]",
+                       pseudogene = "Potential pseudogenes [%]",
+                       introns = "Introns [%]",
+                       score = "tRNAscan-SE score",
+                       hmm.score = "HMM score",
+                       sec.str.score = "Secondary structure score",
+                       infernal = "Infernal score")
+  dataType <- list(length = NA,
+                   gc = "percent",
+                   cca = "yn",
+                   pseudogene = "yn",
+                   introns = "yn",
+                   score = NA,
+                   hmm.score = NA,
+                   sec.str.score = NA,
+                   infernal = NA)
+  name <- names(df)
+  if(is.na(dataType[[name]])){
+    plot <- ggplot2::ggplot(df[[name]],
+                            ggplot2::aes_(x = ~id,
+                                          y = ~value,
+                                          colour = ~id)) +
+      ggplot2::geom_violin(scale = "width") +
+      ggplot2::geom_jitter(width = 0.2) +
+      ggplot2::scale_x_discrete(name = "Organism") +
+      ggplot2::scale_y_continuous(name = writtenNames[[name]]) +
+      ggplot2::scale_colour_brewer(name = "Organism", palette = "Set1")
+  } 
+  if(!is.na(dataType[[name]]) && dataType[[name]] == "percent"){
+    plot <- ggplot2::ggplot(df[[name]],
+                    ggplot2::aes_(x = ~id,
+                                  y = ~value,
+                                  colour = ~id)) +
+      ggplot2::geom_violin(scale = "width") +
+      ggplot2::geom_jitter(width = 0.2) +
+      ggplot2::scale_x_discrete(name = "Organism") +
+      ggplot2::scale_y_continuous(name = writtenNames[[name]],
+                                  breaks = c(0,0.25,0.5,0.75,1),
+                                  labels = scales::percent,
+                                  limits = c(0,1)) +
+      ggplot2::scale_colour_brewer(name = "Organism", palette = "Set1")
+  }
+  if(!is.na(dataType[[name]]) && dataType[[name]] == "yn"){
+    df[[name]][df[[name]]$value == 1,"colour"] <- "green"
+    df[[name]][df[[name]]$value == 0,"colour"] <- "red"
+    df[[name]][df[[name]]$value == 1,"value"] <- "Yes"
+    df[[name]][df[[name]]$value == 0,"value"] <- "No"
+    plot <- ggplot2::ggplot(df[[name]],
+                            ggplot2::aes_(x = ~id,
+                                          y = ~((..count..)/sum(..count..)),
+                                          fill = ~colour)) +
+      ggplot2::geom_bar(position = "fill") +
+      ggplot2::scale_x_discrete(name = "Organism") +
+      ggplot2::scale_y_continuous(name = writtenNames[[name]],
+                                  labels = scales::percent,
+                                  limits = c(0,1)) +
+      ggplot2::scale_fill_identity(name = "",
+                                   guide = "legend",
+                                   labels = c("Yes","No"))
+  }
+  return(plot)
 }
-
-
-# 
-# plotCCAEnds = function(tRNAs) {
-#   lbls <- c("no CCA", "CCA")
-#   percent <- signif(table(tRNAs$tRNA.CCA.end)/sum(table(tRNAs$tRNA.CCA.end))*100, digits=4)
-#   lbls <- paste(lbls, percent) 
-#   lbls <- paste(lbls,"%",sep="")
-#   
-#   pie(percent, labels=lbls, main="CCA ends encoded")
-# }
-# 
-# plotGC = function(tRNAs){
-#   GCs = table( substring( tRNAs$tRNA.seq, 0, 2 ) )
-#   
-#   lbls <- rownames(GCs)
-#   percent <- round(GCs/sum(GCs)*100, digits=2)
-#   lbls <- paste(lbls, percent) 
-#   lbls <- paste(lbls,"%",sep="")
-#   
-#   pie(percent, labels=lbls, main="tRNA start sequence")
-# }
