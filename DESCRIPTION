@@ -1,6 +1,6 @@
 Package: tRNAscan2GRanges
 Title: Imports a tRNAscan-SE result file as GRanges object
-Version: 0.99.5
+Version: 0.99.6
 Authors@R: person("Felix G.M.", 
                   "Ernst", 
                   email = "felix.gm.ernst@outlook.com", 
