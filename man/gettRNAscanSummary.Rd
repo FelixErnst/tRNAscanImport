@@ -6,16 +6,16 @@
 \alias{plottRNAscanSummary}
 \alias{gettRNAscanSummary}
 \alias{plottRNAscanSummary}
-\alias{plottRNAscanSummary,GRanges-method}
+\alias{plottRNAscanSummary,GRangesList-method}
 \title{tRNAscan2 Summary}
 \usage{
 gettRNAscanSummary(gr)
 
-plottRNAscanSummary(gr)
+plottRNAscanSummary(grl)
 
 \S4method{gettRNAscanSummary}{GRanges}(gr)
 
-\S4method{plottRNAscanSummary}{GRanges}(gr)
+\S4method{plottRNAscanSummary}{GRangesList}(grl)
 }
 \arguments{
 \item{gr}{a GRanges object created by the tRNAscan2GRanges or GRanges with
@@ -23,7 +23,7 @@ equivalent information.}
 }
 \value{
 \code{gettRNAscanSummary()}: DataFrame
-\code{gettRNAscanSummary()}: ggplot
+\code{plottRNAscanSummary()}: list of ggplots per column of data
 }
 \description{
 \code{gettRNAscanSummary()}: creates an DataFrame with aggregates of 
@@ -33,7 +33,7 @@ is generated
 }
 \examples{
 gr <- tRNAscan2GRanges(system.file("extdata", 
-                             file = "tRNAscan.sort", 
+                             file = "sacCer3-tRNAs.ss.sort", 
                              package = "tRNAscan2GRanges"))
 gettRNAscanSummary(gr)
 plottRNAscanSummary(gr)

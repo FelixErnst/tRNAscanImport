@@ -2,20 +2,23 @@ library(tRNAscan2GRanges)
 
 test_that("tests:",{
   file <- system.file("extdata", 
-                      file = "tRNAscan.sort", 
+                      file = "sacCer3-tRNAs.ss.sort", 
                       package = "tRNAscan2GRanges")
   lines <- readLines(con = file, n = 7L)
   actual <- tRNAscan2GRanges:::.parse_tRNAscan_block(lines)
-  expected <- c("trna","type","intron","hmm","seq","str")
+  expected <- c("trna","type","intron", "pseudogene", "hmm", "secstruct", 
+                "infernal", "seq","str")
   expect_named(actual, expected)
-  expect_equal(min(unlist(lapply(actual, length))), 2)
+  expect_equal(min(unlist(lapply(actual, length))), 0)
+  expect_equal(max(unlist(lapply(actual, length))), 6)
   
   actual <- tRNAscan2GRanges:::.parse_tRNAscan_block(lines[c(1:3,5:7)])
   expected <- c("trna","type","intron","seq","str")
   expect_named(actual, expected)
   
   actual <- tRNAscan2GRanges:::.parse_tRNAscan_block(lines[c(1:2,4:7)])
-  expected <- c("trna","type","hmm","seq","str")
+  expected <- c("trna","type","pseudogene", "hmm", "secstruct", 
+                "infernal","seq","str")
   expect_named(actual, expected)
   
   expect_equal(.has_CCA_end(actual$seq[2],
@@ -76,7 +79,7 @@ test_that("input failure test:",{
   )
   
   file <- system.file("extdata", 
-                      file = "tRNAscan.sort", 
+                      file = "sacCer3-tRNAs.ss.sort", 
                       package = "tRNAscan2GRanges")
   lines <- readLines(con = file, n = 7L)
   actual <- tRNAscan2GRanges:::.parse_tRNAscan_block(lines[1:2])
