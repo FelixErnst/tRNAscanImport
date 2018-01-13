@@ -17,7 +17,7 @@ NULL
 #'
 #' @return 
 #' \code{gettRNAscanSummary()}: DataFrame
-#' \code{gettRNAscanSummary()}: ggplot
+#' \code{plottRNAscanSummary()}: list of ggplots per column of data
 #' 
 #' @export
 #' 
@@ -26,7 +26,7 @@ NULL
 #' 
 #' @examples
 #' gr <- tRNAscan2GRanges(system.file("extdata", 
-#'                              file = "tRNAscan.sort", 
+#'                              file = "sacCer3-tRNAs.ss.sort", 
 #'                              package = "tRNAscan2GRanges"))
 #' gettRNAscanSummary(gr)
 #' plottRNAscanSummary(gr)
@@ -125,8 +125,8 @@ setMethod(
 #' @export
 setMethod(
   f = "plottRNAscanSummary",
-  signature = signature(gr = "GRanges"),
-  definition = function(gr) {
+  signature = signature(grl = "GRangesList"),
+  definition = function(grl) {
     if(!requireNamespace("ggplot2")){
       stop("ggplot2 is not installed.", call. = FALSE)
     }
@@ -137,24 +137,46 @@ setMethod(
       stop("ggplot2 is not installed.", call. = FALSE)
     }
     
-    df <- gettRNAscanSummary(gr)
-    
-    grDevices::pdf(file = NULL)
-    plots <- append(.get_plots(as.data.frame(df)),
-                    grid::textGrob(""))
+    if(length(grl) == 0)
+      stop("GRangesList of length == 0 provided.",
+           call. = FALSE)
     browser()
-    grid <- gridExtra::grid.arrange(plots,
-                                    ncol = 4,
-                                    nrow = 2)
+    data <- lapply(seq_len(length(grl)), function(i){
+      
+    })
+    
+    
+    
+    # don't plot during grid.arrange
+    grDevices::pdf(file = NULL)
+    
+    plots <- lapply(data, function(plotData){
+      plot <- .get_plot(plotData)
+    })
+    # don't plot during grid.arrange
     grDevices::dev.off()
-    return(grid)
+    names(plots)
+    return(plots)
   }
 )
 
-.get_plots <- function(df, name){
+.get_plot <- function(df, name){
+  browser()
   colNames <- colnames(df)
   df$id <- "tRNA"
   lapply(colNames, function(name){
+    browser()
+    if(name %in% c("cca","introns")){
+      data <- df[,c("id",name)]
+      colnames(data) <- c("id","value")
+      data <- reshape2::dcast(data, id ~ value, fun.aggregate = length )
+      data <- reshape2::melt(data, id = "id")
+      return(ggplot2::ggplot(data, 
+                             ggplot2::aes_(x = ~variable,
+                                           y = ~value)) +
+               ggplot2::geom_bar(stat = "identity") +
+               ggplot2::coord_polar(theta="y"))
+    }
     ggplot2::ggplot(df[,c("id",name)], 
                     ggplot2::aes_(x = ~id)) +
       ggplot2::geom_jitter(mapping = ggplot2::aes_string(y = name)) +
