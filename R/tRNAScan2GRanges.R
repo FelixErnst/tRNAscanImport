@@ -29,6 +29,7 @@
 #' @importFrom GenomeInfoDb seqnames
 #' @importFrom S4Vectors mcols
 #' @importFrom stringr str_trim
+#' @importFrom rtracklayer export.gff3
 #'
 #' @examples
 #' tRNAscan2GRanges(system.file("extdata", 
