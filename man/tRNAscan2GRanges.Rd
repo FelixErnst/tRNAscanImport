@@ -21,7 +21,7 @@ removed by default, but can also returned untouched.
 }
 \examples{
 tRNAscan2GRanges(system.file("extdata", 
-                             file = "tRNAscan.sort", 
+                             file = "sacCer3-tRNAs.ss.sort", 
                              package = "tRNAscan2GRanges"))
 }
 \references{

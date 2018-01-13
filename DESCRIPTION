@@ -13,18 +13,21 @@ LazyData: true
 biocViews:
   Software,
   WorkflowStep,
-  Preprocessing
+  Preprocessing,
+  Visualization
 Imports:
+  methods,
+  assertive,
+  stringr,
+  reshape2,
   BiocGenerics,
   Biostrings,
+  S4Vectors,
   GenomicRanges,
   GenomeInfoDb,
-  assertive,
-  S4Vectors,
-  stringr
+  rtracklayer
 Collate: 
     'tRNAScan2GRanges.R'
-    'AllGenerics-export.R'
     'tRNAScan2GRanges-plot.R'
 RoxygenNote: 6.0.1
 Suggests: 
@@ -32,7 +35,6 @@ Suggests:
   knitr,
   rmarkdown,
   testthat,
-  grDevices,
   ggplot2,
-  gridExtra
+  scales
 VignetteBuilder: knitr

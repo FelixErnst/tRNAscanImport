@@ -32,7 +32,7 @@
 #'
 #' @examples
 #' tRNAscan2GRanges(system.file("extdata", 
-#'                              file = "tRNAscan.sort", 
+#'                              file = "sacCer3-tRNAs.ss.sort", 
 #'                              package = "tRNAscan2GRanges"))
 tRNAscan2GRanges <- function(file,
                               trim_intron = TRUE) {
@@ -83,12 +83,14 @@ tRNAscan2GRanges <- function(file,
                        CCA.end = as.logical(.has_CCA_end(trna$seq[2], 
                                                          trna$str[2])),
                        # do not force type - optional data
+                       potential.pseudogene = !is.na(trna$pseudogene[2]),
                        intron.start = trna$intron[4],
                        intron.end = trna$intron[5],
                        intron.locstart = trna$intron[2],
                        intron.locend = trna$intron[3],
                        hmm.score = trna$hmm[2],
-                       sec.str.score = trna$hmm[3]))
+                       sec.str.score = trna$secstruct[2],
+                       infernal = trna$infernal[2]))
     # if a field returns NULL because it is not set switch to NA, since this
     # will persist for data.frame creation
     res <- lapply(res, function(x){if(is.null(x)) return(NA);x})
@@ -105,12 +107,14 @@ tRNAscan2GRanges <- function(file,
   names(df) <- names(result[[1]])
   df <- data.frame(df,
                    stringsAsFactors = FALSE)
+  df$potential.pseudogene <- as.logical(df$potential.pseudogene)
   df$intron.start <- as.numeric(df$intron.start)
   df$intron.end <- as.numeric(df$intron.end)
   df$intron.locstart <- as.numeric(df$intron.locstart)
   df$intron.locend <- as.numeric(df$intron.locend)
   df$hmm.score <- as.numeric(df$hmm.score)
   df$sec.str.score <- as.numeric(df$sec.str.score)
+  df$infernal <- as.numeric(df$infernal)
   return(df)
 }
 
@@ -146,16 +150,17 @@ tRNAscan2GRanges <- function(file,
   return(res)
 }
 
+# regex wrapper
+.regex_custom <- function(line,regex_string){
+  unlist(regmatches(line, 
+                    regexec(regex_string, 
+                            line)))
+}
+
 # parse information on a single tRNA using regular expressions
 .parse_tRNAscan_block <- function(lines) {
   # valid tRNA block has 6 lines minimum
   if(length(lines) <= 5) return(NULL)
-  # regex wrapper
-  .regex_custom <- function(line,regex_string){
-    unlist(regmatches(line, 
-                      regexec(regex_string, 
-                              line)))
-  }
   
   offset <- 0
   result <- list(trna = .regex_custom(lines[1], "([a-zA-Z0-9.:^*$@!+_?-|]+).trna([A-Z,-,_,0-9]+) \\(([0-9]+)-([0-9]+)\\).*Length: ([0-9]+) bp"),
@@ -166,11 +171,20 @@ tRNAscan2GRanges <- function(file,
     result <- append(result, 
                      list(intron = intron))
   }
-  hmm <- .regex_custom(lines[(3+offset)], "HMM Sc=([.,0-9]+).*Sec struct Sc=([.,0-9]+).*$")
-  if(length(hmm) != 0 ){
+  pseudogene <- .regex_custom(lines[(3+offset)], "Possible (pseudogene): .*$")
+  hmm <- .regex_custom(lines[(3+offset)], "HMM Sc=([-.,0-9]+).*$")
+  secstruct <- .regex_custom(lines[(3+offset)], "Sec struct Sc=([-.,0-9]+).*$")
+  infernal <- .regex_custom(lines[(3+offset)], "Infernal Sc=([-.,0-9]+).*$")
+  if(length(pseudogene) != 0 | 
+     length(hmm) != 0 | 
+     length(secstruct) != 0 | 
+     length(infernal) != 0 ){
     offset <- offset+1
     result <- append(result, 
-                     list(hmm = hmm))
+                     list(pseudogene = pseudogene,
+                          hmm = hmm,
+                          secstruct = secstruct,
+                          infernal = infernal))
   }
   seq <- .regex_custom(lines[(4+offset)], "Seq: ([A,G,C,T,a,g,c,t]+)$")
   str <- .regex_custom(lines[(5+offset)], "Str: ([<,>,.]+)$")
