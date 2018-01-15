@@ -84,10 +84,10 @@ setMethod(
 
 # returns the length of tRNAs
 .get_lengths <- function(gr){
-  length <- as.numeric(S4Vectors::mcols(gr)$length)
-  intron_locstart <- as.numeric(S4Vectors::mcols(gr)$intron.locstart)
+  length <- as.numeric(S4Vectors::mcols(gr)$tRNA_length)
+  intron_locstart <- as.numeric(S4Vectors::mcols(gr)$tRNA_intron.locstart)
   intron_locstart[is.na(intron_locstart)] <- 0
-  intron_locend <- as.numeric(S4Vectors::mcols(gr)$intron.locend)
+  intron_locend <- as.numeric(S4Vectors::mcols(gr)$tRNA_intron.locend)
   intron_locend[is.na(intron_locend)] <- 0
   intron_length <- intron_locend - intron_locstart
   length <- length - vapply(intron_length, function(l){
@@ -101,7 +101,7 @@ setMethod(
 
 # get GC content
 .get_gc_content <- function(gr){
-  freq <- Biostrings::alphabetFrequency(S4Vectors::mcols(gr)$seq, 
+  freq <- Biostrings::alphabetFrequency(S4Vectors::mcols(gr)$tRNA_seq, 
                                         baseOnly=TRUE)
   gc <- vapply(seq_len(nrow(freq)), function(i){
     sum(freq[i,c("G","C")]) / sum(freq[i,])
@@ -113,7 +113,7 @@ setMethod(
 .get_freq_aa_stem_content <- function(gr){
   # requireNamespace("reshape2")
   m <- Biostrings::oligonucleotideFrequency(
-    Biostrings::subseq(S4Vectors::mcols(gr)$seq, 1, 2), 
+    Biostrings::subseq(S4Vectors::mcols(gr)$tRNA_seq, 1, 2), 
     width = 2)
   df<-as.data.frame(m)
   aa <- reshape2::melt(df)
@@ -123,19 +123,19 @@ setMethod(
 
 # fractions of tRNA with encoded CCA ends
 .get_cca_ends <- function(gr){
-  CCA <- S4Vectors::mcols(gr)$CCA.end
+  CCA <- S4Vectors::mcols(gr)$tRNA_CCA.end
   as.numeric(CCA)
 }
 
 # fractions of tRNA with pseudogene
 .get_potential_pseudogene <- function(gr){
-  pseudogene <- S4Vectors::mcols(gr)$potential.pseudogene
+  pseudogene <- S4Vectors::mcols(gr)$tRNA_potential.pseudogene
   as.numeric(pseudogene)
 }
 
 # fractions of tRNA with introns
 .get_introns <- function(gr){
-  introns <- S4Vectors::mcols(gr)$intron.start
+  introns <- S4Vectors::mcols(gr)$tRNA_intron.start
   introns[is.na(introns)] <- 0
   introns[introns>0] <- 1
   introns
@@ -143,10 +143,10 @@ setMethod(
 
 # aggregates the scores
 .get_scores <- function(gr){
-  as.list(S4Vectors::mcols(gr)[,c("score",
-                                  "hmm.score",
-                                  "sec.str.score",
-                                  "infernal")])
+  as.list(S4Vectors::mcols(gr)[,c("tRNA_score",
+                                  "tRNA_hmm.score",
+                                  "tRNA_sec.str.score",
+                                  "tRNA_infernal")])
 }
 
 

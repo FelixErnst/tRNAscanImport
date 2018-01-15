@@ -70,18 +70,15 @@ analysis on tRNA content of the analyzed genome.
 
 ```{r}
 suppressMessages(library(rtracklayer, quietly = TRUE))
-
-# After
+# Save tRNA sequences
 Biostrings::writeXStringSet(gr$seq, filepath = tempfile())
 # convert DNAStringSet to character require for gff3 file saving
-gff <- gr
-S4Vectors::mcols(gff)$seq <- as.character(S4Vectors::mcols(gff)$seq)
+# to be GFF3 compliant use tRNAscan2GFF
+gff <- tRNAscan2GRanges::tRNAscan2GFF(sacCer3_file)
 rtracklayer::export.gff3(gff, con = tempfile())
 ```
 
 # Visualization
-
-
 
 ```{r}
 # tRNAscan-SE output for hg38

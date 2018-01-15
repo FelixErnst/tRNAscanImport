@@ -1,11 +1,13 @@
 #' @name tRNAscan2GRanges
 #' 
-#' @title tRNAscan2GRanges
+#' @title tRNAscan2GRanges tRNAscan2GFF
 #' 
 #' @description
 #' \code{tRNAScan2GRanges} will convert a tRNAscan-SE output file into a 
 #' GRanges object. tRNAscan-SE 1.3.1 output is expected. Intron sequences are 
 #' removed by default, but can also returned untouched.
+#' \code{tRNAScan2GFF} formats the output of \code{tRNAScan2GRanges} to be GFF3
+#' compliant
 #'
 #' @references 
 #' Chan, Patricia P., and Todd M. Lowe. 2016. “GtRNAdb 2.0: An Expanded Database
@@ -35,6 +37,10 @@
 #' tRNAscan2GRanges(system.file("extdata", 
 #'                              file = "sacCer3-tRNAs.ss.sort", 
 #'                              package = "tRNAscan2GRanges"))
+#'                              
+#' tRNAscan2GFF(system.file("extdata", 
+#'                          file = "sacCer3-tRNAs.ss.sort", 
+#'                          package = "tRNAscan2GRanges"))
 tRNAscan2GRanges <- function(file,
                               trim_intron = TRUE) {
   if(!assertive::is_a_bool(trim_intron)) trim_intron <- TRUE
@@ -46,7 +52,7 @@ tRNAscan2GRanges <- function(file,
   }
   # Contruct GRanges object
   gr <- GRanges(df)
-  S4Vectors::mcols(gr)$seq <- DNAStringSet(S4Vectors::mcols(gr)$seq)
+  S4Vectors::mcols(gr)$tRNA_seq <- DNAStringSet(S4Vectors::mcols(gr)$tRNA_seq)
   # sort GRanges object
   gr <- gr[order(GenomeInfoDb::seqnames(gr), BiocGenerics::start(gr))]
   return(gr)
@@ -73,25 +79,25 @@ tRNAscan2GRanges <- function(file,
                          strand = "+"))  
     }
     res <- append(res,
-                  list(length = as.numeric(trna$trna[6]),
-                       type = as.character(trna$type[2]),
-                       anticodon = as.character(trna$type[3]),
-                       anticodon.start = as.numeric(trna$type[4]),
-                       anticodon.end = as.numeric(trna$type[5]),
-                       score = as.numeric(trna$type[6]),
-                       seq = as.character(trna$seq[2]),
-                       str = as.character(trna$str[2]),
-                       CCA.end = as.logical(.has_CCA_end(trna$seq[2], 
+                  list(tRNA_length = as.numeric(trna$trna[6]),
+                       tRNA_type = as.character(trna$type[2]),
+                       tRNA_anticodon = as.character(trna$type[3]),
+                       tRNA_anticodon.start = as.numeric(trna$type[4]),
+                       tRNA_anticodon.end = as.numeric(trna$type[5]),
+                       tRNAscan_score = as.numeric(trna$type[6]),
+                       tRNA_seq = as.character(trna$seq[2]),
+                       tRNA_str = as.character(trna$str[2]),
+                       tRNA_CCA.end = as.logical(.has_CCA_end(trna$seq[2], 
                                                          trna$str[2])),
                        # do not force type - optional data
-                       potential.pseudogene = !is.na(trna$pseudogene[2]),
-                       intron.start = trna$intron[4],
-                       intron.end = trna$intron[5],
-                       intron.locstart = trna$intron[2],
-                       intron.locend = trna$intron[3],
-                       hmm.score = trna$hmm[2],
-                       sec.str.score = trna$secstruct[2],
-                       infernal = trna$infernal[2]))
+                       tRNAscan_potential.pseudogene = !is.na(trna$pseudogene[2]),
+                       tRNAscan_intron.start = trna$intron[4],
+                       tRNAscan_intron.end = trna$intron[5],
+                       tRNAscan_intron.locstart = trna$intron[2],
+                       tRNAscan_intron.locend = trna$intron[3],
+                       tRNAscan_hmm.score = trna$hmm[2],
+                       tRNAscan_sec.str.score = trna$secstruct[2],
+                       tRNAscan_infernal = trna$infernal[2]))
     # if a field returns NULL because it is not set switch to NA, since this
     # will persist for data.frame creation
     res <- lapply(res, function(x){if(is.null(x)) return(NA);x})
@@ -108,14 +114,15 @@ tRNAscan2GRanges <- function(file,
   names(df) <- names(result[[1]])
   df <- data.frame(df,
                    stringsAsFactors = FALSE)
-  df$potential.pseudogene <- as.logical(df$potential.pseudogene)
-  df$intron.start <- as.numeric(df$intron.start)
-  df$intron.end <- as.numeric(df$intron.end)
-  df$intron.locstart <- as.numeric(df$intron.locstart)
-  df$intron.locend <- as.numeric(df$intron.locend)
-  df$hmm.score <- as.numeric(df$hmm.score)
-  df$sec.str.score <- as.numeric(df$sec.str.score)
-  df$infernal <- as.numeric(df$infernal)
+  df$tRNAscan_potential.pseudogene <- 
+    as.logical(df$tRNAscan_potential.pseudogene)
+  df$tRNAscan_intron.start <- as.numeric(df$tRNAscan_intron.start)
+  df$tRNAscan_intron.end <- as.numeric(df$tRNAscan_intron.end)
+  df$tRNAscan_intron.locstart <- as.numeric(df$tRNAscan_intron.locstart)
+  df$tRNAscan_intron.locend <- as.numeric(df$tRNAscan_intron.locend)
+  df$tRNAscan_hmm.score <- as.numeric(df$tRNAscan_hmm.score)
+  df$tRNAscan_sec.str.score <- as.numeric(df$tRNAscan_sec.str.score)
+  df$tRNAscan_infernal <- as.numeric(df$tRNAscan_infernal)
   return(df)
 }
 
@@ -212,16 +219,42 @@ tRNAscan2GRanges <- function(file,
     unlist(lapply(seq_len(nrow(df)), function(i){
       paste0(substring(df[i,name], 
                        1, 
-                       (as.numeric(df[i,]$intron.locstart)-1)),
+                       (as.numeric(df[i,]$tRNAscan_intron.locstart)-1)),
              substring(df[i,name], 
-                       (as.numeric(df[i,]$intron.locend)+1), 
+                       (as.numeric(df[i,]$tRNAscan_intron.locend)+1), 
                        nchar(df[i,name])))
     }))
   }
-  tmp <- df[!is.na(df$intron.start),]
-  seq <- .cut_intron(tmp,"seq")
-  str <- .cut_intron(tmp,"str")
-  df[!is.na(df$intron.start),"seq"] <- seq
-  df[!is.na(df$intron.start),"str"] <- str
+  tmp <- df[!is.na(df$tRNAscan_intron.start),]
+  seq <- .cut_intron(tmp,"tRNA_seq")
+  str <- .cut_intron(tmp,"tRNA_str")
+  df[!is.na(df$tRNAscan_intron.start),"tRNA_seq"] <- seq
+  df[!is.na(df$tRNAscan_intron.start),"tRNA_str"] <- str
   return(df)
+}
+
+
+#' @rdname tRNAscan2GRanges
+#'
+#' @export
+tRNAscan2GFF <- function(file,
+                         trim_intron = TRUE) {
+  tRNAscan <- tRNAscan2GRanges::tRNAscan2GRanges(file,trim_intron)
+  S4Vectors::mcols(tRNAscan)$seq <- as.character(S4Vectors::mcols(tRNAscan)$seq)
+  S4Vectors::mcols(tRNAscan)$type <- "tRNA"
+  S4Vectors::mcols(tRNAscan)$source <- "tRNAscan-SE"
+  S4Vectors::mcols(tRNAscan)$score <- "."
+  S4Vectors::mcols(tRNAscan)$phase <- "."
+  S4Vectors::mcols(tRNAscan) <- 
+    cbind(S4Vectors::mcols(tRNAscan)[,c("source",
+                                        "type",
+                                        "score",
+                                        "phase")],
+          S4Vectors::mcols(tRNAscan)[,-which(colnames(
+            S4Vectors::mcols(tRNAscan)) %in% 
+              c("source",
+                "type",
+                "score",
+                "phase"))])
+  return(tRNAscan)
 }

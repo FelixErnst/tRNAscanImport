@@ -2,9 +2,12 @@
 % Please edit documentation in R/tRNAScan2GRanges.R
 \name{tRNAscan2GRanges}
 \alias{tRNAscan2GRanges}
-\title{tRNAscan2GRanges}
+\alias{tRNAscan2GFF}
+\title{tRNAscan2GRanges tRNAscan2GFF}
 \usage{
 tRNAscan2GRanges(file, trim_intron = TRUE)
+
+tRNAscan2GFF(file, trim_intron = TRUE)
 }
 \arguments{
 \item{file}{tRNAscan-SE input file}
@@ -18,11 +21,17 @@ a GRanges object
 \code{tRNAScan2GRanges} will convert a tRNAscan-SE output file into a 
 GRanges object. tRNAscan-SE 1.3.1 output is expected. Intron sequences are 
 removed by default, but can also returned untouched.
+\code{tRNAScan2GFF} formats the output of \code{tRNAScan2GRanges} to be GFF3
+compliant
 }
 \examples{
 tRNAscan2GRanges(system.file("extdata", 
                              file = "sacCer3-tRNAs.ss.sort", 
                              package = "tRNAscan2GRanges"))
+                             
+tRNAscan2GFF(system.file("extdata", 
+                         file = "sacCer3-tRNAs.ss.sort", 
+                         package = "tRNAscan2GRanges"))
 }
 \references{
 Chan, Patricia P., and Todd M. Lowe. 2016. “GtRNAdb 2.0: An Expanded Database

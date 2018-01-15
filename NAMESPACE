@@ -2,6 +2,7 @@
 
 export(gettRNAscanSummary)
 export(plottRNAscanSummary)
+export(tRNAscan2GFF)
 export(tRNAscan2GRanges)
 exportMethods(gettRNAscanSummary)
 exportMethods(plottRNAscanSummary)
