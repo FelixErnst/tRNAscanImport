@@ -36,18 +36,18 @@ test_that("tests:",{
   
   df <- tRNAscan2GRanges:::.read_tRNAscan(file)
   actual <- tRNAscan2GRanges:::.cut_introns(df)
-  expect_false(identical(df[1,"seq"], actual[1,"seq"]))
+  expect_false(identical(df[1,"tRNA_seq"], actual[1,"tRNA_seq"]))
   expect_true(identical("GGGCGTGTGGTCTAGTGGTATGATTCTCGCTTTGGGTGCGAGAGGcCCTGGGTTCAATTCCCAGCTCGCCCC", 
-                        actual[1,"seq"]))
-  expect_false(identical(df[1,"seq"], actual[1,"str"]))
+                        actual[1,"tRNA_seq"]))
+  expect_false(identical(df[1,"seq"], actual[1,"tRNA_str"]))
   expect_true(identical(">>>>>.>..>>>.........<<<.>>>>>.......<<<<<.....>>>>>.......<<<<<<.<<<<<.", 
-                        actual[1,"str"]))
+                        actual[1,"tRNA_str"]))
   
   gr <- tRNAscan2GRanges:::tRNAscan2GRanges(file)
-  length <- as.numeric(S4Vectors::mcols(gr)$length)
-  intron_locstart <- as.numeric(S4Vectors::mcols(gr)$intron.locstart)
+  length <- as.numeric(S4Vectors::mcols(gr)$tRNA_length)
+  intron_locstart <- as.numeric(S4Vectors::mcols(gr)$tRNAscan_intron.locstart)
   intron_locstart[is.na(intron_locstart)] <- 0
-  intron_locend <- as.numeric(S4Vectors::mcols(gr)$intron.locend)
+  intron_locend <- as.numeric(S4Vectors::mcols(gr)$tRNAscan_intron.locend)
   intron_locend[is.na(intron_locend)] <- 0
   intron_length <- intron_locend - intron_locstart
   length <- length - vapply(intron_length, function(l){
@@ -56,8 +56,8 @@ test_that("tests:",{
     }
     0
   },numeric(1))
-  expect_equal(length,BiocGenerics::width(S4Vectors::mcols(gr)$seq))
-  expect_equal(length,BiocGenerics::width(S4Vectors::mcols(gr)$str))
+  expect_equal(length,BiocGenerics::width(S4Vectors::mcols(gr)$tRNA_seq))
+  expect_equal(length,BiocGenerics::width(S4Vectors::mcols(gr)$tRNA_str))
 })
 
 test_that("input failure test:",{

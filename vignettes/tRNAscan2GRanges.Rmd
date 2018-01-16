@@ -71,7 +71,7 @@ analysis on tRNA content of the analyzed genome.
 ```{r}
 suppressMessages(library(rtracklayer, quietly = TRUE))
 # Save tRNA sequences
-Biostrings::writeXStringSet(gr$seq, filepath = tempfile())
+Biostrings::writeXStringSet(gr$tRNA_seq, filepath = tempfile())
 # convert DNAStringSet to character require for gff3 file saving
 # to be GFF3 compliant use tRNAscan2GFF
 gff <- tRNAscan2GRanges::tRNAscan2GFF(sacCer3_file)
@@ -103,7 +103,7 @@ plots <- tRNAscan2GRanges::plottRNAscanSummary(grl)
 plots$length
 ```
 ```{r, fig.cap = "tRNAscan-SE scores."}
-plots$score
+plots$tRNAscan_score
 ```
 ```{r, fig.cap = "tRNA GC content."}
 plots$gc

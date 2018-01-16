@@ -240,7 +240,8 @@ tRNAscan2GRanges <- function(file,
 tRNAscan2GFF <- function(file,
                          trim_intron = TRUE) {
   tRNAscan <- tRNAscan2GRanges::tRNAscan2GRanges(file,trim_intron)
-  S4Vectors::mcols(tRNAscan)$seq <- as.character(S4Vectors::mcols(tRNAscan)$seq)
+  S4Vectors::mcols(tRNAscan)$tRNA_seq <- 
+    as.character(S4Vectors::mcols(tRNAscan)$tRNA_seq)
   S4Vectors::mcols(tRNAscan)$type <- "tRNA"
   S4Vectors::mcols(tRNAscan)$source <- "tRNAscan-SE"
   S4Vectors::mcols(tRNAscan)$score <- "."

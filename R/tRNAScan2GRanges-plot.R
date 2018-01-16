@@ -56,10 +56,25 @@ setMethod(
   signature = signature(gr = "GRanges"),
   definition = function(gr) {
     # check input
-    checkCols <- c("length","type","anticodon","anticodon.start",
-                   "anticodon.end","score","seq","str","CCA.end","intron.start",
-                   "intron.end","intron.locstart","intron.locend","hmm.score",
-                   "sec.str.score","infernal")
+    checkCols <- c(
+      "tRNA_length",
+      "tRNA_type",
+      "tRNA_anticodon",
+      "tRNA_anticodon.start",
+      "tRNA_anticodon.end",
+      "tRNAscan_score",
+      "tRNA_seq",
+      "tRNA_str",
+      "tRNA_CCA.end",
+      "tRNAscan_potential.pseudogene",
+      "tRNAscan_intron.start",
+      "tRNAscan_intron.end",
+      "tRNAscan_intron.locstart",
+      "tRNAscan_intron.locend",
+      "tRNAscan_hmm.score",
+      "tRNAscan_sec.str.score",
+      "tRNAscan_infernal"
+    )
     if(length(intersect(checkCols,colnames(S4Vectors::mcols(gr)))) !=
        length(checkCols)){
       stop("Input GRanges object does not meet the requirements of the ",
@@ -85,9 +100,9 @@ setMethod(
 # returns the length of tRNAs
 .get_lengths <- function(gr){
   length <- as.numeric(S4Vectors::mcols(gr)$tRNA_length)
-  intron_locstart <- as.numeric(S4Vectors::mcols(gr)$tRNA_intron.locstart)
+  intron_locstart <- as.numeric(S4Vectors::mcols(gr)$tRNAscan_intron.locstart)
   intron_locstart[is.na(intron_locstart)] <- 0
-  intron_locend <- as.numeric(S4Vectors::mcols(gr)$tRNA_intron.locend)
+  intron_locend <- as.numeric(S4Vectors::mcols(gr)$tRNAscan_intron.locend)
   intron_locend[is.na(intron_locend)] <- 0
   intron_length <- intron_locend - intron_locstart
   length <- length - vapply(intron_length, function(l){
@@ -123,19 +138,17 @@ setMethod(
 
 # fractions of tRNA with encoded CCA ends
 .get_cca_ends <- function(gr){
-  CCA <- S4Vectors::mcols(gr)$tRNA_CCA.end
-  as.numeric(CCA)
+  as.numeric(S4Vectors::mcols(gr)$tRNA_CCA.end)
 }
 
 # fractions of tRNA with pseudogene
 .get_potential_pseudogene <- function(gr){
-  pseudogene <- S4Vectors::mcols(gr)$tRNA_potential.pseudogene
-  as.numeric(pseudogene)
+  as.numeric(S4Vectors::mcols(gr)$tRNAscan_potential.pseudogene)
 }
 
 # fractions of tRNA with introns
 .get_introns <- function(gr){
-  introns <- S4Vectors::mcols(gr)$tRNA_intron.start
+  introns <- S4Vectors::mcols(gr)$tRNAscan_intron.start
   introns[is.na(introns)] <- 0
   introns[introns>0] <- 1
   introns
@@ -143,10 +156,10 @@ setMethod(
 
 # aggregates the scores
 .get_scores <- function(gr){
-  as.list(S4Vectors::mcols(gr)[,c("tRNA_score",
-                                  "tRNA_hmm.score",
-                                  "tRNA_sec.str.score",
-                                  "tRNA_infernal")])
+  as.list(S4Vectors::mcols(gr)[,c("tRNAscan_score",
+                                  "tRNAscan_hmm.score",
+                                  "tRNAscan_sec.str.score",
+                                  "tRNAscan_infernal")])
 }
 
 
@@ -206,19 +219,19 @@ setMethod(
                        cca = "genomically encoded 3'-CCA ends [%]",
                        pseudogene = "Potential pseudogenes [%]",
                        introns = "Introns [%]",
-                       score = "tRNAscan-SE score",
-                       hmm.score = "HMM score",
-                       sec.str.score = "Secondary structure score",
-                       infernal = "Infernal score")
+                       tRNAscan_score = "tRNAscan-SE score",
+                       tRNAscan_hmm.score = "HMM score",
+                       tRNAscan_sec.str.score = "Secondary structure score",
+                       tRNAscan_infernal = "Infernal score")
   dataType <- list(length = NA,
                    gc = "percent",
                    cca = "yn",
                    pseudogene = "yn",
                    introns = "yn",
-                   score = NA,
-                   hmm.score = NA,
-                   sec.str.score = NA,
-                   infernal = NA)
+                   tRNAscan_score = NA,
+                   tRNAscan_hmm.score = NA,
+                   tRNAscan_sec.str.score = NA,
+                   tRNAscan_infernal = NA)
   name <- names(df)
   if(is.na(dataType[[name]])){
     plot <- ggplot2::ggplot(df[[name]],
