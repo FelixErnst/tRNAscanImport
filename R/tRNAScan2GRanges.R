@@ -242,6 +242,7 @@ tRNAscan2GFF <- function(file,
   tRNAscan <- tRNAscan2GRanges::tRNAscan2GRanges(file,trim_intron)
   S4Vectors::mcols(tRNAscan)$tRNA_seq <- 
     as.character(S4Vectors::mcols(tRNAscan)$tRNA_seq)
+  S4Vectors::mcols(tRNAscan)$ID <- .create_tRNAscan_id(tRNAscan)
   S4Vectors::mcols(tRNAscan)$type <- "tRNA"
   S4Vectors::mcols(tRNAscan)$source <- "tRNAscan-SE"
   S4Vectors::mcols(tRNAscan)$score <- "."
@@ -250,12 +251,39 @@ tRNAscan2GFF <- function(file,
     cbind(S4Vectors::mcols(tRNAscan)[,c("source",
                                         "type",
                                         "score",
-                                        "phase")],
+                                        "phase",
+                                        "ID")],
           S4Vectors::mcols(tRNAscan)[,-which(colnames(
             S4Vectors::mcols(tRNAscan)) %in% 
               c("source",
                 "type",
                 "score",
-                "phase"))])
+                "phase",
+                "ID"))])
   return(tRNAscan)
+}
+
+.create_tRNAscan_id <- function(tRNAscan){
+  browser()
+  chrom <- as.character(GenomeInfoDb::seqnames(tRNAscan))
+  chromIndex <- unlist(lapply(seq_along(unique(chrom)), 
+                              function(i){
+                                rep(i,length(which(chrom == unique(chrom)[i])))
+                                }))
+  chromLetters <- .get_chrom_letters(length(unique(chromIndex)))
+  id <- paste0("t",
+               tRNAscan$tRNA_type,
+               "(",
+               tRNAscan$tRNA_anticodon,
+               ")",
+               chrom)
+  id
+}
+
+.get_chrom_letters <- function(n,add){
+  let <- LETTERS[seq_len(n)]
+  let <- let[!is.na(let)]
+  if(n > 26){
+    
+  }
 }
