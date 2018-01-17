@@ -1,4 +1,4 @@
-Package: tRNAscan2GRanges
+9Package: tRNAscan2GRanges
 Title: Imports a tRNAscan-SE result file as GRanges object
 Version: 0.99.8
 Authors@R: person("Felix G.M.", 
