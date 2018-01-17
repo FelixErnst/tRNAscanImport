@@ -264,26 +264,55 @@ tRNAscan2GFF <- function(file,
 }
 
 .create_tRNAscan_id <- function(tRNAscan){
-  browser()
   chrom <- as.character(GenomeInfoDb::seqnames(tRNAscan))
   chromIndex <- unlist(lapply(seq_along(unique(chrom)), 
                               function(i){
                                 rep(i,length(which(chrom == unique(chrom)[i])))
                                 }))
   chromLetters <- .get_chrom_letters(length(unique(chromIndex)))
+  aa <- unlist(lapply(tRNAscan$tRNA_type, 
+                      function(type){
+                        names(Biostrings::AMINO_ACID_CODE[
+                          Biostrings::AMINO_ACID_CODE == type])
+                        }))
   id <- paste0("t",
-               tRNAscan$tRNA_type,
+               aa,
                "(",
                tRNAscan$tRNA_anticodon,
                ")",
-               chrom)
+               chromLetters[chromIndex])
   id
 }
 
-.get_chrom_letters <- function(n,add){
-  let <- LETTERS[seq_len(n)]
-  let <- let[!is.na(let)]
-  if(n > 26){
-    
+# get character values from "A" to "ZZZ" for example
+.get_chrom_letters <- function(n){
+  let <- list()
+  add <- ""
+  i <- 1
+  while(n > 0){
+    # get new letters and retrieve remaining n
+    let[[i]] <- .get_chrom_letters2(n,add)
+    n <- let[[i]]$remainder
+    i <- i + 1
+    # 
+    batch <- (i-2) %/% length(LETTERS) + 1
+    ln <- (i-1) - (batch-1)*length(LETTERS)
+    if(n > 0){
+      add <- let[[batch]][["let"]][ln]
+    }
   }
+  let <- unlist(lapply(seq_along(let), function(x){let[[x]][["let"]]}))
+  let
+}
+.get_chrom_letters2 <- function(n, add = ""){
+  ret <- list(let = c(),
+              remaineder = 0)
+  if(n > 0){
+    l <- LETTERS[seq_len(n)]
+    l <- l[!is.na(l)]
+    let <- paste0(add,l)
+    ret <- list(let = let,
+                remainder = (n - length(let)))
+  }
+  ret
 }
