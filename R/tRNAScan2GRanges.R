@@ -264,6 +264,7 @@ tRNAscan2GFF <- function(file,
 }
 
 .create_tRNAscan_id <- function(tRNAscan){
+  # create ids based on type, anticodon and chromosome
   chrom <- as.character(GenomeInfoDb::seqnames(tRNAscan))
   chromIndex <- unlist(lapply(seq_along(unique(chrom)), 
                               function(i){
@@ -281,6 +282,18 @@ tRNAscan2GFF <- function(file,
                tRNAscan$tRNA_anticodon,
                ")",
                chromLetters[chromIndex])
+  # make ids unique if more than one tRNA of the same type is on the same 
+  # chromosome
+  uniqueID <- id[!duplicated(id)]
+  uniqueID <- uniqueID[!(uniqueID %in% id[duplicated(id)])]
+  pos <- match(unique(id[duplicated(id)]),id)
+  dupID <- unlist(lapply(pos, function(i){
+    x <- id[id == id[i]]
+    ipos <- which(id == id[i])
+    setNames(paste0(x,
+           seq(length(x))),ipos)
+  }))
+  id[as.numeric(names(dupID))] <- as.character(dupID)
   id
 }
 
