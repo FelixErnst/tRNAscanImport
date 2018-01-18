@@ -271,11 +271,17 @@ tRNAscan2GFF <- function(file,
                                 rep(i,length(which(chrom == unique(chrom)[i])))
                                 }))
   chromLetters <- .get_chrom_letters(length(unique(chromIndex)))
+  # Modified version of AA code since the tRNAscan uses a slight deviation
+  # from the one defined in Biostrings
+  aacode <- Biostrings::AMINO_ACID_CODE
+  aacode <- c(aacode, 
+              U = "SeC", 
+              X = "Und",
+              M = "fMe")
   aa <- unlist(lapply(tRNAscan$tRNA_type, 
                       function(type){
-                        names(Biostrings::AMINO_ACID_CODE[
-                          Biostrings::AMINO_ACID_CODE == type])
-                        }))
+                        names(aacode[aacode == type])
+                      }))
   id <- paste0("t",
                aa,
                "(",
