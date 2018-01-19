@@ -123,6 +123,7 @@ tRNAscan2GRanges <- function(file,
   df$tRNAscan_hmm.score <- as.numeric(df$tRNAscan_hmm.score)
   df$tRNAscan_sec.str.score <- as.numeric(df$tRNAscan_sec.str.score)
   df$tRNAscan_infernal <- as.numeric(df$tRNAscan_infernal)
+  df[is.na(df$tRNA_type),"tRNA_type"] <- "Und"
   return(df)
 }
 
