@@ -297,8 +297,9 @@ tRNAscan2GFF <- function(file,
   dupID <- unlist(lapply(pos, function(i){
     x <- id[id == id[i]]
     ipos <- which(id == id[i])
-    setNames(paste0(x,
-           seq(length(x))),ipos)
+    res <- paste0(x,seq(length(x)))
+    names(res) <- ipos
+    res
   }))
   id[as.numeric(names(dupID))] <- as.character(dupID)
   id
