@@ -1,12 +1,12 @@
 Package: tRNAscanImport
 Title: Imports a tRNAscan-SE result file as GRanges object
-Version: 0.99.14
+Version: 0.99.15
 Authors@R: person("Felix G.M.", 
                   "Ernst", 
                   email = "felix.gm.ernst@outlook.com", 
                   role = c("aut", "cre"))
 Description: The package imports the result of tRNAscan-SE as a GRanges object.
-Depends: R (>= 3.4)
+Depends: R (>= 3.5)
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -29,6 +29,7 @@ Imports:
   rtracklayer
 Collate: 
     'tRNAscanImport.R'
+    'AllGenerics.R'
     'tRNAscanImport-checks.R'
     'tRNAscanImport-plot.R'
 RoxygenNote: 6.0.1

@@ -25,7 +25,7 @@
 #' \item \code{tRNAscan2GFF}: a compatible GRanges object such as the output of 
 #' \code{import.tRNAscanAsGRanges}
 #' }
-#' @param as.gff3 optional logical: returnw a gff3 compatible GRanges object 
+#' @param as.GFF3 optional logical: returns a gff3 compatible GRanges object 
 #' directly. (default: FALSE)
 #' @param trim.intron optional logical: remove intron sequences
 #' (default: TRUE)
@@ -45,17 +45,17 @@
 #' @examples
 #' gr <- import.tRNAscanAsGRanges(system.file("extdata", 
 #'                                file = "sacCer3-tRNAs.ss.sort", 
-#'                                package = "tRNAscanImport"))#'                              
+#'                                package = "tRNAscanImport"))
 #' gff <- tRNAscan2GFF(gr)
 #' identical(gff,import.tRNAscanAsGRanges(system.file("extdata", 
 #'                                file = "sacCer3-tRNAs.ss.sort", 
 #'                                package = "tRNAscanImport"),
-#'                                as.gff3 = TRUE))
+#'                                as.GFF3 = TRUE))
 import.tRNAscanAsGRanges <- function(input,
-                                     as.gff3 = FALSE,
+                                     as.GFF3 = FALSE,
                                      trim.intron = TRUE) {
   # input check
-  if(!assertive::is_a_bool(as.gff3)) as.gff3 <- TRUE
+  if(!assertive::is_a_bool(as.GFF3)) as.GFF3 <- TRUE
   if(!assertive::is_a_bool(trim.intron)) trim.intron <- TRUE
     # get tRNAscan as data.frame
   df <- .read_tRNAscan(input)
@@ -69,7 +69,7 @@ import.tRNAscanAsGRanges <- function(input,
   # sort GRanges object
   gr <- gr[order(GenomeInfoDb::seqnames(gr), BiocGenerics::start(gr))]
   # convert to gff3 compatible GRanges object
-  if(as.gff3){
+  if(as.GFF3){
     gr <- tRNAscan2GFF(gr)
   }
   return(gr)
@@ -117,7 +117,7 @@ import.tRNAscanAsGRanges <- function(input,
                        tRNAscan_infernal = trna$infernal[2]))
     # if a field returns NULL because it is not set switch to NA, since this
     # will persist for data.frame creation
-    res <- lapply(res, function(x){if(is.null(x)) return(NA);x})
+    res[vapply(res, is.null, logical(1))] <- NA
     return(res)
   })
   # create data.frame
@@ -149,7 +149,7 @@ import.tRNAscanAsGRanges <- function(input,
 # generates number for factor used for splitting
 .get_factor_numbers <- function(x,i){
   if(is.na(x[(i+1)])) return(NULL)
-  return(c(rep_len(i,(x[i+1]-x[i])),.get_factor_numbers(x,(i+1))))
+  return(c(rep_len(i,(x[i + 1] - x[i])),.get_factor_numbers(x,(i + 1))))
 }
 
 # parse information on a tRNAscan file

@@ -29,13 +29,13 @@ NULL
 #' 
 #' \code{plottRNAscan()}:  directly plots the output of gettRNAscanPlots
 #' 
-#' @export
 #' 
 #' @import methods
 #' @importFrom S4Vectors DataFrame
 #' @importFrom Biostrings alphabetFrequency
 #' @importFrom reshape2 melt
 #' 
+#' @export
 #' @examples
 #' library(GenomicRanges, quietly = TRUE)
 #' sce <- import.tRNAscanAsGRanges(system.file("extdata",
@@ -47,26 +47,7 @@ NULL
 #' gettRNAscanSummary(sce)
 #' plots <- gettRNAscanPlots(GRangesList(Sce = sce,
 #'                                       Eco = eco))
-setGeneric ( 
-  name = "gettRNAscanSummary",
-  def = function(gr) standardGeneric("gettRNAscanSummary")
-) 
-
-#' @rdname gettRNAscanSummary
-#' 
-#' @export
-setGeneric ( 
-  name = "plottRNAscan",
-  def = function(grl) standardGeneric("plottRNAscan")
-) 
-
-#' @rdname gettRNAscanSummary
-#' 
-#' @export
-setGeneric ( 
-  name = "gettRNAscanPlots",
-  def = function(grl) standardGeneric("gettRNAscanPlots")
-) 
+NULL
 
 #' @rdname gettRNAscanSummary
 #' 
@@ -193,11 +174,11 @@ setMethod(
       names(coldata) <- colnames(mcoldata)
       return(coldata)
     })
-    datanames <- unique(unlist(lapply(data, names)))
-    data <- lapply(datanames, function(name){
+    dataNames <- unique(unlist(lapply(data, names)))
+    data <- lapply(dataNames, function(name){
       do.call(rbind, lapply(data, "[[", name))
     })
-    names(data) <- datanames
+    names(data) <- dataNames
     # plot data
     plots <- lapply(seq_len(length(data)), function(i){
       if(is.null(data[[i]])){
@@ -205,7 +186,7 @@ setMethod(
       }
       .get_plot(data[i])
     })
-    names(plots) <- datanames
+    names(plots) <- dataNames
     plots <- plots[!vapply(plots, is.null, logical(1))]
     return(plots)
   }

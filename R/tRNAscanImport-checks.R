@@ -1,8 +1,13 @@
 #' @include tRNAscanImport.R
 NULL
 
-# checks whether a granges object is trnascan compatible
+# checks whether a GRanges object is trnascan compatible
 .check_trnascan_granges <- function(gr){
+  if(class(gr) != "GRanges"){
+    stop("Input is not a GRanges object.",
+         call. = FALSE)
+  }
+  
   # check input
   checkCols <- c(
     "tRNA_length",
@@ -30,13 +35,4 @@ NULL
          "an exmaple on what information is expected.",
          call. = FALSE)
   }
-  
-  
-  
-  
-}
-
-# check for equality of all elements of a list
-.ident <- function(l){
-  all(vapply(l, function(x){identical(x,l[[length(l)]])}, logical(1)))
 }

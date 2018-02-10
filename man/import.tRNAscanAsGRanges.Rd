@@ -5,7 +5,7 @@
 \alias{tRNAscan2GFF}
 \title{import.tRNAscanAsGRanges tRNAscan2GFF}
 \usage{
-import.tRNAscanAsGRanges(input, as.gff3 = FALSE, trim.intron = TRUE)
+import.tRNAscanAsGRanges(input, as.GFF3 = FALSE, trim.intron = TRUE)
 
 tRNAscan2GFF(input)
 }
@@ -16,7 +16,7 @@ tRNAscan2GFF(input)
 \code{import.tRNAscanAsGRanges}
 }}
 
-\item{as.gff3}{optional logical: returnw a gff3 compatible GRanges object 
+\item{as.GFF3}{optional logical: returns a gff3 compatible GRanges object 
 directly. (default: FALSE)}
 
 \item{trim.intron}{optional logical: remove intron sequences
@@ -36,12 +36,12 @@ compliant
 \examples{
 gr <- import.tRNAscanAsGRanges(system.file("extdata", 
                                file = "sacCer3-tRNAs.ss.sort", 
-                               package = "tRNAscanImport"))#'                              
+                               package = "tRNAscanImport"))
 gff <- tRNAscan2GFF(gr)
 identical(gff,import.tRNAscanAsGRanges(system.file("extdata", 
                                file = "sacCer3-tRNAs.ss.sort", 
                                package = "tRNAscanImport"),
-                               as.gff3 = TRUE))
+                               as.GFF3 = TRUE))
 }
 \references{
 Chan, Patricia P., and Todd M. Lowe. 2016. “GtRNAdb 2.0: An Expanded Database
