@@ -35,8 +35,6 @@ NULL
 #' @importFrom S4Vectors DataFrame
 #' @importFrom Biostrings alphabetFrequency
 #' @importFrom reshape2 melt
-#' @importFrom graphics plot
-#' 
 #' 
 #' @examples
 #' library(GenomicRanges, quietly = TRUE)
@@ -156,6 +154,9 @@ setMethod(
   signature = signature(grl = "GRangesList"),
   definition = function(grl) {
     plots <- gettRNAscanPlots(grl)
+    if(!requireNamespace("graphics")){
+      stop("Package 'graphics' is not installed.", call. = FALSE)
+    }
     lapply(plots,graphics::plot)
     return(invisible(TRUE))
   }

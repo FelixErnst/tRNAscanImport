@@ -1,6 +1,6 @@
 Package: tRNAscanImport
 Title: Imports a tRNAscan-SE result file as GRanges object
-Version: 0.99.13
+Version: 0.99.14
 Authors@R: person("Felix G.M.", 
                   "Ernst", 
                   email = "felix.gm.ernst@outlook.com", 
@@ -12,6 +12,7 @@ Encoding: UTF-8
 LazyData: true
 biocViews:
   Software,
+  DataImport,
   WorkflowStep,
   Preprocessing,
   Visualization
@@ -36,6 +37,7 @@ Suggests:
   knitr,
   rmarkdown,
   testthat,
+  graphics,
   ggplot2,
   scales
 VignetteBuilder: knitr
