@@ -1,10 +1,10 @@
 ---
-title: "Convert tRNAscan-SE output to GRanges"
+title: "Importing tRNAscan-SE output as GRanges"
 author: "Felix G.M. Ernst"
 date: "`r Sys.Date()`"
-package: tRNAscan2GRanges
+package: tRNAscanImport
 abstract: >
-  Example conversion of tRNAscan-SE output for sacCer3 to a GRanges object
+  Example of importing a tRNAscan-SE output for sacCer3 as a GRanges object
 output: 
   BiocStyle::html_document:
     toc: true
@@ -32,7 +32,7 @@ the genome annotation. Among these are for example structural information,
 additional scores and the information, whether the conserved CCA-end is encoded
 in the genomic DNA. To work with this complete set of information, the 
 tRNAscan-SE output can be parsed into a more accessible GRanges object using 
-`tRNAscan2GRanges`.
+`tRNAscanImport`.
 
 # Getting started
 
@@ -42,10 +42,10 @@ formatted text document containing individual text blocks per tRNA delimited by
 an empty line.
 
 ```{r}
-library(tRNAscan2GRanges)
+library(tRNAscanImport)
 sacCer3_file <- system.file("extdata", 
-                           file = "sacCer3-tRNAs.ss.sort", 
-                           package = "tRNAscan2GRanges")
+                            file = "sacCer3-tRNAs.ss.sort", 
+                            package = "tRNAscan2GRanges")
 
 # output for sacCer3
 # Before
@@ -55,13 +55,13 @@ readLines(con = sacCer3_file, n = 7L)
 # Converting to GRanges
 
 To access the information in a BioC context the import as a GRanges object 
-comes to mind. `tRNAscan2GRanges()` performs this task by evaluating each text 
-block using regular expressions. 
+comes to mind. `import.tRNAscanAsGRanges()` performs this task by evaluating 
+each text block using regular expressions. 
 
 ```{r}
 # output for sacCer3
 # After
-gr <- tRNAscan2GRanges::tRNAscan2GRanges(sacCer3_file)
+gr <- import.tRNAscanAsGRanges(sacCer3_file)
 head(gr, 2)
 ```
 
@@ -70,41 +70,44 @@ use, including processing the sequences for HTS read mapping or statistical
 analysis on tRNA content of the analyzed genome.
 
 ```{r}
-suppressMessages(library(rtracklayer, quietly = TRUE))
+library(Biostrings, quietly = TRUE)
+library(rtracklayer, quietly = TRUE)
+# suppressMessages(library(rtracklayer, quietly = TRUE))
 # Save tRNA sequences
-Biostrings::writeXStringSet(gr$tRNA_seq, filepath = tempfile())
-# convert DNAStringSet to character require for gff3 file saving
+writeXStringSet(gr$tRNA_seq, filepath = tempfile())
 # to be GFF3 compliant use tRNAscan2GFF
-gff <- tRNAscan2GRanges::tRNAscan2GFF(sacCer3_file)
-rtracklayer::export.gff3(gff, con = tempfile())
+gff <- tRNAscan2GFF(gr)
+export.gff3(gff, con = tempfile())
 ```
 
 # Visualization
 
-The tRNAscan-SE information can be visualized using the `plottRNAscanSummary()`
+The tRNAscan-SE information can be visualized using the `gettRNAscanPlots()`
 function, returning a named list of ggplot2 plots, which can be plotted or
-further modified. `plottRNAscanSummary()` requires ggplot2 to be installed.
+further modified. `gettRNAscanPlots()` requires ggplot2 to be installed.
 Alternatively, `gettRNAscanSummary()` returns the aggregated information for
-further use.
+further use. `plottRNAscan()` plots the output of `gettRNAscanPlots()` 
+directly to the output.
 
 ```{r}
+library(GenomicRanges, quietly = TRUE)
 # tRNAscan-SE output for hg38
 hg38_file <- system.file("extdata", 
-                        file = "hg38-tRNAs.ss.sort", 
-                        package = "tRNAscan2GRanges")
+                         file = "hg38-tRNAs.ss.sort", 
+                         package = "tRNAscan2GRanges")
 # tRNAscan-SE output for E. coli MG1655
 eco_file <- system.file("extdata", 
-                       file = "eschColi_K_12_MG1655-tRNAs.ss.sort", 
-                       package = "tRNAscan2GRanges")
+                        file = "eschColi_K_12_MG1655-tRNAs.ss.sort", 
+                        package = "tRNAscan2GRanges")
 # import tRNAscan-SE files
-gr_hg <- tRNAscan2GRanges::tRNAscan2GRanges(hg38_file)
-gr_eco <- tRNAscan2GRanges::tRNAscan2GRanges(eco_file)
+gr_hg <- import.tRNAscanAsGRanges(hg38_file)
+gr_eco <- import.tRNAscanAsGRanges(eco_file)
 
 # get summary plots if ggplot2 is installed
-grl <- GenomicRanges::GRangesList(Sce = gr, 
-                                  Hsa = gr_hg, 
-                                  Eco = gr_eco)
-plots <- tRNAscan2GRanges::plottRNAscanSummary(grl)
+grl <- GRangesList(Sce = gr, 
+                   Hsa = gr_hg, 
+                   Eco = gr_eco)
+plots <- gettRNAscanPlots(grl)
 ```
 ```{r, fig.cap = "tRNA length."}
 plots$length

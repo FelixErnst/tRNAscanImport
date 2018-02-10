@@ -1,6 +1,6 @@
-Package: tRNAscan2GRanges
+Package: tRNAscanImport
 Title: Imports a tRNAscan-SE result file as GRanges object
-Version: 0.99.12
+Version: 0.99.13
 Authors@R: person("Felix G.M.", 
                   "Ernst", 
                   email = "felix.gm.ernst@outlook.com", 
@@ -27,8 +27,9 @@ Imports:
   GenomeInfoDb,
   rtracklayer
 Collate: 
-  'tRNAScan2GRanges.R'
-  'tRNAScan2GRanges-plot.R'
+    'tRNAscanImport.R'
+    'tRNAscanImport-checks.R'
+    'tRNAscanImport-plot.R'
 RoxygenNote: 6.0.1
 Suggests: 
   BiocStyle, 

@@ -1,4 +1,4 @@
 library(testthat)
-library(tRNAscan2GRanges)
+library(tRNAscanImport)
 
-test_check("tRNAscan2GRanges")
+test_check("tRNAscanImport")

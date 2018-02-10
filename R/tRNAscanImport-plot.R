@@ -1,26 +1,33 @@
-#' @include tRNAScan2GRanges.R
+#' @include tRNAscanImport.R
 NULL
 
 #' @name gettRNAscanSummary
 #' 
-#' @title tRNAscan2GRanges Summary
+#' @title tRNAscanImport summary functions
 #'
-#' @aliases gettRNAscanSummary plottRNAscanSummary
+#' @aliases gettRNAscanSummary plottRNAscan gettRNAscanPlots
 #' 
-#' @param gr a GRanges object created by the tRNAscan2GRanges or GRanges with
-#' equivalent information. 
-#' @param grl a GRangesList object created with GRanges created by the 
-#' tRNAscan2GRanges or GRanges with equivalent information. 
+#' @param gr a GRanges object created by \code{import.tRNAscanAsGRanges} or 
+#' GRanges with equivalent information. 
+#' @param grl a GRangesList object created with GRanges created by 
+#' \code{import.tRNAscanAsGRanges} or GRanges with equivalent information. 
 #'
 #' @description
-#' \code{gettRNAscanSummary()}: creates an DataFrame with aggregates of 
-#' information
-#' \code{plottRNAscanSummary()}: If ggplot2 is installed a plot of the data
-#' is generated
+#' \code{gettRNAscanSummary()}: creates an DataFrame with aggregated information
+#' from the tRNAscan information.
+#' 
+#' \code{gettRNAscanPlots()}: If ggplot2 is installed a plot of the data
+#' is generated and returned.
+#' 
+#' \code{plottRNAscan()}: If ggplot2 is installed a plot of the data
+#' is generated and ploted directly.
 #'
 #' @return 
 #' \code{gettRNAscanSummary()}: DataFrame
-#' \code{plottRNAscanSummary()}: list of ggplots per column of data
+#' 
+#' \code{gettRNAscanPlots()}: list of ggplots per column of data
+#' 
+#' \code{plottRNAscan()}:  directly plots the output of gettRNAscanPlots
 #' 
 #' @export
 #' 
@@ -28,24 +35,39 @@ NULL
 #' @importFrom S4Vectors DataFrame
 #' @importFrom Biostrings alphabetFrequency
 #' @importFrom reshape2 melt
+#' @importFrom graphics plot
+#' 
 #' 
 #' @examples
-#' gr <- tRNAscan2GRanges(system.file("extdata", 
-#'                              file = "sacCer3-tRNAs.ss.sort", 
-#'                              package = "tRNAscan2GRanges"))
-#' gettRNAscanSummary(gr)
-#' plots <- plottRNAscanSummary(GenomicRanges::GRangesList(Sce = gr))
+#' library(GenomicRanges, quietly = TRUE)
+#' sce <- import.tRNAscanAsGRanges(system.file("extdata",
+#'                                file = "sacCer3-tRNAs.ss.sort",
+#'                                package = "tRNAscanImport"))
+#' eco <- import.tRNAscanAsGRanges(system.file("extdata",
+#'                         file = "eschColi_K_12_MG1655-tRNAs.ss.sort",
+#'                         package = "tRNAscan2GRanges"))
+#' gettRNAscanSummary(sce)
+#' plots <- gettRNAscanPlots(GRangesList(Sce = sce,
+#'                                       Eco = eco))
 setGeneric ( 
   name = "gettRNAscanSummary",
-  def = function(gr){standardGeneric("gettRNAscanSummary")} 
+  def = function(gr) standardGeneric("gettRNAscanSummary")
 ) 
 
 #' @rdname gettRNAscanSummary
 #' 
 #' @export
 setGeneric ( 
-  name = "plottRNAscanSummary",
-  def = function(grl){standardGeneric("plottRNAscanSummary")} 
+  name = "plottRNAscan",
+  def = function(grl) standardGeneric("plottRNAscan")
+) 
+
+#' @rdname gettRNAscanSummary
+#' 
+#' @export
+setGeneric ( 
+  name = "gettRNAscanPlots",
+  def = function(grl) standardGeneric("gettRNAscanPlots")
 ) 
 
 #' @rdname gettRNAscanSummary
@@ -55,33 +77,7 @@ setMethod(
   f = "gettRNAscanSummary",
   signature = signature(gr = "GRanges"),
   definition = function(gr) {
-    # check input
-    checkCols <- c(
-      "tRNA_length",
-      "tRNA_type",
-      "tRNA_anticodon",
-      "tRNA_anticodon.start",
-      "tRNA_anticodon.end",
-      "tRNAscan_score",
-      "tRNA_seq",
-      "tRNA_str",
-      "tRNA_CCA.end",
-      "tRNAscan_potential.pseudogene",
-      "tRNAscan_intron.start",
-      "tRNAscan_intron.end",
-      "tRNAscan_intron.locstart",
-      "tRNAscan_intron.locend",
-      "tRNAscan_hmm.score",
-      "tRNAscan_sec.str.score",
-      "tRNAscan_infernal"
-    )
-    if(length(intersect(checkCols,colnames(S4Vectors::mcols(gr)))) !=
-       length(checkCols)){
-      stop("Input GRanges object does not meet the requirements of the ",
-           "function. Please refer to the vignette of tRNAscan2GRanges for ",
-           "an exmaple on what information is expected.",
-           call. = FALSE)
-    }
+    .check_trnascan_granges(gr)
     df <- S4Vectors::DataFrame(length = .get_lengths(gr),
                                gc = .get_gc_content(gr),
                                cca = .get_cca_ends(gr),
@@ -92,11 +88,6 @@ setMethod(
   }
 )
 
-# check for equality of all elements of a list
-.ident <- function(l){
-  all(vapply(l, function(x){identical(x,l[[length(l)]])}, logical(1)))
-}
-
 # returns the length of tRNAs
 .get_lengths <- function(gr){
   length <- as.numeric(S4Vectors::mcols(gr)$tRNA_length)
@@ -105,12 +96,7 @@ setMethod(
   intron_locend <- as.numeric(S4Vectors::mcols(gr)$tRNAscan_intron.locend)
   intron_locend[is.na(intron_locend)] <- 0
   intron_length <- intron_locend - intron_locstart
-  length <- length - vapply(intron_length, function(l){
-    if(l > 0){
-      return(l + 1)
-    }
-    0
-  },numeric(1))
+  length <- length - ifelse(intron_length > 0, intron_length + 1, 0)
   length
 }
 
@@ -162,12 +148,24 @@ setMethod(
                                   "tRNAscan_infernal")])
 }
 
+#' @rdname gettRNAscanSummary
+#' 
+#' @export
+setMethod(
+  f = "plottRNAscan",
+  signature = signature(grl = "GRangesList"),
+  definition = function(grl) {
+    plots <- gettRNAscanPlots(grl)
+    lapply(plots,graphics::plot)
+    return(invisible(TRUE))
+  }
+)
 
 #' @rdname gettRNAscanSummary
 #' 
 #' @export
 setMethod(
-  f = "plottRNAscanSummary",
+  f = "gettRNAscanPlots",
   signature = signature(grl = "GRangesList"),
   definition = function(grl) {
     if(!requireNamespace("ggplot2")){

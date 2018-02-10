@@ -1,12 +1,13 @@
-#' @name tRNAscan2GRanges
+#' @name import.tRNAscanAsGRanges
 #' 
-#' @title tRNAscan2GRanges tRNAscan2GFF
+#' @title import.tRNAscanAsGRanges tRNAscan2GFF
 #' 
 #' @description
-#' \code{tRNAScan2GRanges} will convert a tRNAscan-SE output file into a 
+#' \code{import.tRNAscanAsGRanges} will convert a tRNAscan-SE output file into a 
 #' GRanges object. tRNAscan-SE 1.3.1 output is expected. Intron sequences are 
 #' removed by default, but can also returned untouched.
-#' \code{tRNAScan2GFF} formats the output of \code{tRNAScan2GRanges} to be GFF3
+#' 
+#' \code{tRNAScan2GFF} formats the output of \code{import.tRNAscanAsGRanges} to be GFF3
 #' compliant
 #'
 #' @references 
@@ -18,8 +19,16 @@
 #' Detection of Transfer Rna Genes in Genomic Sequence.” Nucleic Acids Research
 #' 25 (5): 955–64. 
 #' 
-#' @param file tRNAscan-SE input file
-#' @param trim_intron optional logical: remove intron sequences
+#' @param input 
+#' \itemize{
+#' \item \code{import.tRNAscanAsGRanges}: a tRNAscan-SE input file
+#' \item \code{tRNAscan2GFF}: a compatible GRanges object such as the output of 
+#' \code{import.tRNAscanAsGRanges}
+#' }
+#' @param as.gff3 optional logical: returnw a gff3 compatible GRanges object 
+#' directly. (default: FALSE)
+#' @param trim.intron optional logical: remove intron sequences
+#' (default: TRUE)
 #'
 #' @return a GRanges object
 #' @export
@@ -34,20 +43,24 @@
 #' @importFrom rtracklayer export.gff3
 #'
 #' @examples
-#' tRNAscan2GRanges(system.file("extdata", 
-#'                              file = "sacCer3-tRNAs.ss.sort", 
-#'                              package = "tRNAscan2GRanges"))
-#'                              
-#' tRNAscan2GFF(system.file("extdata", 
-#'                          file = "sacCer3-tRNAs.ss.sort", 
-#'                          package = "tRNAscan2GRanges"))
-tRNAscan2GRanges <- function(file,
-                              trim_intron = TRUE) {
-  if(!assertive::is_a_bool(trim_intron)) trim_intron <- TRUE
+#' gr <- import.tRNAscanAsGRanges(system.file("extdata", 
+#'                                file = "sacCer3-tRNAs.ss.sort", 
+#'                                package = "tRNAscanImport"))#'                              
+#' gff <- tRNAscan2GFF(gr)
+#' identical(gff,import.tRNAscanAsGRanges(system.file("extdata", 
+#'                                file = "sacCer3-tRNAs.ss.sort", 
+#'                                package = "tRNAscanImport"),
+#'                                as.gff3 = TRUE))
+import.tRNAscanAsGRanges <- function(input,
+                                     as.gff3 = FALSE,
+                                     trim.intron = TRUE) {
+  # input check
+  if(!assertive::is_a_bool(as.gff3)) as.gff3 <- TRUE
+  if(!assertive::is_a_bool(trim.intron)) trim.intron <- TRUE
     # get tRNAscan as data.frame
-  df <- .read_tRNAscan(file)
+  df <- .read_tRNAscan(input)
   # optional: remove intron sequences
-  if(trim_intron){
+  if(trim.intron){
     df <- .cut_introns(df)
   }
   # Contruct GRanges object
@@ -55,6 +68,10 @@ tRNAscan2GRanges <- function(file,
   S4Vectors::mcols(gr)$tRNA_seq <- DNAStringSet(S4Vectors::mcols(gr)$tRNA_seq)
   # sort GRanges object
   gr <- gr[order(GenomeInfoDb::seqnames(gr), BiocGenerics::start(gr))]
+  # convert to gff3 compatible GRanges object
+  if(as.gff3){
+    gr <- tRNAscan2GFF(gr)
+  }
   return(gr)
 }
 
@@ -82,8 +99,8 @@ tRNAscan2GRanges <- function(file,
                   list(tRNA_length = as.numeric(trna$trna[6]),
                        tRNA_type = as.character(trna$type[2]),
                        tRNA_anticodon = as.character(trna$type[3]),
-                       tRNA_anticodon.start = as.numeric(trna$type[4]),
-                       tRNA_anticodon.end = as.numeric(trna$type[5]),
+                       tRNA_anticodon.start = as.integer(trna$type[4]),
+                       tRNA_anticodon.end = as.integer(trna$type[5]),
                        tRNAscan_score = as.numeric(trna$type[6]),
                        tRNA_seq = as.character(trna$seq[2]),
                        tRNA_str = as.character(trna$str[2]),
@@ -114,12 +131,14 @@ tRNAscan2GRanges <- function(file,
   names(df) <- names(result[[1]])
   df <- data.frame(df,
                    stringsAsFactors = FALSE)
+  # set data types
+  rownames(df) <- NULL
   df$tRNAscan_potential.pseudogene <- 
     as.logical(df$tRNAscan_potential.pseudogene)
-  df$tRNAscan_intron.start <- as.numeric(df$tRNAscan_intron.start)
-  df$tRNAscan_intron.end <- as.numeric(df$tRNAscan_intron.end)
-  df$tRNAscan_intron.locstart <- as.numeric(df$tRNAscan_intron.locstart)
-  df$tRNAscan_intron.locend <- as.numeric(df$tRNAscan_intron.locend)
+  df$tRNAscan_intron.start <- as.integer(df$tRNAscan_intron.start)
+  df$tRNAscan_intron.end <- as.integer(df$tRNAscan_intron.end)
+  df$tRNAscan_intron.locstart <- as.integer(df$tRNAscan_intron.locstart)
+  df$tRNAscan_intron.locend <- as.integer(df$tRNAscan_intron.locend)
   df$tRNAscan_hmm.score <- as.numeric(df$tRNAscan_hmm.score)
   df$tRNAscan_sec.str.score <- as.numeric(df$tRNAscan_sec.str.score)
   df$tRNAscan_infernal <- as.numeric(df$tRNAscan_infernal)
@@ -235,19 +254,34 @@ tRNAscan2GRanges <- function(file,
 }
 
 
-#' @rdname tRNAscan2GRanges
+#' @rdname import.tRNAscanAsGRanges
 #'
 #' @export
-tRNAscan2GFF <- function(file,
-                         trim_intron = TRUE) {
-  tRNAscan <- tRNAscan2GRanges::tRNAscan2GRanges(file,trim_intron)
+tRNAscan2GFF <- function(input) {
+  .check_trnascan_granges(input)
+  tRNAscan <- input
+  # patch GRanges object with necessary columns for gff3 comptability
   S4Vectors::mcols(tRNAscan)$tRNA_seq <- 
     as.character(S4Vectors::mcols(tRNAscan)$tRNA_seq)
+  # generate unique tRNA ID
+  # SGD like format is used 
+  # t*AminoAcidSingleLetter*(*Anticodon*)*ChromosomeIdentifier*
+  # *optionalNumberIfOnTheSameChromosome*
+  # Example: tP(UGG)L or tE(UUC)E1
   S4Vectors::mcols(tRNAscan)$ID <- .create_tRNAscan_id(tRNAscan)
   S4Vectors::mcols(tRNAscan)$type <- "tRNA"
+  S4Vectors::mcols(tRNAscan)$type <- 
+    as.factor(S4Vectors::mcols(tRNAscan)$type)
   S4Vectors::mcols(tRNAscan)$source <- "tRNAscan-SE"
-  S4Vectors::mcols(tRNAscan)$score <- "."
-  S4Vectors::mcols(tRNAscan)$phase <- "."
+  S4Vectors::mcols(tRNAscan)$source <- 
+    as.factor(S4Vectors::mcols(tRNAscan)$source)
+  S4Vectors::mcols(tRNAscan)$score <- NA
+  S4Vectors::mcols(tRNAscan)$score <- 
+    as.numeric(S4Vectors::mcols(tRNAscan)$score)
+  S4Vectors::mcols(tRNAscan)$phase <- NA
+  S4Vectors::mcols(tRNAscan)$score <- 
+    as.integer(S4Vectors::mcols(tRNAscan)$phase)
+  # arrange columns in correct order
   S4Vectors::mcols(tRNAscan) <- 
     cbind(S4Vectors::mcols(tRNAscan)[,c("source",
                                         "type",
@@ -264,6 +298,11 @@ tRNAscan2GFF <- function(file,
   return(tRNAscan)
 }
 
+# generate unique tRNA ID
+# SGD like format is used 
+# t*AminoAcidSingleLetter*(*Anticodon*)*ChromosomeIdentifier*
+# *optionalNumberIfOnTheSameChromosome*
+# Example: tP(UGG)L or tE(UUC)E1
 .create_tRNAscan_id <- function(tRNAscan){
   # create ids based on type, anticodon and chromosome
   chrom <- as.character(GenomeInfoDb::seqnames(tRNAscan))
