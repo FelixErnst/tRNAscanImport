@@ -43,7 +43,7 @@ NULL
 #'                                package = "tRNAscanImport"))
 #' eco <- import.tRNAscanAsGRanges(system.file("extdata",
 #'                         file = "eschColi_K_12_MG1655-tRNAs.ss.sort",
-#'                         package = "tRNAscan2GRanges"))
+#'                         package = "tRNAscanImport"))
 #' gettRNAscanSummary(sce)
 #' plots <- gettRNAscanPlots(GRangesList(Sce = sce,
 #'                                       Eco = eco))

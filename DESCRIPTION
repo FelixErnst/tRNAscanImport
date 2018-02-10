@@ -6,7 +6,7 @@ Authors@R: person("Felix G.M.",
                   email = "felix.gm.ernst@outlook.com", 
                   role = c("aut", "cre"))
 Description: The package imports the result of tRNAscan-SE as a GRanges object.
-Depends: R (>= 3.5)
+Depends: R (>= 3.4)
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true

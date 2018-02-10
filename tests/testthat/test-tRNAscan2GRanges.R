@@ -1,22 +1,22 @@
-library(tRNAscan2GRanges)
+library(tRNAscanImport)
 
 test_that("tests:",{
   file <- system.file("extdata", 
                       file = "sacCer3-tRNAs.ss.sort", 
-                      package = "tRNAscan2GRanges")
+                      package = "tRNAscanImport")
   lines <- readLines(con = file, n = 7L)
-  actual <- tRNAscan2GRanges:::.parse_tRNAscan_block(lines)
+  actual <- tRNAscanImport:::.parse_tRNAscan_block(lines)
   expected <- c("trna","type","intron", "pseudogene", "hmm", "secstruct", 
                 "infernal", "seq","str")
   expect_named(actual, expected)
   expect_equal(min(unlist(lapply(actual, length))), 0)
   expect_equal(max(unlist(lapply(actual, length))), 6)
   
-  actual <- tRNAscan2GRanges:::.parse_tRNAscan_block(lines[c(1:3,5:7)])
+  actual <- tRNAscanImport:::.parse_tRNAscan_block(lines[c(1:3,5:7)])
   expected <- c("trna","type","intron","seq","str")
   expect_named(actual, expected)
   
-  actual <- tRNAscan2GRanges:::.parse_tRNAscan_block(lines[c(1:2,4:7)])
+  actual <- tRNAscanImport:::.parse_tRNAscan_block(lines[c(1:2,4:7)])
   expected <- c("trna","type","pseudogene", "hmm", "secstruct", 
                 "infernal","seq","str")
   expect_named(actual, expected)
@@ -34,8 +34,8 @@ test_that("tests:",{
                             paste0(actual$str[2],"...")), 
                TRUE)
   
-  df <- tRNAscan2GRanges:::.read_tRNAscan(file)
-  actual <- tRNAscan2GRanges:::.cut_introns(df)
+  df <- tRNAscanImport:::.read_tRNAscan(file)
+  actual <- tRNAscanImport:::.cut_introns(df)
   expect_false(identical(df[1,"tRNA_seq"], actual[1,"tRNA_seq"]))
   expect_true(identical("GGGCGTGTGGTCTAGTGGTATGATTCTCGCTTTGGGTGCGAGAGGcCCTGGGTTCAATTCCCAGCTCGCCCC", 
                         actual[1,"tRNA_seq"]))
@@ -43,7 +43,7 @@ test_that("tests:",{
   expect_true(identical(">>>>>.>..>>>.........<<<.>>>>>.......<<<<<.....>>>>>.......<<<<<<.<<<<<.", 
                         actual[1,"tRNA_str"]))
   
-  gr <- tRNAscan2GRanges:::tRNAscan2GRanges(file)
+  gr <- tRNAscanImport:::tRNAscanImport(file)
   length <- as.numeric(S4Vectors::mcols(gr)$tRNA_length)
   intron_locstart <- as.numeric(S4Vectors::mcols(gr)$tRNAscan_intron.locstart)
   intron_locstart[is.na(intron_locstart)] <- 0
@@ -62,49 +62,49 @@ test_that("tests:",{
 
 test_that("input failure test:",{
   expect_error(
-    tRNAscan2GRanges:::.parse_tRNAscan_block(),
+    tRNAscanImport:::.parse_tRNAscan_block(),
     'argument "lines" is missing'
   )
   
   file <- tempfile()
   writeLines(c(""),file)
   expect_error(
-    actual <- tRNAscan2GRanges:::.parse_tRNAscan(file),
+    actual <- tRNAscanImport:::.parse_tRNAscan(file),
     'Empty file.'
   )
   file <- tempfile()
   writeLines(c("\n\n\n\n"),file)
   expect_error(
-    actual <- tRNAscan2GRanges:::.parse_tRNAscan(file),
+    actual <- tRNAscanImport:::.parse_tRNAscan(file),
     'No tRNA information detected. Please make sure'
   )
   
   file <- system.file("extdata", 
                       file = "sacCer3-tRNAs.ss.sort", 
-                      package = "tRNAscan2GRanges")
+                      package = "tRNAscanImport")
   lines <- readLines(con = file, n = 7L)
-  actual <- tRNAscan2GRanges:::.parse_tRNAscan_block(lines[1:2])
+  actual <- tRNAscanImport:::.parse_tRNAscan_block(lines[1:2])
   expect_named(actual, NULL)
-  actual <- tRNAscan2GRanges:::.parse_tRNAscan_block(lines[c(1:2,5:7)])
+  actual <- tRNAscanImport:::.parse_tRNAscan_block(lines[c(1:2,5:7)])
   expect_named(actual, NULL)
-  actual <- tRNAscan2GRanges:::.parse_tRNAscan_block(list())
+  actual <- tRNAscanImport:::.parse_tRNAscan_block(list())
   expect_named(actual, NULL)
-  actual <- tRNAscan2GRanges:::.parse_tRNAscan_block(c())
+  actual <- tRNAscanImport:::.parse_tRNAscan_block(c())
   expect_named(actual, NULL)
   
   expect_error(
-    tRNAscan2GRanges:::.has_CCA_end(),
+    tRNAscanImport:::.has_CCA_end(),
     'argument "seq" is missing'
   )
   expect_false(
-    tRNAscan2GRanges:::.has_CCA_end("")
+    tRNAscanImport:::.has_CCA_end("")
   )
   expect_error(
-    tRNAscan2GRanges:::.read_tRNAscan(),
+    tRNAscanImport:::.read_tRNAscan(),
     'argument "file" is missing'
   )
   expect_error(
-    tRNAscan2GRanges:::.cut_introns(),
+    tRNAscanImport:::.cut_introns(),
     'argument "df" is missing'
   )
 })

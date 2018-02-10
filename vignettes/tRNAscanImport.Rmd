@@ -11,7 +11,7 @@ output:
     toc_float: true
     df_print: paged
 vignette: >
-  %\VignetteIndexEntry{tRNAscan2GRanges}
+  %\VignetteIndexEntry{tRNAscanImport}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: references.bib
@@ -45,7 +45,7 @@ an empty line.
 library(tRNAscanImport)
 sacCer3_file <- system.file("extdata", 
                             file = "sacCer3-tRNAs.ss.sort", 
-                            package = "tRNAscan2GRanges")
+                            package = "tRNAscanImport")
 
 # output for sacCer3
 # Before
@@ -94,11 +94,11 @@ library(GenomicRanges, quietly = TRUE)
 # tRNAscan-SE output for hg38
 hg38_file <- system.file("extdata", 
                          file = "hg38-tRNAs.ss.sort", 
-                         package = "tRNAscan2GRanges")
+                         package = "tRNAscanImport")
 # tRNAscan-SE output for E. coli MG1655
 eco_file <- system.file("extdata", 
                         file = "eschColi_K_12_MG1655-tRNAs.ss.sort", 
-                        package = "tRNAscan2GRanges")
+                        package = "tRNAscanImport")
 # import tRNAscan-SE files
 gr_hg <- import.tRNAscanAsGRanges(hg38_file)
 gr_eco <- import.tRNAscanAsGRanges(eco_file)

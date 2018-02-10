@@ -26,7 +26,7 @@ NULL
   if(length(intersect(checkCols,colnames(S4Vectors::mcols(gr)))) !=
      length(checkCols)){
     stop("Input GRanges object does not meet the requirements of the ",
-         "function. Please refer to the vignette of tRNAscan2GRanges for ",
+         "function. Please refer to the vignette of tRNAscanImport for ",
          "an exmaple on what information is expected.",
          call. = FALSE)
   }
