@@ -43,7 +43,7 @@ test_that("tests:",{
   expect_true(identical(">>>>>.>..>>>.........<<<.>>>>>.......<<<<<.....>>>>>.......<<<<<<.<<<<<.", 
                         actual[1,"tRNA_str"]))
   
-  gr <- tRNAscanImport:::tRNAscanImport(file)
+  gr <- tRNAscanImport::import.tRNAscanAsGRanges(file)
   length <- as.numeric(S4Vectors::mcols(gr)$tRNA_length)
   intron_locstart <- as.numeric(S4Vectors::mcols(gr)$tRNAscan_intron.locstart)
   intron_locstart[is.na(intron_locstart)] <- 0
