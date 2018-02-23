@@ -4,7 +4,6 @@ NULL
 #' @name gettRNAscanSummary
 #' 
 #' @title tRNAscanImport summary functions
-#'
 #' @aliases gettRNAscanSummary plottRNAscan gettRNAscanPlots
 #' 
 #' @param gr a GRanges object created by \code{import.tRNAscanAsGRanges} or 
@@ -23,12 +22,14 @@ NULL
 #' is generated and ploted directly.
 #'
 #' @return 
-#' \code{gettRNAscanSummary()}: DataFrame
+#' \code{gettRNAscanSummary()}: returns a DataFrame with the summarized results 
+#' used for plotting internally.
 #' 
-#' \code{gettRNAscanPlots()}: list of ggplots per column of data
+#' \code{gettRNAscanPlots()}: returns  a list of ggplots per column of data 
+#' returned by \code{gettRNAscanSummary()}.
 #' 
-#' \code{plottRNAscan()}:  directly plots the output of gettRNAscanPlots
-#' 
+#' \code{plottRNAscan()}: the function plots the output of gettRNAscanPlots 
+#' directly to the current plotting device.
 #' 
 #' @import methods
 #' @importFrom S4Vectors DataFrame

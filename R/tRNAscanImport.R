@@ -1,14 +1,16 @@
 #' @name import.tRNAscanAsGRanges
+#' @aliases import.tRNAscanAsGRanges tRNAscan2GFF
 #' 
-#' @title import.tRNAscanAsGRanges tRNAscan2GFF
+#' @title Importing a tRNAscan output file as a GRanges object
 #' 
 #' @description
-#' \code{import.tRNAscanAsGRanges} will convert a tRNAscan-SE output file into a 
-#' GRanges object. tRNAscan-SE 1.3.1 output is expected. Intron sequences are 
-#' removed by default, but can also returned untouched.
+#' The function \code{import.tRNAscanAsGRanges} will import a tRNAscan-SE output
+#' file and return the information as a GRanges object. The reported 
+#' intron sequences are spliced from the result by default, but can also 
+#' returned as imported.
 #' 
-#' \code{tRNAScan2GFF} formats the output of \code{import.tRNAscanAsGRanges} to be GFF3
-#' compliant
+#' The function \code{tRNAScan2GFF} formats the output of 
+#' \code{import.tRNAscanAsGRanges} to be GFF3 compliant.
 #'
 #' @references 
 #' Chan, Patricia P., and Todd M. Lowe. 2016. “GtRNAdb 2.0: An Expanded Database
@@ -25,10 +27,10 @@
 #' \item \code{tRNAscan2GFF}: a compatible GRanges object such as the output of 
 #' \code{import.tRNAscanAsGRanges}
 #' }
-#' @param as.GFF3 optional logical: returns a gff3 compatible GRanges object 
-#' directly. (default: FALSE)
-#' @param trim.intron optional logical: remove intron sequences
-#' (default: TRUE)
+#' @param as.GFF3 optional logical for \code{import.tRNAscanAsGRanges}: returns 
+#' a gff3 compatible GRanges object directly. (default: FALSE)
+#' @param trim.intron optional logical for \code{import.tRNAscanAsGRanges}: 
+#' remove intron sequences (default: TRUE)
 #'
 #' @return a GRanges object
 #' @export

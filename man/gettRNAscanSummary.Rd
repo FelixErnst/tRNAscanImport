@@ -33,11 +33,14 @@ GRanges with equivalent information.}
 \code{import.tRNAscanAsGRanges} or GRanges with equivalent information.}
 }
 \value{
-\code{gettRNAscanSummary()}: DataFrame
+\code{gettRNAscanSummary()}: returns a DataFrame with the summarized results 
+used for plotting internally.
 
-\code{gettRNAscanPlots()}: list of ggplots per column of data
+\code{gettRNAscanPlots()}: returns  a list of ggplots per column of data 
+returned by \code{gettRNAscanSummary()}.
 
-\code{plottRNAscan()}:  directly plots the output of gettRNAscanPlots
+\code{plottRNAscan()}: the function plots the output of gettRNAscanPlots 
+directly to the current plotting device.
 }
 \description{
 \code{gettRNAscanSummary()}: creates an DataFrame with aggregated information
