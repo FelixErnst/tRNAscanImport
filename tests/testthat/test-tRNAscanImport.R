@@ -85,7 +85,7 @@ test_that("input failure test:",{
   lines <- readLines(con = file, n = 7L)
   actual <- tRNAscanImport:::.parse_tRNAscan_block(lines[1:2])
   expect_named(actual, NULL)
-  actual <- tRNAscanImport:::.parse_tRNAscan_block(lines[c(1:2,5:7)])
+  actual <- tRNAscanImport:::.parse_tRNAscan_block(lines[c(1:2,6:7)])
   expect_named(actual, NULL)
   actual <- tRNAscanImport:::.parse_tRNAscan_block(list())
   expect_named(actual, NULL)
