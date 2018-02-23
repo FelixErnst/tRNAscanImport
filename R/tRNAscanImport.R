@@ -109,7 +109,7 @@ import.tRNAscanAsGRanges <- function(input,
                        tRNA_CCA.end = as.logical(.has_CCA_end(trna$seq[2], 
                                                          trna$str[2])),
                        # do not force type - optional data
-                       tRNAscan_potential.pseudogene = !is.na(trna$pseudogene[2]),
+                       tRNAscan_potential.pseudogene = !is.null(trna$pseudogene[2]),
                        tRNAscan_intron.start = trna$intron[4],
                        tRNAscan_intron.end = trna$intron[5],
                        tRNAscan_intron.locstart = trna$intron[2],
@@ -189,8 +189,8 @@ import.tRNAscanAsGRanges <- function(input,
 
 # parse information on a single tRNA using regular expressions
 .parse_tRNAscan_block <- function(lines) {
-  # valid tRNA block has 6 lines minimum
-  if(length(lines) <= 5) return(NULL)
+  # valid tRNA block has 5 lines minimum
+  if(length(lines) < 5) return(NULL)
   
   offset <- 0
   result <- list(trna = .regex_custom(lines[1], "([a-zA-Z0-9.:^*$@!+_?-|]+).trna([A-Z,-,_,0-9]+) \\(([0-9]+)-([0-9]+)\\).*Length: ([0-9]+) bp"),
