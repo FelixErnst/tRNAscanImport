@@ -1,5 +1,6 @@
 library(tRNAscanImport)
 
+context("tests")
 test_that("tests:",{
   file <- system.file("extdata", 
                       file = "sacCer3-tRNAs.ss.sort", 
@@ -60,6 +61,68 @@ test_that("tests:",{
   expect_equal(length,BiocGenerics::width(S4Vectors::mcols(gr)$tRNA_str))
 })
 
+context("type tests gr")
+test_that("type tests gr:",{
+  file <- system.file("extdata", 
+                      file = "sacCer3-tRNAs.ss.sort", 
+                      package = "tRNAscanImport")
+  gr <- tRNAscanImport::import.tRNAscanAsGRanges(file)
+  expect_type(mcols(gr)$no, "integer")
+  expect_type(mcols(gr)$tRNA_length, "integer")
+  expect_type(mcols(gr)$tRNA_type, "character")
+  expect_type(mcols(gr)$tRNA_anticodon, "character")
+  expect_type(mcols(gr)$tRNA_anticodon.start, "integer")
+  expect_type(mcols(gr)$tRNA_anticodon.end, "integer")
+  expect_type(mcols(gr)$tRNAscan_score, "double")
+  expect_type(mcols(gr)$tRNA_seq, "S4")
+  expect_type(mcols(gr)$tRNA_str, "character")
+  expect_type(mcols(gr)$tRNA_CCA.end, "logical")
+  expect_type(mcols(gr)$tRNAscan_potential.pseudogene, "logical")
+  expect_type(mcols(gr)$tRNAscan_intron.start, "integer")
+  expect_type(mcols(gr)$tRNAscan_intron.end, "integer")
+  expect_type(mcols(gr)$tRNAscan_intron.locstart, "integer")
+  expect_type(mcols(gr)$tRNAscan_intron.locend, "integer")
+  expect_type(mcols(gr)$tRNAscan_hmm.score, "double")
+  expect_type(mcols(gr)$tRNAscan_sec.str.score, "double")
+  expect_type(mcols(gr)$tRNAscan_infernal, "double")
+})
+
+context("type tests gff")
+test_that("type tests gff:",{
+  file <- system.file("extdata", 
+                      file = "sacCer3-tRNAs.ss.sort", 
+                      package = "tRNAscanImport")
+  gr <- tRNAscanImport::import.tRNAscanAsGRanges(file)
+  gff <- tRNAscanImport::tRNAscan2GFF(gr)
+  expect_type(mcols(gff)$source, "integer")
+  expect_true(is.factor(mcols(gff)$source))
+  expect_type(mcols(gff)$type, "integer")
+  expect_true(is.factor(mcols(gff)$type))
+  expect_type(mcols(gff)$score, "integer")
+  expect_type(mcols(gff)$phase, "integer")
+  expect_type(mcols(gff)$ID, "character")
+  # 
+  expect_type(mcols(gff)$no, "integer")
+  expect_type(mcols(gff)$tRNA_length, "integer")
+  expect_type(mcols(gff)$tRNA_type, "character")
+  expect_type(mcols(gff)$tRNA_anticodon, "character")
+  expect_type(mcols(gff)$tRNA_anticodon.start, "integer")
+  expect_type(mcols(gff)$tRNA_anticodon.end, "integer")
+  expect_type(mcols(gff)$tRNAscan_score, "double")
+  expect_type(mcols(gff)$tRNA_seq, "character")
+  expect_type(mcols(gff)$tRNA_str, "character")
+  expect_type(mcols(gff)$tRNA_CCA.end, "logical")
+  expect_type(mcols(gff)$tRNAscan_potential.pseudogene, "logical")
+  expect_type(mcols(gff)$tRNAscan_intron.start, "integer")
+  expect_type(mcols(gff)$tRNAscan_intron.end, "integer")
+  expect_type(mcols(gff)$tRNAscan_intron.locstart, "integer")
+  expect_type(mcols(gff)$tRNAscan_intron.locend, "integer")
+  expect_type(mcols(gff)$tRNAscan_hmm.score, "double")
+  expect_type(mcols(gff)$tRNAscan_sec.str.score, "double")
+  expect_type(mcols(gff)$tRNAscan_infernal, "double")
+})
+
+context("input failure tests")
 test_that("input failure test:",{
   expect_error(
     tRNAscanImport:::.parse_tRNAscan_block(),

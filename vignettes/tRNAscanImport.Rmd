@@ -52,7 +52,7 @@ sacCer3_file <- system.file("extdata",
 readLines(con = sacCer3_file, n = 7L)
 ```
 
-# Converting to GRanges
+# Importing as GRanges
 
 To access the information in a BioC context the import as a GRanges object 
 comes to mind. `import.tRNAscanAsGRanges()` performs this task by evaluating 

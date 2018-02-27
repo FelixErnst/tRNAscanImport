@@ -133,6 +133,8 @@ import.tRNAscanAsGRanges <- function(input,
                    stringsAsFactors = FALSE)
   # set data types
   rownames(df) <- NULL
+  df$no <- as.integer(df$no)
+  df$tRNA_length <- as.integer(df$tRNA_length)
   df$tRNAscan_potential.pseudogene <- 
     as.logical(df$tRNAscan_potential.pseudogene)
   df$tRNAscan_intron.start <- as.integer(df$tRNAscan_intron.start)
@@ -279,6 +281,8 @@ tRNAscan2GFF <- function(input) {
   S4Vectors::mcols(tRNAscan)$score <- 
     as.numeric(S4Vectors::mcols(tRNAscan)$score)
   S4Vectors::mcols(tRNAscan)$phase <- NA
+  S4Vectors::mcols(tRNAscan)$phase <- 
+    as.integer(S4Vectors::mcols(tRNAscan)$phase)
   S4Vectors::mcols(tRNAscan)$score <- 
     as.integer(S4Vectors::mcols(tRNAscan)$phase)
   # arrange columns in correct order
