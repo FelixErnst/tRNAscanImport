@@ -1,14 +1,16 @@
 #' @name import.tRNAscanAsGRanges
+#' @aliases import.tRNAscanAsGRanges tRNAscan2GFF
 #' 
-#' @title import.tRNAscanAsGRanges tRNAscan2GFF
+#' @title Importing a tRNAscan output file as a GRanges object
 #' 
 #' @description
-#' \code{import.tRNAscanAsGRanges} will convert a tRNAscan-SE output file into a 
-#' GRanges object. tRNAscan-SE 1.3.1 output is expected. Intron sequences are 
-#' removed by default, but can also returned untouched.
+#' The function \code{import.tRNAscanAsGRanges} will import a tRNAscan-SE output
+#' file and return the information as a GRanges object. The reported 
+#' intron sequences are spliced from the result by default, but can also 
+#' returned as imported.
 #' 
-#' \code{tRNAScan2GFF} formats the output of \code{import.tRNAscanAsGRanges} to be GFF3
-#' compliant
+#' The function \code{tRNAScan2GFF} formats the output of 
+#' \code{import.tRNAscanAsGRanges} to be GFF3 compliant.
 #'
 #' @references 
 #' Chan, Patricia P., and Todd M. Lowe. 2016. “GtRNAdb 2.0: An Expanded Database
@@ -25,10 +27,10 @@
 #' \item \code{tRNAscan2GFF}: a compatible GRanges object such as the output of 
 #' \code{import.tRNAscanAsGRanges}
 #' }
-#' @param as.GFF3 optional logical: returns a gff3 compatible GRanges object 
-#' directly. (default: FALSE)
-#' @param trim.intron optional logical: remove intron sequences
-#' (default: TRUE)
+#' @param as.GFF3 optional logical for \code{import.tRNAscanAsGRanges}: returns 
+#' a gff3 compatible GRanges object directly. (default: FALSE)
+#' @param trim.intron optional logical for \code{import.tRNAscanAsGRanges}: 
+#' remove intron sequences (default: TRUE)
 #'
 #' @return a GRanges object
 #' @export
@@ -107,7 +109,7 @@ import.tRNAscanAsGRanges <- function(input,
                        tRNA_CCA.end = as.logical(.has_CCA_end(trna$seq[2], 
                                                          trna$str[2])),
                        # do not force type - optional data
-                       tRNAscan_potential.pseudogene = !is.na(trna$pseudogene[2]),
+                       tRNAscan_potential.pseudogene = !is.null(trna$pseudogene[2]),
                        tRNAscan_intron.start = trna$intron[4],
                        tRNAscan_intron.end = trna$intron[5],
                        tRNAscan_intron.locstart = trna$intron[2],
@@ -189,8 +191,8 @@ import.tRNAscanAsGRanges <- function(input,
 
 # parse information on a single tRNA using regular expressions
 .parse_tRNAscan_block <- function(lines) {
-  # valid tRNA block has 6 lines minimum
-  if(length(lines) <= 5) return(NULL)
+  # valid tRNA block has 5 lines minimum
+  if(length(lines) < 5) return(NULL)
   
   offset <- 0
   result <- list(trna = .regex_custom(lines[1], "([a-zA-Z0-9.:^*$@!+_?-|]+).trna([A-Z,-,_,0-9]+) \\(([0-9]+)-([0-9]+)\\).*Length: ([0-9]+) bp"),

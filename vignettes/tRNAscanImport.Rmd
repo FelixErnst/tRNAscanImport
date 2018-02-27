@@ -40,7 +40,11 @@ The default tRNAscan-SE output, either from running tRNAscan-SE [@Lowe.1997]
 locally or retrieving the output from the gtRNADb [@Chan.2016], consist of a 
 formatted text document containing individual text blocks per tRNA delimited by 
 an empty line.
-
+```{r, echo=FALSE}
+suppressPackageStartupMessages({
+  library(tRNAscanImport)
+})
+```
 ```{r}
 library(tRNAscanImport)
 sacCer3_file <- system.file("extdata", 
@@ -68,10 +72,15 @@ head(gr, 2)
 The result can be used directly in R or saved as gff3/fasta file for further
 use, including processing the sequences for HTS read mapping or statistical
 analysis on tRNA content of the analyzed genome.
-
+```{r, echo=FALSE}
+suppressPackageStartupMessages({
+  library(Biostrings)
+  library(rtracklayer)
+})
+```
 ```{r}
-library(Biostrings, quietly = TRUE)
-library(rtracklayer, quietly = TRUE)
+library(Biostrings)
+library(rtracklayer)
 # suppressMessages(library(rtracklayer, quietly = TRUE))
 # Save tRNA sequences
 writeXStringSet(gr$tRNA_seq, filepath = tempfile())
@@ -88,9 +97,13 @@ further modified. `gettRNAscanPlots()` requires ggplot2 to be installed.
 Alternatively, `gettRNAscanSummary()` returns the aggregated information for
 further use. `plottRNAscan()` plots the output of `gettRNAscanPlots()` 
 directly to the output.
-
+```{r, echo=FALSE}
+suppressPackageStartupMessages({
+  library(GenomicRanges)
+})
+```
 ```{r}
-library(GenomicRanges, quietly = TRUE)
+library(GenomicRanges)
 # tRNAscan-SE output for hg38
 hg38_file <- system.file("extdata", 
                          file = "hg38-tRNAs.ss.sort", 
