@@ -319,15 +319,30 @@ tRNAscan2GFF <- function(input) {
   chromLetters <- .get_chrom_letters(length(unique(chromIndex)))
   # Modified version of AA code since the tRNAscan uses a slight deviation
   # from the one defined in Biostrings
+  # swap values and names first
   aacode <- Biostrings::AMINO_ACID_CODE
+  aacode_names <- names(aacode)
+  aacode_values <- aacode
+  aacode <- aacode_names
+  names(aacode) <- aacode_values
   aacode <- c(aacode, 
-              U = "SeC", 
-              X = "Und",
-              M = "fMe")
+              "SeC" = "U", 
+              "Und" = "X",
+              "fMe" = "M",
+              "Sup" = "X")
   aa <- unlist(lapply(tRNAscan$tRNA_type, 
                       function(type){
-                        names(aacode[aacode == type])
+                        aacode[names(aacode) == type]
                       }))
+  if( length(aa) != length(tRNAscan$tRNA_anticodon) ||
+      length(aa) != length(chromLetters[chromIndex]) ){
+    stop("Unknown tRNA type identifier: ",
+         tRNAscan$tRNA_type[!(tRNAscan$tRNA_type %in% names(aacode))],
+         "\nKnown type identifier are: ",
+         paste(names(aacode), collapse = "','"),
+         "'. If this is a genuine identifier, please let us know.",
+         call. = FALSE)
+  }
   id <- paste0("t",
                aa,
                "(",
