@@ -1,8 +1,8 @@
 Package: tRNAscanImport
 Title: Imports a tRNAscan-SE result file as GRanges object
-Version: 0.99.21
-Date: 2018-03-17
-Authors@R: person("Felix G.M.", 
+Version: 1.0.1
+Date: 2018-05-04
+Authors@R: person("Felix GM", 
                   "Ernst", 
                   email = "felix.gm.ernst@outlook.com", 
                   role = c("aut", "cre"))
