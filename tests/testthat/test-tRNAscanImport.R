@@ -171,3 +171,9 @@ test_that("input failure test:",{
     'argument "df" is missing'
   )
 })
+
+context("tRNA structure seqs")
+test_that("tRNA structure seqs:",{
+  # all(nchar(substr(gr$tRNA_str, .getDstem(gr)$prime5$start, .getDstem(gr)$prime5$end)) == nchar(substr(gr$tRNA_str, .getDstem(gr)$prime3$start, .getDstem(gr)$prime3$end)))
+})
+

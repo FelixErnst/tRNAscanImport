@@ -34,6 +34,7 @@ Collate:
     'tRNAscanImport.R'
     'AllGenerics.R'
     'tRNAscanImport-checks.R'
+    'tRNAscanImport-methods.R'
     'tRNAscanImport-plot.R'
 RoxygenNote: 6.0.1
 Suggests: 

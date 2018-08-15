@@ -1,38 +1,65 @@
 #' @include tRNAscanImport.R
 NULL
 
+TRNASCAN_FEATURES <- c(
+  "tRNA_length",
+  "tRNA_type",
+  "tRNA_anticodon",
+  "tRNA_anticodon.start",
+  "tRNA_anticodon.end",
+  "tRNAscan_score",
+  "tRNA_seq",
+  "tRNA_str",
+  "tRNA_CCA.end",
+  "tRNAscan_potential.pseudogene",
+  "tRNAscan_intron.start",
+  "tRNAscan_intron.end",
+  "tRNAscan_intron.locstart",
+  "tRNAscan_intron.locend",
+  "tRNAscan_hmm.score",
+  "tRNAscan_sec.str.score",
+  "tRNAscan_infernal"
+)
+
+TRNA_STRUCTURES <- c(
+  "anticodonloop",
+  "Dloop",
+  "Tloop",
+  "acceptorStem",
+  "anticodonStem",
+  "DStem",
+  "TStem",
+  "variableLoop",
+  "discriminator"
+)
+
 # checks whether a GRanges object is trnascan compatible
 .check_trnascan_granges <- function(gr){
   if(class(gr) != "GRanges"){
     stop("Input is not a GRanges object.",
          call. = FALSE)
   }
-  
   # check input
-  checkCols <- c(
-    "tRNA_length",
-    "tRNA_type",
-    "tRNA_anticodon",
-    "tRNA_anticodon.start",
-    "tRNA_anticodon.end",
-    "tRNAscan_score",
-    "tRNA_seq",
-    "tRNA_str",
-    "tRNA_CCA.end",
-    "tRNAscan_potential.pseudogene",
-    "tRNAscan_intron.start",
-    "tRNAscan_intron.end",
-    "tRNAscan_intron.locstart",
-    "tRNAscan_intron.locend",
-    "tRNAscan_hmm.score",
-    "tRNAscan_sec.str.score",
-    "tRNAscan_infernal"
-  )
-  if(length(intersect(checkCols,colnames(S4Vectors::mcols(gr)))) !=
-     length(checkCols)){
+  if(length(intersect(TRNASCAN_FEATURES,colnames(S4Vectors::mcols(gr)))) !=
+     length(TRNASCAN_FEATURES)){
     stop("Input GRanges object does not meet the requirements of the ",
          "function. Please refer to the vignette of tRNAscanImport for ",
          "an exmaple on what information is expected.",
          call. = FALSE)
   }
+}
+
+# checks whether a string is a valid tRNA structure
+.check_trna_structure_ident <- function(value,
+                                        .xvalue = assertive::get_name_in_parent(value)){
+  # check input
+  checkValues <- c("",TRNA_STRUCTURES)
+  if(!(value %in% checkValues)){
+    stop("'",.xvalue,
+         "' must be one of the following values: '",
+         paste(checkValues, collapse = "', '"),
+         "'.",
+         call. = FALSE)
+  }
+  return(invisible(TRUE))
 }

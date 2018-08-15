@@ -2,11 +2,13 @@
 
 export(gettRNAscanPlots)
 export(gettRNAscanSummary)
+export(gettRNAstructureSeq)
 export(import.tRNAscanAsGRanges)
 export(plottRNAscan)
 export(tRNAscan2GFF)
 exportMethods(gettRNAscanPlots)
 exportMethods(gettRNAscanSummary)
+exportMethods(gettRNAstructureSeq)
 exportMethods(plottRNAscan)
 import(methods)
 importFrom(BiocGenerics,start)

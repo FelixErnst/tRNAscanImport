@@ -135,6 +135,11 @@ plots$gc
 plots$introns
 ```
 
+# Subsetting tRNA sequences
+
+```{r}
+```
+
 # Session info
 
 ```{r}

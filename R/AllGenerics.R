@@ -8,6 +8,16 @@ setGeneric (
   name = "gettRNAscanSummary",
   def = function(gr) standardGeneric("gettRNAscanSummary")
 ) 
+#' @rdname gettRNAstructureSeq
+#' 
+#' @export
+setGeneric ( 
+  name = "gettRNAstructureSeq",
+  def = function(gr,
+                 structure = "",
+                 padSequences = TRUE,
+                 pad5prime = TRUE) standardGeneric("gettRNAstructureSeq")
+) 
 
 #' @rdname gettRNAscanSummary
 #' 
