@@ -51,9 +51,6 @@ setMethod(
       structure <- TRNA_STRUCTURES
     }
     #
-    
-    browser()
-    
     functionList <- list(anticodonloop = ".getAnticodonloop",
                          Dloop = ".getDloop",
                          Tloop = ".getTloop",
@@ -83,21 +80,6 @@ setMethod(
                    gr$tRNA_seq,
                    padSequences,
                    pad5prime)
-    # gr[1]
-    # switch(structure,
-    #        FALSE = {
-    #          
-    #        },
-    #        anticodonloop = ,
-    #        Dloop = ,
-    #        Tloop = ,
-    #        acceptorStem = ,
-    #        anticodonStem = ,
-    #        DStem = ,
-    #        TStem = ,
-    #        variableLoop = ,
-    #        discriminator = )
-    # 
     if(length(seqs) == 1){
       seqs <- seqs[[1]]
     }

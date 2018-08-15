@@ -137,7 +137,12 @@ plots$introns
 
 # Subsetting tRNA sequences
 
+To retrieve the sequences for individual tRNA structure elements 
+`gettRNAstructureSeq` can be used.
+
 ```{r}
+gettRNAstructureSeq(gr,
+                    structure = "anticodonloop")
 ```
 
 # Session info

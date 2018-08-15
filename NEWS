@@ -1,3 +1,14 @@
+tRNAscanImport 1.1 (Release date: 2018-11)
+==============
+
+Changes:
+* added gettRNAstructureSeq()
+
+tRNAscanImport 1.0 (Release date: 2018-05-01)
+==============
+
+Release on Bioconductor 3.7
+
 tRNAscanImport 0.99.21 (Release date: 2018-03-17)
 ==============
 
