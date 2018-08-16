@@ -141,7 +141,9 @@ To retrieve the sequences for individual tRNA structure elements
 `gettRNAstructureSeq` can be used.
 
 ```{r}
-gettRNAstructureSeq(gr,
+gettRNAstructureRanges(gr,
+                    structure = "anticodonloop")
+gettRNAstructureSeqs(gr,
                     structure = "anticodonloop")
 ```
 
