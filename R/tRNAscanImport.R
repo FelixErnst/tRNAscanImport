@@ -109,7 +109,7 @@ import.tRNAscanAsGRanges <- function(input,
                        tRNA_CCA.end = as.logical(.has_CCA_end(trna$seq[2], 
                                                          trna$str[2])),
                        # do not force type - optional data
-                       tRNAscan_potential.pseudogene = !is.null(trna$pseudogene[2]),
+                       tRNAscan_potential.pseudogene = !is.na(trna$pseudogene[2]),
                        tRNAscan_intron.start = trna$intron[4],
                        tRNAscan_intron.end = trna$intron[5],
                        tRNAscan_intron.locstart = trna$intron[2],
