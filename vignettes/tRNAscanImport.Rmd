@@ -141,10 +141,18 @@ To retrieve the sequences for individual tRNA structure elements
 `gettRNAstructureSeq` can be used.
 
 ```{r}
+# just retreve the coordinates of the anticodonloop
 gettRNAstructureRanges(gr,
                     structure = "anticodonloop")
 gettRNAstructureSeqs(gr,
                     structure = "anticodonloop")
+```
+
+In addition the sequences can be returned already joined to get a fully padded
+set of sequences.
+
+```{r}
+gettRNAstructureSeqs(gr, joinCompletely = TRUE, joinFeatures = FALSE)
 ```
 
 # Session info

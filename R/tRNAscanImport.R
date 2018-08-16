@@ -82,7 +82,8 @@ import.tRNAscanAsGRanges <- function(input,
   # parse the information as a list of named lists
   result <- .parse_tRNAscan(file)
   # aggregate the data
-  result <- lapply(result, function(trna){
+  result <- lapply(result, 
+                   function(trna){
     res <- list(no = as.numeric(trna$trna[3]),
                 chr = as.character(trna$trna[2]))
     # If on minus strand
@@ -109,7 +110,10 @@ import.tRNAscanAsGRanges <- function(input,
                        tRNA_CCA.end = as.logical(.has_CCA_end(trna$seq[2], 
                                                          trna$str[2])),
                        # do not force type - optional data
-                       tRNAscan_potential.pseudogene = !is.na(trna$pseudogene[2]),
+                       tRNAscan_potential.pseudogene = 
+                         ifelse(length(!is.na(trna$pseudogene[2])) != 0,
+                                !is.na(trna$pseudogene[2]),
+                                FALSE),
                        tRNAscan_intron.start = trna$intron[4],
                        tRNAscan_intron.end = trna$intron[5],
                        tRNAscan_intron.locstart = trna$intron[2],

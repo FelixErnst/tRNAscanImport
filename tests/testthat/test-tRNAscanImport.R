@@ -174,6 +174,51 @@ test_that("input failure test:",{
 
 context("tRNA structure seqs")
 test_that("tRNA structure seqs:",{
-  # all(nchar(substr(gr$tRNA_str, .getDstem(gr)$prime5$start, .getDstem(gr)$prime5$end)) == nchar(substr(gr$tRNA_str, .getDstem(gr)$prime3$start, .getDstem(gr)$prime3$end)))
+  file <- system.file("extdata", 
+                      file = "sacCer3-tRNAs.ss.sort", 
+                      package = "tRNAscanImport")
+  tRNA <- tRNAscanImport::import.tRNAscanAsGRanges(file)
+  tRNA <- tRNA[1]
+  actual <- tRNAscanImport:::.getAcceptorStem(tRNA)
+  expect_named(actual, c("prime5","prime3"))
+  expect_named(actual[[1]], c("start","end"))
+  expect_named(actual[[2]], c("start","end"))
+  expect_equal(actual[[2]], list(start = 65,end = 71))
+  actual <- tRNAscanImport:::.getDiscriminator(tRNA)
+  expect_equal(actual, 72)
+  actual <- tRNAscanImport:::.getDstem(tRNA)
+  expect_named(actual, c("prime5","prime3"))
+  expect_named(actual[[1]], c("start","end"))
+  expect_named(actual[[2]], c("start","end"))
+  expect_equal(actual[[2]], list(start = 22,end = 25))
+  actual <- tRNAscanImport:::.getAnticodonStem(tRNA)
+  expect_named(actual, c("prime5","prime3"))
+  expect_named(actual[[1]], c("start","end"))
+  expect_named(actual[[2]], c("start","end"))
+  expect_equal(actual[[2]], list(start = 38,end = 42))
+  actual <- tRNAscanImport:::.getTstem(tRNA)
+  expect_named(actual, c("prime5","prime3"))
+  expect_named(actual[[1]], c("start","end"))
+  expect_named(actual[[2]], c("start","end"))
+  expect_equal(actual[[2]], list(start = 60,end = 64))
+  actual <- tRNAscanImport:::.getDloop(tRNA)
+  expect_named(actual, c("start","end"))
+  expect_equal(actual, list(start = 13,end = 21))
+  actual <- tRNAscanImport:::.getAnticodonloop(tRNA)
+  expect_named(actual, c("start","end"))
+  expect_equal(actual, list(start = 31,end = 37))
+  actual <- tRNAscanImport:::.getVariableLoop(tRNA)
+  expect_named(actual, c("start","end"))
+  expect_equal(actual, list(start = 43,end = 47))
+  actual <- tRNAscanImport:::.getTloop(tRNA)
+  expect_named(actual, c("start","end"))
+  expect_equal(actual, list(start = 53,end = 59))
+  
+  tRNA <- tRNAscanImport::import.tRNAscanAsGRanges(file)
+  seqs <- tRNAscanImport::gettRNAstructureSeqs(tRNA,
+                                               joinCompletely = TRUE,
+                                               joinFeatures = FALSE)
+  seqsChars <- gsub("-","",as.character(seqs))
+  expect_equal(seqsChars,as.character(tRNA$tRNA_seq))
 })
 
