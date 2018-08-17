@@ -128,8 +128,8 @@ setMethod(
     assertive::assert_is_a_bool(padCenter)
     assertive::assert_is_a_bool(pad5prime)
     if(joinCompletely == TRUE && joinCompletely == joinFeatures){
-      stop("Set either one of 'joinCompletely' and 'joinFeatures' to TRUE ",
-           " or both to FALSE.")
+      warning("Both 'joinCompletely' and 'joinFeatures' are set to TRUE. 
+              'joinCompletely' takes precedence.")
     }
     if(padSequences){
       if(padCenter == TRUE && padCenter == pad5prime){

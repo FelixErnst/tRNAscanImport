@@ -32,21 +32,44 @@ The following values are accepted:
 \code{anticodonStem}, \code{DStem}, \code{TStem}, \code{variableLoop}, 
 \code{discriminator}. (default = \code{structure = ""})}
 
-\item{padSequences}{optional parameter whether sequences of the same type 
+\item{joinCompletely}{Should the sequence parts, which are to be returned, be
+joined into one sequence? (default = \code{joinCompletely = FALSE}))
+Setting this to TRUE excludes \code{joinFeatures} be set to TRUE as well. In
+addition, \code{joinCompletely = TRUE} uses automatically all sequence
+structures.}
+
+\item{joinFeatures}{Should the sequence parts, which are to be returned and
+are from the same structure type, be joined into one sequence?
+(default = \code{joinCompletely = TRUE})) Setting this to TRUE excludes 
+\code{joinCompletely} be set to TRUE as well.}
+
+\item{padSequences}{parameter whether sequences of the same type 
 should be returned with the same length. For stems missing positions will be
 filled up in the middle, for loops at the ends. 
 (default = \code{padSequences = TRUE})}
 
+\item{padCenter}{If missing sequence length is an uneven number, 
+should the 5'-end be padded by one more? (Only applies to loop sequences,
+default = \code{padCenter = TRUE})}
+
 \item{pad5prime}{If missing sequence length is an uneven number, 
 should the 5'-end be padded by one more? (Only applies to loop sequences,
-default = \code{padLeft = TRUE})}
+default = \code{pad5prime = FALSE})}
 }
 \value{
 
 }
 \description{
 \code{gettRNAstructureSeq} returns split or partial tRNA sequences based on
-the structure information of tRNAscan.
+the structure information of tRNAscan. Variances in length of certain 
+structure features can be padded.
+
+Padding works upon certain rules, which can be controlled via 
+\code{padCenter} and \code{pad5prime}. Both parameters only affect 
+padding of loops. With \code{padCenter = TRUE} length is adjusted by adding
+"-" characters in the middle, whereas \code{padCenter = FALSE} adds them at
+each end. If \code{pad5prime = TRUE} more padding characters are added on the
+5'-end if there are uneven numbers of missing positions.
 }
 \examples{
 gr <- import.tRNAscanAsGRanges(system.file("extdata", 
