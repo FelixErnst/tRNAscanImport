@@ -67,6 +67,7 @@ test_that("type tests gr:",{
                       file = "sacCer3-tRNAs.ss.sort", 
                       package = "tRNAscanImport")
   gr <- tRNAscanImport::import.tRNAscanAsGRanges(file)
+  expect_true(checktRNAscanGRanges(gr))
   expect_type(mcols(gr)$no, "integer")
   expect_type(mcols(gr)$tRNA_length, "integer")
   expect_type(mcols(gr)$tRNA_type, "character")
@@ -85,6 +86,7 @@ test_that("type tests gr:",{
   expect_type(mcols(gr)$tRNAscan_hmm.score, "double")
   expect_type(mcols(gr)$tRNAscan_sec.str.score, "double")
   expect_type(mcols(gr)$tRNAscan_infernal, "double")
+  expect_true(all(gr$tRNAscan_potential.pseudogene == FALSE))
 })
 
 context("type tests gff")

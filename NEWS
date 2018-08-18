@@ -1,9 +1,10 @@
-tRNAscanImport 1.1 (Release date: 2018-11)
+tRNAscanImport 1.2 (Release date: 2018-11)
 ==============
 
 Changes:
-* added gettRNAstructureRanges()
+* added gettRNAstructureGRanges()
 * added gettRNAstructureSeqs()
+* added checktRNAscanGRanges()
 * bugfixes for recognizing pseudogene annotation
 
 tRNAscanImport 1.0 (Release date: 2018-05-01)

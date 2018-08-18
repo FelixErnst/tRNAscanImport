@@ -33,6 +33,33 @@ TRNA_STRUCTURES <- c(
   "discriminator"
 )
 
+#' @name checktRNAscanGRanges
+#' @aliases checktRNAscanGRanges
+#' 
+#' @title tRNAscan compatibility check
+#' 
+#' @description 
+#' \code{checktRNAscanGRanges} checks whether a GRanges object contains the 
+#' information expected for a tRNAscan result.
+#' 
+#' @param gr the \code{GRanges} object to test
+#' 
+#' @return a logical value
+#' 
+#' @examples 
+#' file <- system.file("extdata", 
+#'                     file = "sacCer3-tRNAs.ss.sort", 
+#'                     package = "tRNAscanImport")
+#' gr <- tRNAscanImport::import.tRNAscanAsGRanges(file)
+#' checktRNAscanGRanges(gr)
+NULL
+#' @rdname checktRNAscanGRanges
+#' @export
+setMethod(
+  f = "checktRNAscanGRanges",
+  signature = signature(gr = "GRanges"),
+  definition = function(gr) .check_trnascan_granges(gr))
+
 # checks whether a GRanges object is trnascan compatible
 .check_trnascan_granges <- function(gr){
   if(class(gr) != "GRanges"){
@@ -47,6 +74,7 @@ TRNA_STRUCTURES <- c(
          "an exmaple on what information is expected.",
          call. = FALSE)
   }
+  return(TRUE)
 }
 
 # checks whether a string is a valid tRNA structure

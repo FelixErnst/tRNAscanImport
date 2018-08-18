@@ -2,7 +2,7 @@
 NULL
 
 #' @name gettRNAstructureSeqs
-#' @aliases gettRNAstructureSeqs gettRNAstructureRanges
+#' @aliases gettRNAstructureSeqs gettRNAstructureGRanges
 #' 
 #' @title Subsetting tRNA sequences
 #'
@@ -45,16 +45,15 @@ NULL
 #' should the 5'-end be padded by one more? (Only applies to loop sequences,
 #' default = \code{pad5prime = FALSE})
 #'
-#' @return 
-#'  
-#' @importFrom stringr str_locate
+#' @return a list of \code{GRanges} or \code{DNAStringSet} objects. In case
+#' joinCompletly is set to TRUE a single \code{DNAStringSet} is returned.
 #' 
 #' @export
 #' @examples
 #' gr <- import.tRNAscanAsGRanges(system.file("extdata", 
 #'                                file = "sacCer3-tRNAs.ss.sort", 
 #'                                package = "tRNAscanImport"))
-#' gettRNAstructureRanges(gr, structure = "anticodonloop")
+#' gettRNAstructureGRanges(gr, structure = "anticodonloop")
 #' gettRNAstructureSeqs(gr, structure = "anticodonloop")
 NULL
 
@@ -71,9 +70,11 @@ tRNAStructureFunctionList <- list(
 
 #' @rdname gettRNAstructureSeqs
 #' 
+#' @importFrom IRanges IRanges
+#' 
 #' @export
 setMethod(
-  f = "gettRNAstructureRanges",
+  f = "gettRNAstructureGRanges",
   signature = signature(gr = "GRanges"),
   definition = function(gr,
                         structure) {
@@ -100,15 +101,20 @@ setMethod(
                                               end = pos$end,
                                               names = x[[1]]$tRNA_anticodon))
                     }
-                    return(IRanges(start = pos,
-                                   end = pos,
-                                   names = x[[1]]$tRNA_anticodon))
+                    return(IRanges::IRanges(start = pos,
+                                            end = pos,
+                                            names = x[[1]]$tRNA_anticodon))
                   },
                   list(gr))
     return(res)
   }
 )
 #' @rdname gettRNAstructureSeqs
+#' 
+#' @importFrom stringr str_locate
+#' @importFrom BiocGenerics width
+#' @importFrom IRanges reverse
+#' @importFrom XVector subseq
 #' 
 #' @export
 setMethod(
@@ -144,7 +150,7 @@ setMethod(
     #
     if(joinCompletely){
       # get Ranges
-      res <- gettRNAstructureRanges(gr, "")
+      res <- gettRNAstructureGRanges(gr, "")
       seqs <- mapply(.assemble_sequences,
                      res,
                      names(res),
@@ -170,7 +176,7 @@ setMethod(
       )
     } else {
       # get Ranges
-      res <- gettRNAstructureRanges(gr, structure)
+      res <- gettRNAstructureGRanges(gr, structure)
       seqs <- mapply(.assemble_sequences,
                      res,
                      names(res),
@@ -224,7 +230,7 @@ setMethod(
     f <- which(is.na(tstem$prime5$start))
     acceptor <- .getAcceptorStem(x)
     end <- acceptor$prime3$start[f] - 1
-    s <- reverse(substr(x[f]$tRNA_str, 1, end))
+    s <- IRanges::reverse(substr(x[f]$tRNA_str, 1, end))
     # assumes minimum length of T of 3 nt
     start <- end + 2 - 
       stringr::str_locate(s,
@@ -309,7 +315,7 @@ setMethod(
 .getTstem <- function(x){
   acceptor <- .getAcceptorStem(x)
   end3 <- acceptor$prime3$start - 1
-  s <- reverse(substr(x$tRNA_str, 1, end3))
+  s <- IRanges::reverse(substr(x$tRNA_str, 1, end3))
   # T loop is expected to at least three nt long
   start3 <- end3 + 2 -
     stringr::str_locate(s,
@@ -394,8 +400,8 @@ setMethod(
   ##############################################################################
   if(is.list(ir) && !joinFeatures && padSequences){
     prime5 <- XVector::subseq(seqs, ir$prime5)
-    maxWidth5 <- max(width(prime5))
-    addN5 <- maxWidth5 - width(prime5)
+    maxWidth5 <- max(BiocGenerics::width(prime5))
+    addN5 <- maxWidth5 - BiocGenerics::width(prime5)
     addString5 <- DNAStringSet(unlist(
       lapply(addN5, 
              function(n){ 
@@ -407,8 +413,8 @@ setMethod(
       addString5
     )
     prime3 <- XVector::subseq(seqs, ir$prime3)
-    maxWidth3 <- max(width(prime3))
-    addN3 <- maxWidth3 - width(prime3)
+    maxWidth3 <- max(BiocGenerics::width(prime3))
+    addN3 <- maxWidth3 - BiocGenerics::width(prime3)
     addString3 <- DNAStringSet(unlist(
       lapply(addN3, 
              function(n){ 
@@ -430,8 +436,8 @@ setMethod(
   if(is.list(ir) && joinFeatures){
     prime5 <- XVector::subseq(seqs, ir$prime5)
     prime3 <- XVector::subseq(seqs, ir$prime3)
-    maxWidth <- max(width(prime5)+width(prime3))
-    addN <- maxWidth - (width(prime5) + width(prime3))
+    maxWidth <- max(BiocGenerics::width(prime5)+BiocGenerics::width(prime3))
+    addN <- maxWidth - (BiocGenerics::width(prime5) + BiocGenerics::width(prime3))
     addString <- DNAStringSet(rep("--",length(seqs)))
     addString <- Biostrings::xscat(
       addString, 
@@ -462,8 +468,8 @@ setMethod(
   # if it is a loop and should be padded
   ##############################################################################
   ans <- XVector::subseq(seqs, ir)
-  maxWidth <- max(width(ans))
-  missingWidth <- maxWidth - width(ans)
+  maxWidth <- max(BiocGenerics::width(ans))
+  missingWidth <- maxWidth - BiocGenerics::width(ans)
   # if sequences should be padded in the center
   if(padCenter){
     addNMiddle <- missingWidth
@@ -476,11 +482,11 @@ setMethod(
     ans[addNMiddle > 0] <- Biostrings::xscat(
       XVector::subseq(ans[addNMiddle > 0], 
                       1, 
-                      ceiling(width(ans[addNMiddle > 0])/2)),
+                      ceiling(BiocGenerics::width(ans[addNMiddle > 0])/2)),
       addMiddle,
       XVector::subseq(ans[addNMiddle > 0],
-                      (ceiling(width(ans[addNMiddle > 0])/2) + 1),
-                      width(ans[addNMiddle > 0]))
+                      (ceiling(BiocGenerics::width(ans[addNMiddle > 0])/2) + 1),
+                      BiocGenerics::width(ans[addNMiddle > 0]))
     )
   }
   # if sequences should be padded not in the center but outside

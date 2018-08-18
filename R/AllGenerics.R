@@ -1,6 +1,13 @@
 #' @include tRNAscanImport.R
 NULL
 
+#' @rdname checktRNAscanGRanges
+#' 
+#' @export
+setGeneric ( 
+  name = "checktRNAscanGRanges",
+  def = function(gr) standardGeneric("checktRNAscanGRanges")
+)
 #' @rdname gettRNAscanSummary
 #' 
 #' @export
@@ -12,9 +19,9 @@ setGeneric (
 #' 
 #' @export
 setGeneric ( 
-  name = "gettRNAstructureRanges",
+  name = "gettRNAstructureGRanges",
   def = function(gr,
-                 structure = "") standardGeneric("gettRNAstructureRanges")
+                 structure = "") standardGeneric("gettRNAstructureGRanges")
 )
 #' @rdname gettRNAstructureSeqs
 #' 
@@ -28,8 +35,7 @@ setGeneric (
                  padSequences = TRUE,
                  padCenter = TRUE,
                  pad5prime = FALSE) standardGeneric("gettRNAstructureSeqs")
-) 
-
+)
 #' @rdname gettRNAscanSummary
 #' 
 #' @export

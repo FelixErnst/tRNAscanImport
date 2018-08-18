@@ -67,6 +67,8 @@ each text block using regular expressions.
 # After
 gr <- import.tRNAscanAsGRanges(sacCer3_file)
 head(gr, 2)
+# Any GRanges passing this, can be used for subsequent function
+checktRNAscanGRanges(gr)
 ```
 
 The result can be used directly in R or saved as gff3/fasta file for further
@@ -142,10 +144,10 @@ To retrieve the sequences for individual tRNA structure elements
 
 ```{r}
 # just retreve the coordinates of the anticodonloop
-gettRNAstructureRanges(gr,
-                    structure = "anticodonloop")
+gettRNAstructureGRanges(gr,
+                        structure = "anticodonloop")
 gettRNAstructureSeqs(gr,
-                    structure = "anticodonloop")
+                     structure = "anticodonloop")
 ```
 
 In addition the sequences can be returned already joined to get a fully padded

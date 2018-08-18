@@ -26,8 +26,9 @@ Imports:
   reshape2,
   BiocGenerics,
   Biostrings,
+  IRanges,
+  XVector,
   S4Vectors,
-  GenomicRanges,
   GenomeInfoDb,
   rtracklayer
 Collate: 
