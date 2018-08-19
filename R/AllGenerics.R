@@ -32,9 +32,7 @@ setGeneric (
                  structure = "",
                  joinCompletely = FALSE,
                  joinFeatures = TRUE,
-                 padSequences = TRUE,
-                 padCenter = TRUE,
-                 pad5prime = FALSE) standardGeneric("gettRNAstructureSeqs")
+                 padSequences = TRUE) standardGeneric("gettRNAstructureSeqs")
 )
 #' @rdname gettRNAscanSummary
 #' 

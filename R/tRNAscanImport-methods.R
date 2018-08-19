@@ -38,12 +38,6 @@ NULL
 #' should be returned with the same length. For stems missing positions will be
 #' filled up in the middle, for loops at the ends. 
 #' (default = \code{padSequences = TRUE})
-#' @param padCenter If missing sequence length is an uneven number, 
-#' should the 5'-end be padded by one more? (Only applies to loop sequences,
-#' default = \code{padCenter = TRUE})
-#' @param pad5prime If missing sequence length is an uneven number, 
-#' should the 5'-end be padded by one more? (Only applies to loop sequences,
-#' default = \code{pad5prime = FALSE})
 #'
 #' @return a list of \code{GRanges} or \code{DNAStringSet} objects. In case
 #' joinCompletly is set to TRUE a single \code{DNAStringSet} is returned.
@@ -124,24 +118,15 @@ setMethod(
                         structure,
                         joinCompletely,
                         joinFeatures,
-                        padSequences,
-                        padCenter,
-                        pad5prime) {
+                        padSequences) {
     # input check
     assertive::assert_is_a_bool(joinCompletely)
     assertive::assert_is_a_bool(joinFeatures)
     assertive::assert_is_a_bool(padSequences)
-    assertive::assert_is_a_bool(padCenter)
-    assertive::assert_is_a_bool(pad5prime)
+    pad5prime <- TRUE
     if(joinCompletely == TRUE && joinCompletely == joinFeatures){
       warning("Both 'joinCompletely' and 'joinFeatures' are set to TRUE. 
               'joinCompletely' takes precedence.")
-    }
-    if(padSequences){
-      if(padCenter == TRUE && padCenter == pad5prime){
-        warning("Both 'padCenter' or 'pad5prime' are set to TRUE. 'padCenter' ",
-                "takes precedence.")
-      }
     }
     # Make sure sequences are a DNAStringSet
     if(class(gr$tRNA_seq) != "DNAStringSet"){
@@ -156,9 +141,7 @@ setMethod(
                      names(res),
                      MoreArgs = list(gr$tRNA_seq,
                                      joinFeatures = FALSE,
-                                     padSequences = TRUE,
-                                     padCenter = TRUE,
-                                     pad5prime = FALSE))
+                                     padSequences = TRUE))
       seqs <- Biostrings::xscat(
         seqs$acceptorStem$prime5,
         seqs$DStem$prime5,
@@ -182,9 +165,7 @@ setMethod(
                      names(res),
                      MoreArgs = list(gr$tRNA_seq,
                                      joinFeatures,
-                                     padSequences,
-                                     padCenter,
-                                     pad5prime))
+                                     padSequences))
     }
     return(seqs)
   }
@@ -299,13 +280,21 @@ setMethod(
     stringr::str_locate(substr(x$tRNA_str,
                                start5 + 2,
                                .get_tRNA_length_wo_introns(x)),
-                        "\\.\\.\\.\\.")[,"start"]
+                        "\\.\\.\\.\\.\\.")[,"start"]
   start3 <- start5 + 1 +
     stringr::str_locate(substr(x$tRNA_str,
                                start5 + 2,
                                .get_tRNA_length_wo_introns(x)),
                         "<")[,"start"]
   end3 <- start3 + (end5 - start5)
+  # adjust coordinated for tRNA with non canonical base pairing at end of 
+  # acceptor stem
+  f <- (start3 - 9) > end5
+  if(any(f)){
+    end5[f] <- end5[f] + 1
+    start3[f] <- start3[f] - 1
+  }
+  #
   coord <- list("prime5" = list(start = unname(start5),
                                 end = unname(end5)),
                 "prime3" = list(start = unname(start3),
@@ -359,16 +348,17 @@ setMethod(
                                 name,
                                 seqs,
                                 joinFeatures,
-                                padSequences,
-                                padCenter,
-                                pad5prime){
-  # force certain settings based on structure type
-  if(name == "anticodonloop"){
-    padCenter <- FALSE
-    pad5prime <- TRUE
+                                padSequences){
+  # special rule for Dloop
+  if(name == "Dloop" && padSequences){
+    browser()
+  }
+  # special rule for variable loop
+  if(name == "variableLoop" && padSequences){
+    browser()
   }
   ##############################################################################
-  # if it is a stem and features should be not be joined
+  # if it is a stem and features should be not be joined nor padded
   ##############################################################################
   if(is.list(ir) && !joinFeatures && !padSequences){
     ans <- mapply(.assemble_sequences,
@@ -376,9 +366,7 @@ setMethod(
                   MoreArgs = list(name,
                                   seqs,
                                   joinFeatures,
-                                  padSequences,
-                                  padCenter = FALSE,
-                                  pad5prime = FALSE))
+                                  padSequences))
     names(ans) <- names(ir)
     return(ans)
   }
@@ -470,53 +458,32 @@ setMethod(
   ans <- XVector::subseq(seqs, ir)
   maxWidth <- max(BiocGenerics::width(ans))
   missingWidth <- maxWidth - BiocGenerics::width(ans)
-  # if sequences should be padded in the center
-  if(padCenter){
-    addNMiddle <- missingWidth
-    addMiddle <- DNAStringSet(unlist(
-      lapply(addNMiddle, 
-             function(n){ 
-               do.call(paste0,as.list(rep("-",n)))
-             })
-    ))
-    ans[addNMiddle > 0] <- Biostrings::xscat(
-      XVector::subseq(ans[addNMiddle > 0], 
-                      1, 
-                      ceiling(BiocGenerics::width(ans[addNMiddle > 0])/2)),
-      addMiddle,
-      XVector::subseq(ans[addNMiddle > 0],
-                      (ceiling(BiocGenerics::width(ans[addNMiddle > 0])/2) + 1),
-                      BiocGenerics::width(ans[addNMiddle > 0]))
-    )
-  }
   # if sequences should be padded not in the center but outside
-  if(!padCenter && pad5prime){
-    addNLeft <- floor(missingWidth / 2)
-    addNRight <- ceiling(missingWidth / 2)
-    f <- addNRight > 0 & (missingWidth %% 2) == 1
-    addNLeft[f] <- addNLeft[f] + 1
-    addNRight[f] <- addNRight[f] - 1
-    addLeft <- DNAStringSet(unlist(
-      lapply(addNLeft, 
-             function(n){ 
-               do.call(paste0,as.list(rep("-",n)))
-             })
-    ))
-    addRight <- DNAStringSet(unlist(
-      lapply(addNRight, 
-             function(n){ 
-               do.call(paste0,as.list(rep("-",n)))
-             })
-    ))
-    ans[addNLeft > 0] <- Biostrings::xscat(
-      addLeft,
-      ans[addNLeft > 0]
-    )
-    ans[addNRight > 0] <- Biostrings::xscat(
-      ans[addNRight > 0],
-      addRight
-    )
-  }
+  addNLeft <- floor(missingWidth / 2)
+  addNRight <- ceiling(missingWidth / 2)
+  f <- addNRight > 0 & (missingWidth %% 2) == 1
+  addNLeft[f] <- addNLeft[f] + 1
+  addNRight[f] <- addNRight[f] - 1
+  addLeft <- DNAStringSet(unlist(
+    lapply(addNLeft, 
+           function(n){ 
+             do.call(paste0,as.list(rep("-",n)))
+           })
+  ))
+  addRight <- DNAStringSet(unlist(
+    lapply(addNRight, 
+           function(n){ 
+             do.call(paste0,as.list(rep("-",n)))
+           })
+  ))
+  ans[addNLeft > 0] <- Biostrings::xscat(
+    addLeft,
+    ans[addNLeft > 0]
+  )
+  ans[addNRight > 0] <- Biostrings::xscat(
+    ans[addNRight > 0],
+    addRight
+  )
   names(ans) <- names(ir)
   return(ans)
 }
