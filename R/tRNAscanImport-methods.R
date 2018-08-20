@@ -206,7 +206,7 @@ setMethod(
                                start5 + 2,
                                .get_tRNA_length_wo_introns(x)),
                         "<")[,"start"]
-  # if the T-stem is not 4 nt long, but the T loop is longer or equal than 6
+  # if the Dstem is not 4 nt long, but the D loop is longer or equal than 6
   f <- (end5 - start5) < 4 & (start3 - end5) > 6
   if(any(f)){
     end5[f] <- end5[f] + 1
@@ -240,7 +240,16 @@ setMethod(
   end5 <- end3 + 1 - 3 -
     stringr::str_locate(s,
                         "\\.\\.\\.>")[,"start"]
-  start5 <- end5 - (end3 - start3)
+  start5 <- end3 + 1 - 
+    stringr::str_locate(s,
+                        ">\\.\\.")[,"start"]
+  # if the T-stem is not 5 nt long on the 5'-site and 
+  # the missing position at the 3'-end is unpaired include the missing 5'-pos 
+  # as well
+  f <- (end5 - start5) < 4 & (end3 - start3) > 3
+  if(any(f)){
+    start5[f] <- start5[f] - 1
+  }
   coord <- list("prime5" = list(start = unname(start5),
                                 end = unname(end5)),
                 "prime3" = list(start = unname(start3),
@@ -275,7 +284,11 @@ setMethod(
                                start5 + 2,
                                .get_tRNA_length_wo_introns(x)),
                         "<")[,"start"]
-  end3 <- start3 + (end5 - start5)
+  end3 <- start3 + 1 +
+    stringr::str_locate(substr(x$tRNA_str,
+                               start3 + 2,
+                               .get_tRNA_length_wo_introns(x)),
+                        "<\\.\\.|<\\.>|<>")[,"start"]
   # adjust coordinated for tRNA with non canonical base pairing at end of 
   # acceptor stem
   f <- (start3 - 9) > end5
@@ -496,9 +509,23 @@ setMethod(
   ##############################################################################
   # if padding should be done left or right
   ##############################################################################
-  # left is the default
-  # if(name == "left" && padSequences){
-  # }
+  if(name == "left" && padSequences){
+    ans <- XVector::subseq(seqs, ir)
+    maxWidth <- max(BiocGenerics::width(ans))
+    addNLeft <- maxWidth - BiocGenerics::width(ans)
+    addLeft <- DNAStringSet(unlist(
+      lapply(addNLeft, 
+             function(n){ 
+               do.call(paste0,as.list(rep("-",n)))
+             })
+    ))
+    ans[addNLeft > 0] <- Biostrings::xscat(
+      addLeft,
+      ans[addNLeft > 0]
+    )
+    names(ans) <- names(ir)
+    return(ans)
+  }
   if(name == "right" && padSequences){
     ans <- XVector::subseq(seqs, ir)
     maxWidth <- max(BiocGenerics::width(ans))
@@ -600,64 +627,96 @@ setMethod(
   # special rule for variable loop
   #############################################
   if(name == "variableLoop" && padSequences){
-    # if only 3 or 4 long
-    # if longer than 4 check for base pairing.
-    # if base pairing put at the ends
-    # if no base pairing put in the middle
+    # keep one pos at 5'- and 3'-end
     ir5 <- ir
     end(ir5) <- start(ir5)
     prime5 <- XVector::subseq(seqs, ir5)
     ir3 <- ir
     start(ir3) <- end(ir3)
     prime3 <- XVector::subseq(seqs, ir3)
+    # get the middle sequnce
     irM <- ir
     start(irM) <- start(irM) + 1
     end(irM) <- end(irM) - 1
     middle <- XVector::subseq(seqs, irM)
-    browser()
-
+    # if longer variable loops exist search for paired regions
     facLong <- width(ir) > 4
     facBasePaired <- rep(FALSE, length(ir))
     if(any(facLong)){
-      startPaired5 <- start(ir) - 1 + 
+      startPaired5 <- start(irM) - 1 + 
         stringr::str_locate(substr(gr$tRNA_str,
-                                   start(ir),
-                                   end(ir)),
+                                   start(irM),
+                                   end(irM)),
                             ">")[,"start"]
       facBasePaired <- !is.na(startPaired5)
+      # if paired regions exist pad them accordingly
       if(any(facBasePaired)){
-        startPaired5 <- startPaired5[facBasePaired]
-        # assumes at least three unpaired positions in loop
-        endPaired5 <- start(ir[facBasePaired]) - 1 + 
+        startPaired5 <- start(irM[facBasePaired])
+        # test for different loop types
+        endPaired5 <- start(irM[facBasePaired]) - 1 + 
           stringr::str_locate(substr(gr$tRNA_str[facBasePaired],
-                                     start(ir[facBasePaired]),
-                                     end(ir[facBasePaired])),
-                              ">\\.")[,"start"]
-        startPaired3 <- start(ir[facBasePaired]) + 2 + 
+                                     start(irM[facBasePaired]),
+                                     end(irM[facBasePaired])),
+                              ">\\.\\.|>\\.<|><")[,"start"]
+        startPaired3 <- start(irM[facBasePaired]) + 1 + 
           stringr::str_locate(substr(gr$tRNA_str[facBasePaired],
-                                     start(ir[facBasePaired]),
-                                     end(ir[facBasePaired])),
-                              "\\.\\.\\.<")[,"start"]
-        endPaired3 <- end(ir[facBasePaired]) + 1 - 
-          stringr::str_locate(reverse(substr(gr$tRNA_str[facBasePaired],
-                                             start(ir[facBasePaired]),
-                                             end(ir[facBasePaired]))),
-                              "<")[,"start"]
-        middle[facBasePaired] <- Biostrings::xscat(
-          .assemble_sequences(IRanges::IRanges(start = ,
-                                               end = ),
-                              "right",
-                              gr[facBasePaired],
-                              joinFeatures = FALSE,
-                              padSequences = TRUE)
-        )
+                                     start(irM[facBasePaired]),
+                                     end(irM[facBasePaired])),
+                              "\\.\\.<|>><|\\.><")[,"start"]
+        endPaired3 <- end(irM[facBasePaired])
+        # assemble middle sequences
+        l <- .assemble_sequences(IRanges::IRanges(start = startPaired5,
+                                                  end = endPaired5),
+                                 "right",
+                                 gr[facBasePaired],
+                                 joinFeatures = FALSE,
+                                 padSequences = TRUE)
+        m <- XVector::subseq(seqs[facBasePaired], irM[facBasePaired])
+        # proceed with sequences which have a loop
+        f <- endPaired5 < startPaired3 - 1
+        m[f] <- .assemble_sequences(IRanges::IRanges(start = endPaired5[f] + 1,
+                                                    end = startPaired3[f] - 1),
+                                   "right",
+                                   gr[facBasePaired][f],
+                                   joinFeatures = FALSE,
+                                   padSequences = TRUE)
+        # add spacer for missing loops
+        addWidth <- rep(max(BiocGenerics::width(m[f])),length(m[!f]))
+        m[!f] <- DNAStringSet(unlist(
+          lapply(addWidth, 
+                 function(n){ 
+                   do.call(paste0,as.list(rep("-",n)))
+                 })
+        ))
+        r <- .assemble_sequences(IRanges::IRanges(start = startPaired3,
+                                                  end = endPaired3),
+                                 "left",
+                                 gr[facBasePaired],
+                                 joinFeatures = FALSE,
+                                 padSequences = TRUE)
+        # assemble paired region sequence
+        middle[facBasePaired] <- Biostrings::xscat(l,m,r)
       }
     }
-    middle[!facBasePaired] <- .assemble_sequences(irM[!facBasePaired],
-                                                  "center",
-                                                  gr[!facBasePaired],
-                                                  joinFeatures = FALSE,
-                                                  padSequences = TRUE)
+    # pad non paired region sequences in the middle
+    maxWidth <- max(BiocGenerics::width(middle))
+    addNMiddle <- maxWidth - BiocGenerics::width(middle)
+    addMiddle <- DNAStringSet(unlist(
+      lapply(addNMiddle, 
+             function(n){ 
+               do.call(paste0,as.list(rep("-",n)))
+             })
+    ))
+    middle[addNMiddle > 0] <- Biostrings::xscat(
+      XVector::subseq(middle[addNMiddle > 0], 
+                      1, 
+                      ceiling(width(middle[addNMiddle > 0])/2)),
+      addMiddle,
+      XVector::subseq(middle[addNMiddle > 0],
+                      (ceiling(width(middle[addNMiddle > 0])/2) + 1),
+                      width(middle[addNMiddle > 0]))
+    )
+    # assemble left right and middle sequences
     ans <- Biostrings::xscat(
       .assemble_sequences(ir5,
                           "right",
