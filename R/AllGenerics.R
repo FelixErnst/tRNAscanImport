@@ -30,8 +30,8 @@ setGeneric (
   name = "gettRNAstructureSeqs",
   def = function(gr,
                  structure = "",
-                 joinCompletely = FALSE,
-                 joinFeatures = TRUE,
+                 joinCompletely = TRUE,
+                 joinFeatures = FALSE,
                  padSequences = TRUE) standardGeneric("gettRNAstructureSeqs")
 )
 #' @rdname gettRNAscanSummary

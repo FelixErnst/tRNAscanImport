@@ -12,15 +12,13 @@
 \usage{
 gettRNAstructureGRanges(gr, structure = "")
 
-gettRNAstructureSeqs(gr, structure = "", joinCompletely = FALSE,
-  joinFeatures = TRUE, padSequences = TRUE, padCenter = TRUE,
-  pad5prime = FALSE)
+gettRNAstructureSeqs(gr, structure = "", joinCompletely = TRUE,
+  joinFeatures = FALSE, padSequences = TRUE)
 
 \S4method{gettRNAstructureGRanges}{GRanges}(gr, structure = "")
 
 \S4method{gettRNAstructureSeqs}{GRanges}(gr, structure = "",
-  joinCompletely = FALSE, joinFeatures = TRUE, padSequences = TRUE,
-  padCenter = TRUE, pad5prime = FALSE)
+  joinCompletely = TRUE, joinFeatures = FALSE, padSequences = TRUE)
 }
 \arguments{
 \item{gr}{a GRanges object created by \code{import.tRNAscanAsGRanges} or 
@@ -33,28 +31,22 @@ The following values are accepted:
 \code{discriminator}. (default = \code{structure = ""})}
 
 \item{joinCompletely}{Should the sequence parts, which are to be returned, be
-joined into one sequence? (default = \code{joinCompletely = FALSE}))
+joined into one sequence? (default = \code{joinCompletely = TRUE}))
 Setting this to TRUE excludes \code{joinFeatures} be set to TRUE as well. In
 addition, \code{joinCompletely = TRUE} uses automatically all sequence
 structures.}
 
 \item{joinFeatures}{Should the sequence parts, which are to be returned and
 are from the same structure type, be joined into one sequence?
-(default = \code{joinCompletely = TRUE})) Setting this to TRUE excludes 
-\code{joinCompletely} be set to TRUE as well.}
+(default = \code{joinCompletely = FALSE})) Setting this to TRUE excludes 
+\code{joinCompletely} be set to TRUE as well. \code{joinCompletely} takes
+precedence.}
 
 \item{padSequences}{parameter whether sequences of the same type 
 should be returned with the same length. For stems missing positions will be
 filled up in the middle, for loops at the ends. 
-(default = \code{padSequences = TRUE})}
-
-\item{padCenter}{If missing sequence length is an uneven number, 
-should the 5'-end be padded by one more? (Only applies to loop sequences,
-default = \code{padCenter = TRUE})}
-
-\item{pad5prime}{If missing sequence length is an uneven number, 
-should the 5'-end be padded by one more? (Only applies to loop sequences,
-default = \code{pad5prime = FALSE})}
+(default = \code{padSequences = TRUE}). If \code{joinCompletely == TRUE} this
+is set to TRUE automatically.}
 }
 \value{
 a list of \code{GRanges} or \code{DNAStringSet} objects. In case

@@ -26,18 +26,20 @@ NULL
 #' \code{anticodonStem}, \code{DStem}, \code{TStem}, \code{variableLoop}, 
 #' \code{discriminator}. (default = \code{structure = ""})
 #' @param joinCompletely Should the sequence parts, which are to be returned, be
-#' joined into one sequence? (default = \code{joinCompletely = FALSE}))
+#' joined into one sequence? (default = \code{joinCompletely = TRUE}))
 #' Setting this to TRUE excludes \code{joinFeatures} be set to TRUE as well. In
 #' addition, \code{joinCompletely = TRUE} uses automatically all sequence
 #' structures.
 #' @param joinFeatures Should the sequence parts, which are to be returned and
 #' are from the same structure type, be joined into one sequence?
-#' (default = \code{joinCompletely = TRUE})) Setting this to TRUE excludes 
-#' \code{joinCompletely} be set to TRUE as well.
+#' (default = \code{joinCompletely = FALSE})) Setting this to TRUE excludes 
+#' \code{joinCompletely} be set to TRUE as well. \code{joinCompletely} takes
+#' precedence.
 #' @param padSequences parameter whether sequences of the same type 
 #' should be returned with the same length. For stems missing positions will be
 #' filled up in the middle, for loops at the ends. 
-#' (default = \code{padSequences = TRUE})
+#' (default = \code{padSequences = TRUE}). If \code{joinCompletely == TRUE} this
+#' is set to TRUE automatically.
 #'
 #' @return a list of \code{GRanges} or \code{DNAStringSet} objects. In case
 #' joinCompletly is set to TRUE a single \code{DNAStringSet} is returned.
@@ -139,7 +141,7 @@ setMethod(
       seqs <- mapply(.assemble_sequences,
                      res,
                      names(res),
-                     MoreArgs = list(gr$tRNA_seq,
+                     MoreArgs = list(gr,
                                      joinFeatures = FALSE,
                                      padSequences = TRUE))
       seqs <- Biostrings::xscat(
@@ -163,7 +165,7 @@ setMethod(
       seqs <- mapply(.assemble_sequences,
                      res,
                      names(res),
-                     MoreArgs = list(gr$tRNA_seq,
+                     MoreArgs = list(gr,
                                      joinFeatures,
                                      padSequences))
     }
@@ -171,63 +173,7 @@ setMethod(
   }
 )
 
-.getDloop <- function(x){
-  dstem <- .getDstem(x)
-  coord <- list(start = (dstem$prime5$end + 1),
-                end = (dstem$prime3$start - 1))
-  if(any(is.na(dstem$prime5$start))) {
-    f <- which(is.na(dstem$prime5$start))
-    acceptor <- .getAcceptorStem(x)
-    start <- acceptor$prime5$end[f]
-    # assumes minimum length of D of 3 nt
-    end <- start + 1 + 
-      stringr::str_locate(substr(x[f]$tRNA_str,
-                                 start + 2,
-                                 .get_tRNA_length_wo_introns(x)),
-                          ">")[,"start"]
-    coord$start[f] <- start
-    coord$end[f] <- end
-  }
-  return(coord)
-}
-.getAnticodonloop <- function(x){
-  anticodon <- .getAnticodonStem(x)
-  coord <- list(start = (anticodon$prime5$end + 1),
-                end = (anticodon$prime3$start - 1))
-  return(coord)
-}
-.getVariableLoop <- function(x){
-  anticodon <- .getAnticodonStem(x)
-  tstem <- .getTstem(x)
-  coord <- list(start = (anticodon$prime3$end + 1),
-                end = (tstem$prime5$start - 1))
-  return(coord)
-}
-.getTloop <- function(x){
-  tstem <- .getTstem(x)
-  coord <- list(start = (tstem$prime5$end + 1),
-                end = (tstem$prime3$start - 1))
-  if(any(is.na(tstem$prime5$start))) {
-    f <- which(is.na(tstem$prime5$start))
-    acceptor <- .getAcceptorStem(x)
-    end <- acceptor$prime3$start[f] - 1
-    s <- IRanges::reverse(substr(x[f]$tRNA_str, 1, end))
-    # assumes minimum length of T of 3 nt
-    start <- end + 2 - 
-      stringr::str_locate(s,
-                          "<")[,"start"]
-    coord$start[f] <- start
-    coord$end[f] <- end
-  }
-  return(coord)
-}
-.getDiscriminator <- function(x){
-  return(as.integer(ifelse(x$tRNA_CCA.end,
-                           .get_tRNA_length_wo_introns(x)-3,
-                           .get_tRNA_length_wo_introns(x))))
-}
-
-
+####################################################
 .getAcceptorStem <- function(x){
   end <- as.integer(ifelse(x$tRNA_CCA.end,
                            .get_tRNA_length_wo_introns(x)-3,
@@ -238,9 +184,17 @@ setMethod(
                                 end = unname(end-1)))
   return(coord)
 }
+####################################################
 .getDstem <- function(x){
   acceptor <- .getAcceptorStem(x)
-  start5 <- acceptor$prime5$end + 1
+  # DStem starts for this with the last unpaired residue. However, the
+  # difference towards the acceptor stem is also group towards the DStem 
+  start5acceptor <- acceptor$prime5$end + 1
+  start5 <- acceptor$prime5$end - 1 +
+    stringr::str_locate(substr(x$tRNA_str,
+                               acceptor$prime5$end,
+                               .get_tRNA_length_wo_introns(x)),
+                        "\\.>")[,"start"]
   # D loop is expected to at least three nt long
   end5 <- start5 +
     stringr::str_locate(substr(x$tRNA_str,
@@ -252,8 +206,15 @@ setMethod(
                                start5 + 2,
                                .get_tRNA_length_wo_introns(x)),
                         "<")[,"start"]
+  # if the T-stem is not 4 nt long, but the T loop is longer or equal than 6
+  f <- (end5 - start5) < 4 & (start3 - end5) > 6
+  if(any(f)){
+    end5[f] <- end5[f] + 1
+    start3[f] <- start3[f] - 1
+  }
+  #
   end3 <- start3 + (end5 - start5)
-  coord <- list("prime5" = list(start = unname(start5),
+  coord <- list("prime5" = list(start = unname(start5acceptor),
                                 end = unname(end5)),
                 "prime3" = list(start = unname(start3),
                                 end = unname(end3)))
@@ -266,6 +227,34 @@ setMethod(
   }
   return(coord)
 }
+
+####################################################
+.getTstem <- function(x){
+  acceptor <- .getAcceptorStem(x)
+  end3 <- acceptor$prime3$start - 1
+  s <- IRanges::reverse(substr(x$tRNA_str, 1, end3))
+  # T loop is expected to at least three nt long
+  start3 <- end3 + 2 -
+    stringr::str_locate(s,
+                        "\\.\\.\\.")[,"start"]
+  end5 <- end3 + 1 - 3 -
+    stringr::str_locate(s,
+                        "\\.\\.\\.>")[,"start"]
+  start5 <- end5 - (end3 - start3)
+  coord <- list("prime5" = list(start = unname(start5),
+                                end = unname(end5)),
+                "prime3" = list(start = unname(start3),
+                                end = unname(end3)))
+  if(any(coord$prime3$start == (coord$prime3$end - 1))){
+    f <- which(coord$prime3$start == (coord$prime3$end - 1))
+    coord$prime5$start[f] <- NA
+    coord$prime5$end[f] <- NA
+    coord$prime3$start[f] <- NA
+    coord$prime3$end[f] <- NA
+  }
+  return(coord)
+}
+####################################################
 .getAnticodonStem <- function(x){
   dstem <- .getDstem(x)
   start <- dstem$prime3$end
@@ -301,32 +290,70 @@ setMethod(
                                 end = unname(end3)))
   return(coord)
 }
-.getTstem <- function(x){
-  acceptor <- .getAcceptorStem(x)
-  end3 <- acceptor$prime3$start - 1
-  s <- IRanges::reverse(substr(x$tRNA_str, 1, end3))
-  # T loop is expected to at least three nt long
-  start3 <- end3 + 2 -
-    stringr::str_locate(s,
-                        "\\.\\.\\.")[,"start"]
-  end5 <- end3 + 1 -
-    stringr::str_locate(s,
-                        ">")[,"start"]
-  start5 <- end5 - (end3 - start3)
-  coord <- list("prime5" = list(start = unname(start5),
-                                end = unname(end5)),
-                "prime3" = list(start = unname(start3),
-                                end = unname(end3)))
-  if(any(coord$prime3$start == (coord$prime3$end - 1))){
-    f <- which(coord$prime3$start == (coord$prime3$end - 1))
-    coord$prime5$start[f] <- NA
-    coord$prime5$end[f] <- NA
-    coord$prime3$start[f] <- NA
-    coord$prime3$end[f] <- NA
+####################################################
+####################################################
+####################################################
+.getDloop <- function(x){
+  dstem <- .getDstem(x)
+  coord <- list(start = (dstem$prime5$end + 1),
+                end = (dstem$prime3$start - 1))
+  if(any(is.na(dstem$prime5$start))) {
+    f <- which(is.na(dstem$prime5$start))
+    acceptor <- .getAcceptorStem(x)
+    start <- acceptor$prime5$end[f]
+    # assumes minimum length of D of 3 nt
+    end <- start + 1 + 
+      stringr::str_locate(substr(x[f]$tRNA_str,
+                                 start + 2,
+                                 .get_tRNA_length_wo_introns(x)),
+                          ">")[,"start"]
+    coord$start[f] <- start
+    coord$end[f] <- end
   }
   return(coord)
 }
+####################################################
+.getAnticodonloop <- function(x){
+  anticodon <- .getAnticodonStem(x)
+  coord <- list(start = (anticodon$prime5$end + 1),
+                end = (anticodon$prime3$start - 1))
+  return(coord)
+}
+####################################################
+.getVariableLoop <- function(x){
+  anticodon <- .getAnticodonStem(x)
+  tstem <- .getTstem(x)
+  coord <- list(start = (anticodon$prime3$end + 1),
+                end = (tstem$prime5$start - 1))
+  return(coord)
+}
+####################################################
+.getTloop <- function(x){
+  tstem <- .getTstem(x)
+  coord <- list(start = (tstem$prime5$end + 1),
+                end = (tstem$prime3$start - 1))
+  if(any(is.na(tstem$prime5$start))) {
+    f <- which(is.na(tstem$prime5$start))
+    acceptor <- .getAcceptorStem(x)
+    end <- acceptor$prime3$start[f] - 1
+    s <- IRanges::reverse(substr(x[f]$tRNA_str, 1, end))
+    # assumes minimum length of T of 3 nt
+    start <- end + 2 - 
+      stringr::str_locate(s,
+                          "<")[,"start"]
+    coord$start[f] <- start
+    coord$end[f] <- end
+  }
+  return(coord)
+}
+####################################################
+.getDiscriminator <- function(x){
+  return(as.integer(ifelse(x$tRNA_CCA.end,
+                           .get_tRNA_length_wo_introns(x)-3,
+                           .get_tRNA_length_wo_introns(x))))
+}
 
+# get the tRNA length without the intron
 .get_tRNA_length_wo_introns <- function(x){
   ans <- as.integer(x$tRNA_length) -
     (as.integer(ifelse(!vapply(x$tRNAscan_intron.locend,
@@ -344,19 +371,13 @@ setMethod(
   ans
 }
 
+#
 .assemble_sequences <- function(ir,
                                 name,
-                                seqs,
+                                gr,
                                 joinFeatures,
                                 padSequences){
-  # special rule for Dloop
-  if(name == "Dloop" && padSequences){
-    browser()
-  }
-  # special rule for variable loop
-  if(name == "variableLoop" && padSequences){
-    browser()
-  }
+  seqs <- gr$tRNA_seq
   ##############################################################################
   # if it is a stem and features should be not be joined nor padded
   ##############################################################################
@@ -364,7 +385,7 @@ setMethod(
     ans <- mapply(.assemble_sequences,
                   ir,
                   MoreArgs = list(name,
-                                  seqs,
+                                  gr,
                                   joinFeatures,
                                   padSequences))
     names(ans) <- names(ir)
@@ -442,6 +463,215 @@ setMethod(
       prime3
     )
     names(ans) <- names(ir[[1]])
+    return(ans)
+  }
+  ##############################################################################
+  # special cases below
+  ##############################################################################
+  ##############################################################################
+  # if padding should be done in the center
+  ##############################################################################
+  if(name == "center" && padSequences){
+    ans <- XVector::subseq(seqs, ir)
+    maxWidth <- max(BiocGenerics::width(ans))
+    addNMiddle <- maxWidth - BiocGenerics::width(ans)
+    addMiddle <- DNAStringSet(unlist(
+      lapply(addNMiddle, 
+             function(n){ 
+               do.call(paste0,as.list(rep("-",n)))
+             })
+    ))
+    ans[addNMiddle > 0] <- Biostrings::xscat(
+      XVector::subseq(ans[addNMiddle > 0], 
+                      1, 
+                      ceiling(width(ans[addNMiddle > 0])/2)),
+      addMiddle,
+      XVector::subseq(ans[addNMiddle > 0],
+                      (ceiling(width(ans[addNMiddle > 0])/2) + 1),
+                      width(ans[addNMiddle > 0]))
+    )
+    names(ans) <- names(ir)
+    return(ans)
+  }
+  ##############################################################################
+  # if padding should be done left or right
+  ##############################################################################
+  # left is the default
+  # if(name == "left" && padSequences){
+  # }
+  if(name == "right" && padSequences){
+    ans <- XVector::subseq(seqs, ir)
+    maxWidth <- max(BiocGenerics::width(ans))
+    addNRight <- maxWidth - BiocGenerics::width(ans)
+    addRight <- DNAStringSet(unlist(
+      lapply(addNRight, 
+             function(n){ 
+               do.call(paste0,as.list(rep("-",n)))
+             })
+    ))
+    ans[addNRight > 0] <- Biostrings::xscat(
+      ans[addNRight > 0],
+      addRight
+    )
+    names(ans) <- names(ir)
+    return(ans)
+  }
+  #############################################
+  # special rule for Dloop
+  #############################################
+  if(name == "Dloop" && padSequences){
+    # three at 5'-end and one 3'-end
+    # search for GG, GC, AG, AC, AT, TT, CT
+    # if found put in der middle and the rest at the 3'-end
+    # if not put everthing at the 5'-end
+    GGfix <- c("GG","GC","AG","AC","AT","TT","CT")
+    #
+    getGGPos <- function(seqs, ir, i, searchString){
+      if(is.null(searchString[i])) return(NULL)
+      x <- stringr::str_locate(reverse(XVector::subseq(seqs, ir)),
+                               reverse(searchString[i]))
+      x <- start(ir) +
+        width(reverse(XVector::subseq(seqs, ir))) -
+        x[,"end"]
+      names <-  rep(searchString[i], length(ir))
+      names[is.na(x)] <- ""
+      if(any(is.na(x))){
+        y <- getGGPos(seqs[is.na(x)],
+                      ir[is.na(x)],
+                      (i + 1),
+                      searchString)
+        if(!is.null(y)){
+          names[is.na(x)] <- names(y)
+          x[is.na(x)] <- y
+        }
+      }
+      names(x) <- names
+      return(x)
+    }
+    # irInt <- ir
+    # start(irInt) <- start(irInt) + 2
+    # end(irInt) <- end(irInt) - 1
+    # ans <- XVector::subseq(seqs, irInt)
+    # aln <- msa::msa(ans, method = "ClustalW", gapOpening = 1, gapExtension = 1)
+    # ans <- DNAStringSet(aln)
+    ir5 <- ir
+    end(ir5) <- start(ir5) + 1
+    #
+    ir3 <- ir
+    start(ir3) <- end(ir3)
+    #
+    irM <- ir
+    start(irM) <- start(irM) + 2
+    end(irM) <- end(irM) - 1
+    #
+    GGpos <- getGGPos(seqs, ir, 1, GGfix)
+    start(irM[!is.na(GGpos)]) <- GGpos[!is.na(GGpos)]
+    end(ir5[!is.na(GGpos)]) <- GGpos[!is.na(GGpos)] - 1
+    # split in the middle if no GG like found
+    if(any(is.na(GGpos))){
+      start(irM[is.na(GGpos)]) <- start(irM[is.na(GGpos)]) + 
+        floor(width(irM[is.na(GGpos)])/2)
+      end(ir5[is.na(GGpos)]) <- end(ir5[is.na(GGpos)]) + 
+        floor(width(irM[is.na(GGpos)])/2)
+    }
+    #
+    ans <- Biostrings::xscat(
+      .assemble_sequences(ir5,
+                          "right",
+                          gr,
+                          joinFeatures = FALSE,
+                          padSequences = TRUE),
+      .assemble_sequences(irM,
+                          "right",
+                          gr,
+                          joinFeatures = FALSE,
+                          padSequences = TRUE),
+      .assemble_sequences(ir3,
+                          "left",
+                          gr,
+                          joinFeatures = FALSE,
+                          padSequences = TRUE)
+    )
+    #
+    names(ans) <- names(ir)
+    return(ans)
+  }
+  #############################################
+  # special rule for variable loop
+  #############################################
+  if(name == "variableLoop" && padSequences){
+    # if only 3 or 4 long
+    # if longer than 4 check for base pairing.
+    # if base pairing put at the ends
+    # if no base pairing put in the middle
+    ir5 <- ir
+    end(ir5) <- start(ir5)
+    prime5 <- XVector::subseq(seqs, ir5)
+    ir3 <- ir
+    start(ir3) <- end(ir3)
+    prime3 <- XVector::subseq(seqs, ir3)
+    irM <- ir
+    start(irM) <- start(irM) + 1
+    end(irM) <- end(irM) - 1
+    middle <- XVector::subseq(seqs, irM)
+    browser()
+
+    facLong <- width(ir) > 4
+    facBasePaired <- rep(FALSE, length(ir))
+    if(any(facLong)){
+      startPaired5 <- start(ir) - 1 + 
+        stringr::str_locate(substr(gr$tRNA_str,
+                                   start(ir),
+                                   end(ir)),
+                            ">")[,"start"]
+      facBasePaired <- !is.na(startPaired5)
+      if(any(facBasePaired)){
+        startPaired5 <- startPaired5[facBasePaired]
+        # assumes at least three unpaired positions in loop
+        endPaired5 <- start(ir[facBasePaired]) - 1 + 
+          stringr::str_locate(substr(gr$tRNA_str[facBasePaired],
+                                     start(ir[facBasePaired]),
+                                     end(ir[facBasePaired])),
+                              ">\\.")[,"start"]
+        startPaired3 <- start(ir[facBasePaired]) + 2 + 
+          stringr::str_locate(substr(gr$tRNA_str[facBasePaired],
+                                     start(ir[facBasePaired]),
+                                     end(ir[facBasePaired])),
+                              "\\.\\.\\.<")[,"start"]
+        endPaired3 <- end(ir[facBasePaired]) + 1 - 
+          stringr::str_locate(reverse(substr(gr$tRNA_str[facBasePaired],
+                                             start(ir[facBasePaired]),
+                                             end(ir[facBasePaired]))),
+                              "<")[,"start"]
+        middle[facBasePaired] <- Biostrings::xscat(
+          .assemble_sequences(IRanges::IRanges(start = ,
+                                               end = ),
+                              "right",
+                              gr[facBasePaired],
+                              joinFeatures = FALSE,
+                              padSequences = TRUE)
+        )
+      }
+    }
+    middle[!facBasePaired] <- .assemble_sequences(irM[!facBasePaired],
+                                                  "center",
+                                                  gr[!facBasePaired],
+                                                  joinFeatures = FALSE,
+                                                  padSequences = TRUE)
+    ans <- Biostrings::xscat(
+      .assemble_sequences(ir5,
+                          "right",
+                          gr,
+                          joinFeatures = FALSE,
+                          padSequences = TRUE),
+      middle,
+      .assemble_sequences(ir3,
+                          "left",
+                          gr,
+                          joinFeatures = FALSE,
+                          padSequences = TRUE)
+    )
+    names(ans) <- names(ir)
     return(ans)
   }
   ##############################################################################

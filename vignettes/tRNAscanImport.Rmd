@@ -140,7 +140,8 @@ plots$introns
 # Subsetting tRNA sequences
 
 To retrieve the sequences for individual tRNA structure elements 
-`gettRNAstructureSeq` can be used.
+`gettRNAstructureGRanges` or `gettRNAstructureSeqs` can be used. Be aware, that
+`gettRNAstructureSeqs` is currently a bit experimental.
 
 ```{r}
 # just retreve the coordinates of the anticodonloop
@@ -154,7 +155,7 @@ In addition the sequences can be returned already joined to get a fully padded
 set of sequences.
 
 ```{r}
-gettRNAstructureSeqs(gr, joinCompletely = TRUE, joinFeatures = FALSE)
+gettRNAstructureSeqs(gr)
 ```
 
 # Session info
