@@ -37,6 +37,9 @@ Collate:
     'tRNAscanImport-checks.R'
     'tRNAscanImport-methods.R'
     'tRNAscanImport-plot.R'
+    'tRNAscanImport-sequences.R'
+    'tRNAscanImport-structures.R'
+    'tRNAscanImport-utils.R'
 RoxygenNote: 6.0.1
 Suggests: 
   BiocStyle, 

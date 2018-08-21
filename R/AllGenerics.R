@@ -15,6 +15,9 @@ setGeneric (
   name = "gettRNAscanSummary",
   def = function(gr) standardGeneric("gettRNAscanSummary")
 ) 
+
+# Structures and Sequences -----------------------------------------------------
+
 #' @rdname gettRNAstructureSeqs
 #' 
 #' @export
@@ -27,6 +30,13 @@ setGeneric (
 #' 
 #' @export
 setGeneric ( 
+  name = "gettRNABasePairing",
+  def = function(gr) standardGeneric("gettRNABasePairing")
+)
+#' @rdname gettRNAstructureSeqs
+#' 
+#' @export
+setGeneric ( 
   name = "gettRNAstructureSeqs",
   def = function(gr,
                  structure = "",
@@ -34,6 +44,9 @@ setGeneric (
                  joinFeatures = FALSE,
                  padSequences = TRUE) standardGeneric("gettRNAstructureSeqs")
 )
+
+# Visualization ----------------------------------------------------------------
+
 #' @rdname gettRNAscanSummary
 #' 
 #' @export
