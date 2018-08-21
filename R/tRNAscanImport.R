@@ -31,6 +31,11 @@
 #' a gff3 compatible GRanges object directly. (default: FALSE)
 #' @param trim.intron optional logical for \code{import.tRNAscanAsGRanges}: 
 #' remove intron sequences (default: TRUE)
+#' @param remove.lowerCase optional logical for \code{import.tRNAscanAsGRanges}: 
+#' remove lower case characters from sequence and corresponding positions in 
+#' structure annotation. Be aware, that this might lead to incorrect structures
+#' since it depends completely on how the mismatch is marked in the structure 
+#' annotations. (default: FALSE)
 #'
 #' @return a GRanges object
 #' @export
@@ -41,7 +46,7 @@
 #' @importFrom BiocGenerics start
 #' @importFrom GenomeInfoDb seqnames
 #' @importFrom S4Vectors mcols
-#' @importFrom stringr str_trim
+#' @importFrom stringr str_trim str_locate_all
 #' @importFrom rtracklayer export.gff3
 #'
 #' @examples
@@ -55,7 +60,8 @@
 #'                                as.GFF3 = TRUE))
 import.tRNAscanAsGRanges <- function(input,
                                      as.GFF3 = FALSE,
-                                     trim.intron = TRUE) {
+                                     trim.intron = TRUE,
+                                     remove.lowerCase = FALSE) {
   # input check
   if(!assertive::is_a_bool(as.GFF3)) as.GFF3 <- TRUE
   if(!assertive::is_a_bool(trim.intron)) trim.intron <- TRUE
@@ -64,6 +70,12 @@ import.tRNAscanAsGRanges <- function(input,
   # optional: remove intron sequences
   if(trim.intron){
     df <- .cut_introns(df)
+  }
+  # optional: remove any lower case characters
+  # example Gt in TStem of mitochondrial tRNA
+  # these are flagged by tRNAscan-SE as not applying to the COVE model
+  if(remove.lowerCase){
+    df <- .remove_lowerCase(df)
   }
   # Contruct GRanges object
   gr <- GRanges(df)
@@ -151,6 +163,7 @@ import.tRNAscanAsGRanges <- function(input,
   df$tRNAscan_sec.str.score <- as.numeric(df$tRNAscan_sec.str.score)
   df$tRNAscan_infernal <- as.numeric(df$tRNAscan_infernal)
   df[is.na(df$tRNA_type),"tRNA_type"] <- "Und"
+  .check_dot_bracket(df$tRNA_str)
   return(df)
 }
 
@@ -261,6 +274,31 @@ import.tRNAscanAsGRanges <- function(input,
   return(df)
 }
 
+# removes any lower case character in the sequence and structure
+.remove_lowerCase <- function(df){
+  .remove_pos <- function(str, p, n){
+    if(nrow(p) < n) return(str)
+    ans <- paste0(substr(str, 
+                         1, 
+                         p[n,"start"] - 1),
+                  substr(.remove_pos(str, p, n + 1), 
+                         p[n,"end"] + 1, 
+                         nchar(str)))
+    return(ans)
+  }
+  pos <- stringr::str_locate_all(df$tRNA_seq, "[agct]")
+  df$tRNA_seq <- unlist(lapply(seq_along(pos), 
+                               function(i){
+                                 p <- pos[[i]]
+                                 .remove_pos(df[i,"tRNA_seq"], p, 1)
+                               }))
+  df$tRNA_str <- unlist(lapply(seq_along(pos), 
+                               function(i){
+                                 p <- pos[[i]]
+                                 .remove_pos(df[i,"tRNA_str"], p, 1)
+                               }))
+  return(df)
+}
 
 #' @rdname import.tRNAscanAsGRanges
 #'
