@@ -78,7 +78,8 @@ setMethod(
     }
 )
 
-#
+################################################################################
+# join sequences of tRNA with correct padding
 .assemble_sequences <- function(ir,
                                 name,
                                 gr,
@@ -95,7 +96,8 @@ setMethod(
                   MoreArgs = list(name,
                                   gr,
                                   joinFeatures,
-                                  padSequences))
+                                  padSequences,
+                                  strList))
     names(ans) <- names(ir)
     return(ans)
   }
@@ -257,7 +259,7 @@ setMethod(
       if(is.null(searchString[i])) return(NULL)
       x <- stringr::str_locate(reverse(XVector::subseq(seqs, ir)),
                                reverse(searchString[i]))
-      x <- start(ir) +
+      x <- BiocGenerics::start(ir) +
         width(reverse(XVector::subseq(seqs, ir))) -
         x[,"end"]
       names <-  rep(searchString[i], length(ir))
@@ -275,31 +277,26 @@ setMethod(
       names(x) <- names
       return(x)
     }
-    # irInt <- ir
-    # start(irInt) <- start(irInt) + 2
-    # end(irInt) <- end(irInt) - 1
-    # ans <- XVector::subseq(seqs, irInt)
-    # aln <- msa::msa(ans, method = "ClustalW", gapOpening = 1, gapExtension = 1)
-    # ans <- DNAStringSet(aln)
+    #
     ir5 <- ir
-    end(ir5) <- start(ir5) + 1
-    #
+    BiocGenerics::end(ir5) <- BiocGenerics::start(ir5) + 1
     ir3 <- ir
-    start(ir3) <- end(ir3)
-    #
+    BiocGenerics::start(ir3) <- BiocGenerics::end(ir3)
     irM <- ir
-    start(irM) <- start(irM) + 2
-    end(irM) <- end(irM) - 1
+    BiocGenerics::start(irM) <- BiocGenerics::start(irM) + 2
+    BiocGenerics::end(irM) <- BiocGenerics::end(irM) - 1
     #
     GGpos <- getGGPos(seqs, ir, 1, GGfix)
-    start(irM[!is.na(GGpos)]) <- GGpos[!is.na(GGpos)]
-    end(ir5[!is.na(GGpos)]) <- GGpos[!is.na(GGpos)] - 1
+    BiocGenerics::start(irM[!is.na(GGpos)]) <- GGpos[!is.na(GGpos)]
+    BiocGenerics::end(ir5[!is.na(GGpos)]) <- GGpos[!is.na(GGpos)] - 1
     # split in the middle if no GG like found
     if(any(is.na(GGpos))){
-      start(irM[is.na(GGpos)]) <- start(irM[is.na(GGpos)]) + 
-        floor(width(irM[is.na(GGpos)])/2)
-      end(ir5[is.na(GGpos)]) <- end(ir5[is.na(GGpos)]) + 
-        floor(width(irM[is.na(GGpos)])/2)
+      BiocGenerics::start(irM[is.na(GGpos)]) <- 
+        BiocGenerics::start(irM[is.na(GGpos)]) + 
+        floor(BiocGenerics::width(irM[is.na(GGpos)])/2)
+      BiocGenerics::end(ir5[is.na(GGpos)]) <- 
+        BiocGenerics::end(ir5[is.na(GGpos)]) + 
+        floor(BiocGenerics::width(irM[is.na(GGpos)])/2)
     }
     #
     ans <- Biostrings::xscat(
@@ -307,17 +304,20 @@ setMethod(
                           "right",
                           gr,
                           joinFeatures = FALSE,
-                          padSequences = TRUE),
+                          padSequences = TRUE,
+                          strList),
       .assemble_sequences(irM,
                           "right",
                           gr,
                           joinFeatures = FALSE,
-                          padSequences = TRUE),
+                          padSequences = TRUE,
+                          strList),
       .assemble_sequences(ir3,
                           "left",
                           gr,
                           joinFeatures = FALSE,
-                          padSequences = TRUE)
+                          padSequences = TRUE,
+                          strList)
     )
     #
     names(ans) <- names(ir)
@@ -329,48 +329,49 @@ setMethod(
   if(name == "variableLoop" && padSequences){
     # keep one pos at 5'- and 3'-end
     ir5 <- ir
-    end(ir5) <- start(ir5)
+    BiocGenerics::end(ir5) <- BiocGenerics::start(ir5)
     prime5 <- XVector::subseq(seqs, ir5)
     ir3 <- ir
-    start(ir3) <- end(ir3)
+    BiocGenerics::start(ir3) <- BiocGenerics::end(ir3)
     prime3 <- XVector::subseq(seqs, ir3)
     # get the middle sequnce
     irM <- ir
-    start(irM) <- start(irM) + 1
-    end(irM) <- end(irM) - 1
+    BiocGenerics::start(irM) <- BiocGenerics::start(irM) + 1
+    BiocGenerics::end(irM) <- BiocGenerics::end(irM) - 1
     middle <- XVector::subseq(seqs, irM)
     # if longer variable loops exist search for paired regions
-    facLong <- width(ir) > 4
+    facLong <- BiocGenerics::width(ir) > 4
     facBasePaired <- rep(FALSE, length(ir))
     if(any(facLong)){
-      startPaired5 <- start(irM) - 1 + 
+      startPaired5 <- BiocGenerics::start(irM) - 1 + 
         stringr::str_locate(substr(gr$tRNA_str,
-                                   start(irM),
-                                   end(irM)),
+                                   BiocGenerics::start(irM),
+                                   BiocGenerics::end(irM)),
                             ">")[,"start"]
       facBasePaired <- !is.na(startPaired5)
       # if paired regions exist pad them accordingly
       if(any(facBasePaired)){
-        startPaired5 <- start(irM[facBasePaired])
+        startPaired5 <- BiocGenerics::start(irM[facBasePaired])
         # test for different loop types
-        endPaired5 <- start(irM[facBasePaired]) - 1 + 
+        endPaired5 <- BiocGenerics::start(irM[facBasePaired]) - 1 + 
           stringr::str_locate(substr(gr$tRNA_str[facBasePaired],
-                                     start(irM[facBasePaired]),
-                                     end(irM[facBasePaired])),
+                                     BiocGenerics::start(irM[facBasePaired]),
+                                     BiocGenerics::end(irM[facBasePaired])),
                               ">\\.\\.|>\\.<|><")[,"start"]
-        startPaired3 <- start(irM[facBasePaired]) + 1 + 
+        startPaired3 <- BiocGenerics::start(irM[facBasePaired]) + 1 + 
           stringr::str_locate(substr(gr$tRNA_str[facBasePaired],
-                                     start(irM[facBasePaired]),
-                                     end(irM[facBasePaired])),
+                                     BiocGenerics::start(irM[facBasePaired]),
+                                     BiocGenerics::end(irM[facBasePaired])),
                               "\\.\\.<|>><|\\.><")[,"start"]
-        endPaired3 <- end(irM[facBasePaired])
+        endPaired3 <- BiocGenerics::end(irM[facBasePaired])
         # assemble middle sequences
         l <- .assemble_sequences(IRanges::IRanges(start = startPaired5,
                                                   end = endPaired5),
                                  "right",
                                  gr[facBasePaired],
                                  joinFeatures = FALSE,
-                                 padSequences = TRUE)
+                                 padSequences = TRUE,
+                                 strList[facBasePaired])
         m <- XVector::subseq(seqs[facBasePaired], irM[facBasePaired])
         # proceed with sequences which have a loop
         f <- endPaired5 < startPaired3 - 1
@@ -379,7 +380,8 @@ setMethod(
                                     "right",
                                     gr[facBasePaired][f],
                                     joinFeatures = FALSE,
-                                    padSequences = TRUE)
+                                    padSequences = TRUE,
+                                    strList[facBasePaired][f])
         # add spacer for missing loops
         addWidth <- rep(max(BiocGenerics::width(m[f])),length(m[!f]))
         m[!f] <- DNAStringSet(unlist(
@@ -393,7 +395,8 @@ setMethod(
                                  "left",
                                  gr[facBasePaired],
                                  joinFeatures = FALSE,
-                                 padSequences = TRUE)
+                                 padSequences = TRUE,
+                                 strList[facBasePaired])
         # assemble paired region sequence
         middle[facBasePaired] <- Biostrings::xscat(l,m,r)
       }
@@ -422,13 +425,15 @@ setMethod(
                           "right",
                           gr,
                           joinFeatures = FALSE,
-                          padSequences = TRUE),
+                          padSequences = TRUE,
+                          strList),
       middle,
       .assemble_sequences(ir3,
                           "left",
                           gr,
                           joinFeatures = FALSE,
-                          padSequences = TRUE)
+                          padSequences = TRUE,
+                          strList)
     )
     names(ans) <- names(ir)
     return(ans)

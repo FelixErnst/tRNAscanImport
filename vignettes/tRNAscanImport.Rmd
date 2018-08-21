@@ -155,7 +155,18 @@ In addition the sequences can be returned already joined to get a fully padded
 set of sequences.
 
 ```{r}
-gettRNAstructureSeqs(gr)
+gettRNAstructureSeqs(gr[1:10])
+```
+
+# Utility functions
+
+In order to make the process of structure and sequence assembly more 
+transparent, the used information from the dot bracket annotation can be
+accessed using `gettRNABasePairing`
+
+```{r}
+gettRNABasePairing(gr[1])
+getBasePairing(gr[1]$tRNA_str)
 ```
 
 # Session info
