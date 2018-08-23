@@ -5,7 +5,8 @@ Changes:
 * added gettRNAstructureGRanges()
 * added gettRNAstructureSeqs()
 * added checktRNAscanGRanges()
-* bugfixes for recognizing pseudogene annotation
+* added gettRNABasePairing/getBasePairing() for accessing dot bracket annotation
+* bugfix for recognizing pseudogene annotation
 
 tRNAscanImport 1.0 (Release date: 2018-05-01)
 ==============
