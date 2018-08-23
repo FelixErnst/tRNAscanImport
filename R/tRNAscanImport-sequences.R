@@ -38,7 +38,9 @@ setMethod(
     if(joinCompletely){
       # get Ranges
       strList <- gettRNABasePairing(gr)
-      res <- .get_tRNA_structures(tRNAStructureFunctionList, gr, strList)
+      res <- .get_tRNA_structures(tRNAStructureFunctionList,
+                                  gr,
+                                  strList)
       seqs <- mapply(.assemble_sequences,
                      res,
                      names(res),
@@ -75,7 +77,7 @@ setMethod(
                                      strList))
     }
     return(seqs)
-    }
+  }
 )
 
 ################################################################################
@@ -118,34 +120,9 @@ setMethod(
   # if it is a stem and features should not be joined, but padded
   ##############################################################################
   if(is.list(ir) && !joinFeatures && padSequences){
-    browser()
-    
-    prime5 <- XVector::subseq(seqs, ir$prime5)
-    maxWidth5 <- max(BiocGenerics::width(prime5))
-    addN5 <- maxWidth5 - BiocGenerics::width(prime5)
-    addString5 <- DNAStringSet(unlist(
-      lapply(addN5, 
-             function(n){ 
-               do.call(paste0,as.list(rep("-",n)))
-             })
-    ))
-    prime5[addN5 > 0] <- Biostrings::xscat(
-      prime5[addN5 > 0],
-      addString5
-    )
-    prime3 <- XVector::subseq(seqs, ir$prime3)
-    maxWidth3 <- max(BiocGenerics::width(prime3))
-    addN3 <- maxWidth3 - BiocGenerics::width(prime3)
-    addString3 <- DNAStringSet(unlist(
-      lapply(addN3, 
-             function(n){ 
-               do.call(paste0,as.list(rep("-",n)))
-             })
-    ))
-    prime3[addN3 > 0] <- Biostrings::xscat(
-      addString3,
-      prime3[addN3 > 0]
-    )
+    x <- .pad_unpaired_in_stem_region(seqs,ir,strList)
+    prime5 <- .pad_right(x$prime5)
+    prime3 <- .pad_left(x$prime3)
     ans <- list(prime5,
                 prime3)
     names(ans) <- names(ir)
@@ -155,12 +132,10 @@ setMethod(
   # if it is a stem and features should be joined and padded
   ##############################################################################
   if(is.list(ir) && joinFeatures){
-    prime5 <- XVector::subseq(seqs, ir$prime5)
-    prime3 <- XVector::subseq(seqs, ir$prime3)
-    browser()
-    
-    
-    maxWidth <- max(BiocGenerics::width(prime5)+BiocGenerics::width(prime3))
+    x <- .pad_unpaired_in_stem_region(seqs,ir,strList)
+    prime5 <- .pad_right(x$prime5)
+    prime3 <- .pad_left(x$prime3)
+    maxWidth <- max(BiocGenerics::width(prime5) + BiocGenerics::width(prime3))
     addN <- maxWidth - (BiocGenerics::width(prime5) + BiocGenerics::width(prime3))
     addString <- DNAStringSet(rep("--",length(seqs)))
     addString <- Biostrings::xscat(
@@ -187,24 +162,7 @@ setMethod(
   # if padding should be done in the center
   ##############################################################################
   if(name == "center" && padSequences){
-    ans <- XVector::subseq(seqs, ir)
-    maxWidth <- max(BiocGenerics::width(ans))
-    addNMiddle <- maxWidth - BiocGenerics::width(ans)
-    addMiddle <- DNAStringSet(unlist(
-      lapply(addNMiddle, 
-             function(n){ 
-               do.call(paste0,as.list(rep("-",n)))
-             })
-    ))
-    ans[addNMiddle > 0] <- Biostrings::xscat(
-      XVector::subseq(ans[addNMiddle > 0], 
-                      1, 
-                      ceiling(width(ans[addNMiddle > 0])/2)),
-      addMiddle,
-      XVector::subseq(ans[addNMiddle > 0],
-                      (ceiling(width(ans[addNMiddle > 0])/2) + 1),
-                      width(ans[addNMiddle > 0]))
-    )
+    ans <- .pad_center(XVector::subseq(seqs, ir))
     names(ans) <- names(ir)
     return(ans)
   }
@@ -212,36 +170,12 @@ setMethod(
   # if padding should be done left or right
   ##############################################################################
   if(name == "left" && padSequences){
-    ans <- XVector::subseq(seqs, ir)
-    maxWidth <- max(BiocGenerics::width(ans))
-    addNLeft <- maxWidth - BiocGenerics::width(ans)
-    addLeft <- DNAStringSet(unlist(
-      lapply(addNLeft, 
-             function(n){ 
-               do.call(paste0,as.list(rep("-",n)))
-             })
-    ))
-    ans[addNLeft > 0] <- Biostrings::xscat(
-      addLeft,
-      ans[addNLeft > 0]
-    )
+    ans <- .pad_left(XVector::subseq(seqs, ir))
     names(ans) <- names(ir)
     return(ans)
   }
   if(name == "right" && padSequences){
-    ans <- XVector::subseq(seqs, ir)
-    maxWidth <- max(BiocGenerics::width(ans))
-    addNRight <- maxWidth - BiocGenerics::width(ans)
-    addRight <- DNAStringSet(unlist(
-      lapply(addNRight, 
-             function(n){ 
-               do.call(paste0,as.list(rep("-",n)))
-             })
-    ))
-    ans[addNRight > 0] <- Biostrings::xscat(
-      ans[addNRight > 0],
-      addRight
-    )
+    ans <- .pad_right(XVector::subseq(seqs, ir))
     names(ans) <- names(ir)
     return(ans)
   }
@@ -250,10 +184,10 @@ setMethod(
   #############################################
   if(name == "Dloop" && padSequences){
     # three at 5'-end and one 3'-end
-    # search for GG, GC, AG, AC, AT, TT, CT
+    # search for GGG, GG, GC, AG, AC, AT, TT, CT
     # if found put in der middle and the rest at the 3'-end
     # if not put everthing at the 5'-end
-    GGfix <- c("GG","GC","AG","AC","AT","TT","CT")
+    GGfix <- c("GGG","GG","GC","AG","AC","AT","TT","CT")
     #
     getGGPos <- function(seqs, ir, i, searchString){
       if(is.null(searchString[i])) return(NULL)
@@ -365,13 +299,16 @@ setMethod(
                               "\\.\\.<|>><|\\.><")[,"start"]
         endPaired3 <- BiocGenerics::end(irM[facBasePaired])
         # assemble middle sequences
-        l <- .assemble_sequences(IRanges::IRanges(start = startPaired5,
-                                                  end = endPaired5),
-                                 "right",
-                                 gr[facBasePaired],
-                                 joinFeatures = FALSE,
-                                 padSequences = TRUE,
-                                 strList[facBasePaired])
+        stem <- list(prime5  = IRanges::IRanges(start = startPaired5,
+                                                end = endPaired5),
+                     prime3  = IRanges::IRanges(start = startPaired3,
+                                                end = endPaired3))
+        stem <- .assemble_sequences(stem,
+                                    "variableloopstem",
+                                    gr[facBasePaired],
+                                    joinFeatures = FALSE,
+                                    padSequences = TRUE,
+                                    strList[facBasePaired])
         m <- XVector::subseq(seqs[facBasePaired], irM[facBasePaired])
         # proceed with sequences which have a loop
         f <- endPaired5 < startPaired3 - 1
@@ -390,15 +327,8 @@ setMethod(
                    do.call(paste0,as.list(rep("-",n)))
                  })
         ))
-        r <- .assemble_sequences(IRanges::IRanges(start = startPaired3,
-                                                  end = endPaired3),
-                                 "left",
-                                 gr[facBasePaired],
-                                 joinFeatures = FALSE,
-                                 padSequences = TRUE,
-                                 strList[facBasePaired])
-        # assemble paired region sequence
-        middle[facBasePaired] <- Biostrings::xscat(l,m,r)
+        # combien everything
+        middle[facBasePaired] <- Biostrings::xscat(stem$prime5,m,stem$prime3)
       }
     }
     # pad non paired region sequences in the middle
@@ -449,7 +379,69 @@ setMethod(
   ##############################################################################
   # if it is a loop and should be padded
   ##############################################################################
-  ans <- XVector::subseq(seqs, ir)
+  ans <- .pad_outside(XVector::subseq(seqs, ir))
+  names(ans) <- names(ir)
+  return(ans)
+}
+
+#
+.pad_left <- function(ans){
+  maxWidth <- max(BiocGenerics::width(ans))
+  addNLeft <- maxWidth - BiocGenerics::width(ans)
+  addLeft <- DNAStringSet(unlist(
+    lapply(addNLeft, 
+           function(n){ 
+             do.call(paste0,as.list(rep("-",n)))
+           })
+  ))
+  ans[addNLeft > 0] <- Biostrings::xscat(
+    addLeft,
+    ans[addNLeft > 0]
+  )
+  return(ans)
+}
+
+#
+.pad_right <- function(ans){
+  maxWidth <- max(BiocGenerics::width(ans))
+  addNRight <- maxWidth - BiocGenerics::width(ans)
+  addRight <- DNAStringSet(unlist(
+    lapply(addNRight, 
+           function(n){ 
+             do.call(paste0,as.list(rep("-",n)))
+           })
+  ))
+  ans[addNRight > 0] <- Biostrings::xscat(
+    ans[addNRight > 0],
+    addRight
+  )
+  return(ans)
+}
+
+#
+.pad_center <- function(ans){
+  maxWidth <- max(BiocGenerics::width(ans))
+  addNMiddle <- maxWidth - BiocGenerics::width(ans)
+  addMiddle <- DNAStringSet(unlist(
+    lapply(addNMiddle, 
+           function(n){ 
+             do.call(paste0,as.list(rep("-",n)))
+           })
+  ))
+  ans[addNMiddle > 0] <- Biostrings::xscat(
+    XVector::subseq(ans[addNMiddle > 0], 
+                    1, 
+                    ceiling(width(ans[addNMiddle > 0])/2)),
+    addMiddle,
+    XVector::subseq(ans[addNMiddle > 0],
+                    (ceiling(width(ans[addNMiddle > 0])/2) + 1),
+                    width(ans[addNMiddle > 0]))
+  )
+  return(ans)
+}
+
+#
+.pad_outside <- function(ans){
   maxWidth <- max(BiocGenerics::width(ans))
   missingWidth <- maxWidth - BiocGenerics::width(ans)
   # if sequences should be padded not in the center but outside
@@ -478,6 +470,85 @@ setMethod(
     ans[addNRight > 0],
     addRight
   )
-  names(ans) <- names(ir)
   return(ans)
+}
+
+# detect bulges in stem region and pad on opposite site
+.pad_unpaired_in_stem_region <- function(seqs,
+                                         ir,
+                                         strList){
+  prime5 <- XVector::subseq(seqs, ir$prime5)
+  prime3 <- XVector::subseq(seqs, ir$prime3)
+  if(length(unique(BiocGenerics::width(prime5))) > 1){
+    f <- max(BiocGenerics::width(prime5)) > BiocGenerics::width(prime5)
+    prime5[f] <- .add_padding_unpaired(prime5[f],
+                                       ir$prime5[f],
+                                       strList[f])
+  }
+  if(length(unique(BiocGenerics::width(prime3))) > 1){
+    f <- max(BiocGenerics::width(prime3)) > BiocGenerics::width(prime3)
+    prime3[f] <- .add_padding_unpaired(prime3[f],
+                                       ir$prime3[f],
+                                       strList[f])
+  }
+  return(list(prime5 = prime5,
+              prime3 = prime3))
+}
+
+#
+.add_padding_unpaired <- function(seqs,
+                                  ir,
+                                  strList){
+  dims <- lapply(seq_along(strList),
+                 function(i){
+                   z <- strList[[i]][strList[[i]]$pos %in% BiocGenerics::start(ir[i]):BiocGenerics::end(ir[i]),]
+                   z <- z[z$reverse != 0,]
+                   zz <- vapply(seq_len(nrow(z)),
+                                function(j){
+                                  # missing pos on reverse
+                                  z[j,]$reverse - 1 > z[j + 1,]$reverse & 
+                                    # not the last position
+                                    j != nrow(z) & 
+                                    # not the same bulge on the other side
+                                    (z[j,]$reverse - 1 - z[j + 1,]$reverse) != (z[j + 1,]$forward - 1 - z[j,]$forward)
+                                },logical(1))
+                   # if not unpaired position can be detected it is just a shorter
+                   # stem
+                   if(length(which(zz)) == 0){
+                     return(NULL)
+                   }
+                   return(list(start = z[zz,]$forward + 1 - BiocGenerics::start(ir[i]),
+                               stop = z[which(zz) + 1,]$forward + 
+                                 1 - 
+                                 BiocGenerics::start(ir[i]) - 
+                                 (z[which(zz) + 1,]$forward - z[which(zz),]$forward - 1),
+                               length = z[zz,]$reverse - 
+                                 z[which(zz) + 1,]$reverse - 
+                                 1 - 
+                                 (z[which(zz) + 1,]$forward - z[which(zz),]$forward - 1)))
+                 })
+  dims <- dims[!vapply(dims,is.null,logical(1))]
+  if(length(dims) == 0){
+    return(seqs)
+  }
+  dims <- data.frame(dims)
+  return(.add_padding_to_pos(seqs,
+                             dims$start,
+                             dims$stop,
+                             dims$length))
+}
+
+#
+.add_padding_to_pos <- function(seqs, start, stop, length){
+  add <- DNAStringSet(unlist(
+    lapply(length, 
+           function(n){ 
+             do.call(paste0,as.list(rep("-",n)))
+           })
+  ))
+  Biostrings::xscat(
+    XVector::subseq(seqs, start = 1, end = start),
+    add,
+    XVector::subseq(seqs, start = stop, end = BiocGenerics::width(seqs))
+  )
 }

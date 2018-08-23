@@ -19,16 +19,18 @@ tRNAscan2GFF(input)
 }}
 
 \item{as.GFF3}{optional logical for \code{import.tRNAscanAsGRanges}: returns 
-a gff3 compatible GRanges object directly. (default: FALSE)}
+a gff3 compatible GRanges object directly. (default: \code{as.GFF3 = FALSE})}
 
 \item{trim.intron}{optional logical for \code{import.tRNAscanAsGRanges}: 
-remove intron sequences (default: TRUE)}
+remove intron sequences. This changes the tRNA length reported. To retrieve
+the original length fo the tRNA gene, use the \code{width()} function on the 
+GRanges object. (default: \code{trim.intron = TRUE})}
 
 \item{remove.lowerCase}{optional logical for \code{import.tRNAscanAsGRanges}: 
 remove lower case characters from sequence and corresponding positions in 
 structure annotation. Be aware, that this might lead to incorrect structures
 since it depends completely on how the mismatch is marked in the structure 
-annotations. (default: FALSE)}
+annotations. (default: \code{remove.lowerCase = FALSE})}
 }
 \value{
 a GRanges object

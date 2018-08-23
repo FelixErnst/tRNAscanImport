@@ -58,7 +58,8 @@ setMethod(
   signature = signature(gr = "GRanges"),
   definition = function(gr) {
     .check_trnascan_granges(gr)
-    df <- S4Vectors::DataFrame(length = .get_lengths(gr),
+    df <- S4Vectors::DataFrame(width = .get_widths(gr),
+                               length = .get_lengths(gr),
                                gc = .get_gc_content(gr),
                                cca = .get_cca_ends(gr),
                                pseudogene = .get_potential_pseudogene(gr),
@@ -69,14 +70,12 @@ setMethod(
 )
 
 # returns the length of tRNAs
+.get_widths <- function(gr){
+  width <- as.numeric(BiocGenerics::width(gr))
+  width
+}
 .get_lengths <- function(gr){
   length <- as.numeric(S4Vectors::mcols(gr)$tRNA_length)
-  intron_locstart <- as.numeric(S4Vectors::mcols(gr)$tRNAscan_intron.locstart)
-  intron_locstart[is.na(intron_locstart)] <- 0
-  intron_locend <- as.numeric(S4Vectors::mcols(gr)$tRNAscan_intron.locend)
-  intron_locend[is.na(intron_locend)] <- 0
-  intron_length <- intron_locend - intron_locstart
-  length <- length - ifelse(intron_length > 0, intron_length + 1, 0)
   length
 }
 
@@ -160,33 +159,36 @@ setMethod(
     if(length(grl) == 0)
       stop("GRangesList of length == 0 provided.",
            call. = FALSE)
-    
     # aggregate data
-    data <- lapply(seq_len(length(grl)), function(i){
-      mcoldata <- gettRNAscanSummary(grl[[i]])
-      name <- names(grl[i])
-      coldata <- lapply(seq_len(ncol(mcoldata)), function(i){
-        column <- mcoldata[,i]
-        column <- column[!is.na(column)]
-        if(length(column) == 0) return(NULL)
-        data.frame(id = name,
-                   value = column)
-      })
-      names(coldata) <- colnames(mcoldata)
-      return(coldata)
-    })
+    data <- lapply(seq_len(length(grl)),
+                   function(i){
+                     mcoldata <- gettRNAscanSummary(grl[[i]])
+                     name <- names(grl[i])
+                     coldata <- lapply(seq_len(ncol(mcoldata)),
+                                       function(i){
+                                         column <- mcoldata[,i]
+                                         column <- column[!is.na(column)]
+                                         if(length(column) == 0) return(NULL)
+                                         data.frame(id = name,
+                                                    value = column)
+                                       })
+                     names(coldata) <- colnames(mcoldata)
+                     return(coldata)
+                   })
     dataNames <- unique(unlist(lapply(data, names)))
-    data <- lapply(dataNames, function(name){
-      do.call(rbind, lapply(data, "[[", name))
-    })
+    data <- lapply(dataNames,
+                   function(name){
+                     do.call(rbind, lapply(data, "[[", name))
+                   })
     names(data) <- dataNames
     # plot data
-    plots <- lapply(seq_len(length(data)), function(i){
-      if(is.null(data[[i]])){
-        return(NULL)
-      }
-      .get_plot(data[i])
-    })
+    plots <- lapply(seq_len(length(data)),
+                    function(i){
+                      if(is.null(data[[i]])){
+                        return(NULL)
+                      }
+                      .get_plot(data[i])
+                    })
     names(plots) <- dataNames
     plots <- plots[!vapply(plots, is.null, logical(1))]
     return(plots)
@@ -195,7 +197,8 @@ setMethod(
 
 # get a plot for one data type
 .get_plot <- function(df){
-  writtenNames <- list(length = "Length [nt]",
+  writtenNames <- list(width = "gene width [bp]",
+                       length = "Length [nt]",
                        gc = "GC content [%]",
                        cca = "genomically encoded 3'-CCA ends [%]",
                        pseudogene = "Potential pseudogenes [%]",
@@ -204,7 +207,8 @@ setMethod(
                        tRNAscan_hmm.score = "HMM score",
                        tRNAscan_sec.str.score = "Secondary structure score",
                        tRNAscan_infernal = "Infernal score")
-  dataType <- list(length = NA,
+  dataType <- list(width = NA,
+                   length = NA,
                    gc = "percent",
                    cca = "yn",
                    pseudogene = "yn",
@@ -225,7 +229,8 @@ setMethod(
       ggplot2::scale_y_continuous(name = writtenNames[[name]]) +
       ggplot2::scale_colour_brewer(name = "Organism", palette = "Set1")
   } 
-  if(!is.na(dataType[[name]]) && dataType[[name]] == "percent"){
+  if(!is.na(dataType[[name]]) &&
+     dataType[[name]] == "percent"){
     plot <- ggplot2::ggplot(df[[name]],
                     ggplot2::aes_(x = ~id,
                                   y = ~value,
@@ -239,7 +244,8 @@ setMethod(
                                   limits = c(0,1)) +
       ggplot2::scale_colour_brewer(name = "Organism", palette = "Set1")
   }
-  if(!is.na(dataType[[name]]) && dataType[[name]] == "yn"){
+  if(!is.na(dataType[[name]]) &&
+     dataType[[name]] == "yn"){
     df[[name]][df[[name]]$value == 1,"colour"] <- "green"
     df[[name]][df[[name]]$value == 0,"colour"] <- "red"
     df[[name]][df[[name]]$value == 1,"value"] <- "Yes"

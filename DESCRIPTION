@@ -1,12 +1,16 @@
 Package: tRNAscanImport
 Title: Imports a tRNAscan-SE result file as GRanges object
-Version: 1.1.2
-Date: 2018-08-16
+Version: 1.1.3
+Date: 2018-08-23
 Authors@R: person("Felix GM", 
                   "Ernst", 
                   email = "felix.gm.ernst@outlook.com", 
                   role = c("aut", "cre"))
-Description: The package imports the result of tRNAscan-SE as a GRanges object.
+Description: 
+  The package imports the result of tRNAscan-SE as a GRanges object. It also
+  contains functions for visualization and structure/sequence subsetting of
+  the imported tRNA information. These functions are also available for 
+  compatible GRanges objects containing the necessary informations.
 Depends: 
   R (>= 3.5),
   GenomicRanges
@@ -35,7 +39,7 @@ Collate:
     'tRNAscanImport.R'
     'AllGenerics.R'
     'tRNAscanImport-checks.R'
-    'tRNAscanImport-methods.R'
+    'tRNAscanImport-dotbracket.R'
     'tRNAscanImport-plot.R'
     'tRNAscanImport-sequences.R'
     'tRNAscanImport-structures.R'

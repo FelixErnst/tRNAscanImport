@@ -98,6 +98,7 @@ setMethod(
   checkChars <- c(STRUCTURE_OPEN_CHR,
                   STRUCTURE_CLOSE_CHR,
                   ".")
+  checkChars <- gsub("\\\\","",checkChars)
   testChars <- unique(unlist(strsplit(value,"")))
   if(!all(testChars %in% checkChars)){
     prob <- testChars[!(testChars %in% checkChars)]

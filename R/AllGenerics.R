@@ -30,19 +30,19 @@ setGeneric (
 #' 
 #' @export
 setGeneric ( 
-  name = "gettRNABasePairing",
-  def = function(gr) standardGeneric("gettRNABasePairing")
-)
-#' @rdname gettRNAstructureSeqs
-#' 
-#' @export
-setGeneric ( 
   name = "gettRNAstructureSeqs",
   def = function(gr,
                  structure = "",
-                 joinCompletely = TRUE,
+                 joinCompletely = FALSE,
                  joinFeatures = FALSE,
                  padSequences = TRUE) standardGeneric("gettRNAstructureSeqs")
+)
+#' @rdname getBasePairing
+#' 
+#' @export
+setGeneric ( 
+  name = "gettRNABasePairing",
+  def = function(gr) standardGeneric("gettRNABasePairing")
 )
 
 # Visualization ----------------------------------------------------------------

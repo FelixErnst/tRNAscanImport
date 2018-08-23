@@ -1,30 +1,20 @@
 #' @include tRNAscanImport.R
 NULL
 
-STRUCTURE_OPEN_CHR <- c(">","\\[","\\(")
-STRUCTURE_CLOSE_CHR <- c("<","\\]","\\)")
-
 #' @name gettRNAstructureSeqs
-#' @aliases gettRNAstructureSeqs gettRNAstructureGRanges gettRNABasePairing
-#' getBasePairing
+#' @aliases gettRNAstructureSeqs gettRNAstructureGRanges
 #' 
 #' @title tRNA structures and sequences
 #'
 #' @description
 #' \code{gettRNAstructureGRanges} returns a list of GRanges describing the
 #' boundaries of tRNA structures as extracted from the dot bracket annotation.
-#' The dot bracket annotation is parsed using \code{gettRNABasePairing}.
+#' The dot bracket annotation is parsed using \code{gettRNABasePairing}, which
+#' internally uses \code{getBasePairing}.
 #' 
 #' \code{gettRNAstructureSeq} returns split or partial tRNA sequences based on
 #' the structure information of tRNAscan. Variances in length of certain 
 #' structure features can be padded.
-#' 
-#' Padding works upon certain rules, which can be controlled via 
-#' \code{padCenter} and \code{pad5prime}. Both parameters only affect 
-#' padding of loops. With \code{padCenter = TRUE} length is adjusted by adding
-#' "-" characters in the middle, whereas \code{padCenter = FALSE} adds them at
-#' each end. If \code{pad5prime = TRUE} more padding characters are added on the
-#' 5'-end if there are uneven numbers of missing positions.
 #' 
 #' @param gr a GRanges object created by \code{import.tRNAscanAsGRanges} or 
 #' GRanges with equivalent information.
@@ -32,21 +22,21 @@ STRUCTURE_CLOSE_CHR <- c("<","\\]","\\)")
 #' The following values are accepted: 
 #' \code{anticodonloop}, \code{Dloop}, \code{Tloop}, \code{acceptorStem}, 
 #' \code{anticodonStem}, \code{DStem}, \code{TStem}, \code{variableLoop}, 
-#' \code{discriminator}. (default = \code{structure = ""})
+#' \code{discriminator}. (default: \code{structure = ""})
 #' @param joinCompletely Should the sequence parts, which are to be returned, be
-#' joined into one sequence? (default = \code{joinCompletely = TRUE}))
+#' joined into one sequence? (default: \code{joinCompletely = FALSE}))
 #' Setting this to TRUE excludes \code{joinFeatures} be set to TRUE as well. In
 #' addition, \code{joinCompletely = TRUE} uses automatically all sequence
 #' structures.
 #' @param joinFeatures Should the sequence parts, which are to be returned and
 #' are from the same structure type, be joined into one sequence?
-#' (default = \code{joinCompletely = FALSE})) Setting this to TRUE excludes 
+#' (default: \code{joinCompletely = FALSE})) Setting this to TRUE excludes 
 #' \code{joinCompletely} be set to TRUE as well. \code{joinCompletely} takes
 #' precedence.
 #' @param padSequences parameter whether sequences of the same type 
 #' should be returned with the same length. For stems missing positions will be
 #' filled up in the middle, for loops at the ends. 
-#' (default = \code{padSequences = TRUE}). If \code{joinCompletely == TRUE} this
+#' (default: \code{padSequences = TRUE}). If \code{joinCompletely == TRUE} this
 #' is set to TRUE automatically.
 #'
 #' @return a list of \code{GRanges} or \code{DNAStringSet} objects. In case

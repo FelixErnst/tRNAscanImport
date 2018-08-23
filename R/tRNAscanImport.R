@@ -28,14 +28,16 @@
 #' \code{import.tRNAscanAsGRanges}
 #' }
 #' @param as.GFF3 optional logical for \code{import.tRNAscanAsGRanges}: returns 
-#' a gff3 compatible GRanges object directly. (default: FALSE)
+#' a gff3 compatible GRanges object directly. (default: \code{as.GFF3 = FALSE})
 #' @param trim.intron optional logical for \code{import.tRNAscanAsGRanges}: 
-#' remove intron sequences (default: TRUE)
+#' remove intron sequences. This changes the tRNA length reported. To retrieve
+#' the original length fo the tRNA gene, use the \code{width()} function on the 
+#' GRanges object. (default: \code{trim.intron = TRUE})
 #' @param remove.lowerCase optional logical for \code{import.tRNAscanAsGRanges}: 
 #' remove lower case characters from sequence and corresponding positions in 
 #' structure annotation. Be aware, that this might lead to incorrect structures
 #' since it depends completely on how the mismatch is marked in the structure 
-#' annotations. (default: FALSE)
+#' annotations. (default: \code{remove.lowerCase = FALSE})
 #'
 #' @return a GRanges object
 #' @export
@@ -63,9 +65,10 @@ import.tRNAscanAsGRanges <- function(input,
                                      trim.intron = TRUE,
                                      remove.lowerCase = FALSE) {
   # input check
-  if(!assertive::is_a_bool(as.GFF3)) as.GFF3 <- TRUE
+  if(!assertive::is_a_bool(as.GFF3)) as.GFF3 <- FALSE
   if(!assertive::is_a_bool(trim.intron)) trim.intron <- TRUE
-    # get tRNAscan as data.frame
+  if(!assertive::is_a_bool(remove.lowerCase)) remove.lowerCase <- FALSE
+  # get tRNAscan as data.frame
   df <- .read_tRNAscan(input)
   # optional: remove intron sequences
   if(trim.intron){
@@ -80,6 +83,8 @@ import.tRNAscanAsGRanges <- function(input,
   # Contruct GRanges object
   gr <- GRanges(df)
   S4Vectors::mcols(gr)$tRNA_seq <- DNAStringSet(S4Vectors::mcols(gr)$tRNA_seq)
+  S4Vectors::mcols(gr)$tRNA_length <- 
+    nchar(as.character(S4Vectors::mcols(gr)$tRNA_seq))
   # sort GRanges object
   gr <- gr[order(GenomeInfoDb::seqnames(gr), BiocGenerics::start(gr))]
   # convert to gff3 compatible GRanges object

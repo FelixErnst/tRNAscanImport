@@ -148,21 +148,24 @@ To retrieve the sequences for individual tRNA structure elements
 gettRNAstructureGRanges(gr,
                         structure = "anticodonloop")
 gettRNAstructureSeqs(gr,
+                     joinFeatures = TRUE,
                      structure = "anticodonloop")
 ```
 
-In addition the sequences can be returned already joined to get a fully padded
-set of sequences.
+In addition the sequences can be returned already joined to get a fully blank
+padded set of sequences.
 
 ```{r}
-gettRNAstructureSeqs(gr[1:10])
+gettRNAstructureSeqs(gr[1:10],
+                     joinCompletely = TRUE)
 ```
 
 # Utility functions
 
-In order to make the process of structure and sequence assembly more 
-transparent, the used information from the dot bracket annotation can be
-accessed using `gettRNABasePairing`
+If something goes wrong with the blank padding of sequences,
+please have a look at base pairing as returned by `gettRNABasePairing`. This
+converts the dot bracket annotation into a ct like data.frame per sequence
+describing the base pairing.
 
 ```{r}
 gettRNABasePairing(gr[1])
