@@ -1,6 +1,20 @@
 #' @include tRNAscanImport.R
 NULL
 
+TRNA_STRUCTURE_ORDER <- c("acceptorStem.prime5",
+                          "DStem.prime5",
+                          "Dloop",
+                          "DStem.prime3",
+                          "anticodonStem.prime5",
+                          "anticodonloop",
+                          "anticodonStem.prime3",
+                          "variableLoop",
+                          "TStem.prime5",
+                          "Tloop",
+                          "TStem.prime3",
+                          "acceptorStem.prime3",
+                          "discriminator")
+
 #' @rdname gettRNAstructureSeqs
 #' 
 #' @importFrom stringr str_locate
@@ -34,13 +48,14 @@ setMethod(
     if(class(gr$tRNA_seq) != "DNAStringSet"){
       gr$tRNA_seq <- DNAStringSet(gr$tRNA_seq)
     }
-    #
+    # join completly or get splitup sequences
     if(joinCompletely){
       # get Ranges
       strList <- gettRNABasePairing(gr)
       res <- .get_tRNA_structures(tRNAStructureFunctionList,
                                   gr,
                                   strList)
+      # get sequences
       seqs <- mapply(.assemble_sequences,
                      res,
                      names(res),
@@ -48,21 +63,26 @@ setMethod(
                                      joinFeatures = FALSE,
                                      padSequences = TRUE,
                                      strList))
-      seqs <- Biostrings::xscat(
-        seqs$acceptorStem$prime5,
-        seqs$DStem$prime5,
-        seqs$Dloop,
-        seqs$DStem$prime3,
-        seqs$anticodonStem$prime5,
-        seqs$anticodonloop,
-        seqs$anticodonStem$prime3,
-        seqs$variableLoop,
-        seqs$TStem$prime5,
-        seqs$Tloop,
-        seqs$TStem$prime3,
-        seqs$acceptorStem$prime3,
-        seqs$discriminator
-      )
+      # assemble boundaries IRanges
+      ir <- lapply(lapply(unlist(seqs)[TRNA_STRUCTURE_ORDER],
+                          BiocGenerics::width),
+                   unique)
+      start <- c(1,unlist(ir[1:(length(ir)-1)]))
+      end <- unlist(ir)
+      ir <- IRanges(start = unlist(lapply(seq_along(start),
+                                          function(i){
+                                            sum(start[1:i])
+                                          })),
+                    end = unlist(lapply(seq_along(end),
+                                        function(i){
+                                          sum(end[1:i])
+                                        })))
+      names(ir) <- names(end)
+      # concat sequences
+      seqs <- do.call(Biostrings::xscat,
+                      unlist(seqs)[TRNA_STRUCTURE_ORDER])
+      # store boundaries as metadata
+      S4Vectors::metadata(seqs) <- list("tRNA_structures" = ir)
     } else {
       # get Ranges
       strList <- gettRNABasePairing(gr)

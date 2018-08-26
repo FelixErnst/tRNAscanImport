@@ -156,8 +156,11 @@ In addition the sequences can be returned already joined to get a fully blank
 padded set of sequences.
 
 ```{r}
-gettRNAstructureSeqs(gr[1:10],
-                     joinCompletely = TRUE)
+seqs <- gettRNAstructureSeqs(gr[1:10],
+                             joinCompletely = TRUE)
+seqs
+# getting the tRNA structure boundaries
+metadata(seqs)[["tRNA_structures"]]
 ```
 
 # Utility functions

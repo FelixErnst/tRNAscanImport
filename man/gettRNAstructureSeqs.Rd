@@ -61,7 +61,10 @@ internally uses \code{getBasePairing}.
 
 \code{gettRNAstructureSeq} returns split or partial tRNA sequences based on
 the structure information of tRNAscan. Variances in length of certain 
-structure features can be padded.
+structure features can be padded. If sequences are joined by setting
+\code{joinCompletely = FALSE}, the boundaries of the tRNA structure are
+stored in the result as metadata. They can be accessesed as an IRanges 
+object by using \code{metadata()[["tRNA_structures"]]}.
 }
 \examples{
 gr <- import.tRNAscanAsGRanges(system.file("extdata", 

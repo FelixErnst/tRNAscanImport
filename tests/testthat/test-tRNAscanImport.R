@@ -212,5 +212,6 @@ test_that("tRNA structure seqs:",{
                                                joinFeatures = FALSE)
   seqsChars <- gsub("-","",as.character(seqs))
   expect_equal(seqsChars,as.character(tRNA$tRNA_seq))
+  expect_named(S4Vectors::metadata(seqs),"tRNA_structures")
 })
 
