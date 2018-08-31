@@ -33,7 +33,7 @@ setMethod(
   f = "gettRNABasePairing",
   signature = signature(gr = "GRanges"),
   definition = function(gr) {
-    .check_trnascan_granges(gr)
+    .check_trnascan_granges(gr, TRNASCAN_FEATURES)
     .get_base_pairing(gr$tRNA_str)
   }
 )

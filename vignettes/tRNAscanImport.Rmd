@@ -163,7 +163,15 @@ seqs
 metadata(seqs)[["tRNA_structures"]]
 ```
 
-# Utility functions
+The structure information can be queried for subsetting using the 
+`hasAccpeptorStem()` as an example.
+
+```{r}
+
+```
+
+
+# Base pairing
 
 If something goes wrong with the blank padding of sequences,
 please have a look at base pairing as returned by `gettRNABasePairing`. This
@@ -171,7 +179,7 @@ converts the dot bracket annotation into a ct like data.frame per sequence
 describing the base pairing.
 
 ```{r}
-gettRNABasePairing(gr[1])
+head(gettRNABasePairing(gr)[[1]])
 getBasePairing(gr[1]$tRNA_str)
 ```
 

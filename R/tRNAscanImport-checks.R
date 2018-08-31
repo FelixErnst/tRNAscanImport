@@ -10,7 +10,11 @@ TRNASCAN_FEATURES <- c(
   "tRNAscan_score",
   "tRNA_seq",
   "tRNA_str",
-  "tRNA_CCA.end",
+  "tRNA_CCA.end"
+)
+
+TRNASCAN_FEATURES_ADDITIONAL <- c(
+  TRNASCAN_FEATURES,
   "tRNAscan_potential.pseudogene",
   "tRNAscan_intron.start",
   "tRNAscan_intron.end",
@@ -58,17 +62,18 @@ NULL
 setMethod(
   f = "checktRNAscanGRanges",
   signature = signature(gr = "GRanges"),
-  definition = function(gr) .check_trnascan_granges(gr))
+  definition = function(gr) .check_trnascan_granges(gr,
+                                                    TRNASCAN_FEATURES_ADDITIONAL))
 
 # checks whether a GRanges object is trnascan compatible
-.check_trnascan_granges <- function(gr){
+.check_trnascan_granges <- function(gr,features){
   if(class(gr) != "GRanges"){
     stop("Input is not a GRanges object.",
          call. = FALSE)
   }
   # check input
-  if(length(intersect(TRNASCAN_FEATURES,colnames(S4Vectors::mcols(gr)))) !=
-     length(TRNASCAN_FEATURES)){
+  if(length(intersect(features,colnames(S4Vectors::mcols(gr)))) !=
+     length(features)){
     stop("Input GRanges object does not meet the requirements of the ",
          "function. Please refer to the vignette of tRNAscanImport for ",
          "an exmaple on what information is expected.",

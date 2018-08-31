@@ -45,6 +45,80 @@ setGeneric (
   def = function(gr) standardGeneric("gettRNABasePairing")
 )
 
+# Subsetting -------------------------------------------------------------------
+
+#' @rdname tRNA-subset
+#' @export
+setGeneric ( 
+  name = "hasTStem",
+  def = function(gr,
+                 length = NA,
+                 unpaired = NA,
+                 mismatches = NA,
+                 bulged = NA) standardGeneric("hasTStem")
+)
+#' @rdname tRNA-subset
+#' @export
+setGeneric ( 
+  name = "hasDStem",
+  def = function(gr,
+                 length = NA,
+                 unpaired = NA,
+                 mismatches = NA,
+                 bulged = NA) standardGeneric("hasDStem")
+)
+#' @rdname tRNA-subset
+#' @export
+setGeneric ( 
+  name = "hasAcceptorStem",
+  def = function(gr,
+                 length = NA,
+                 unpaired = NA,
+                 mismatches = NA,
+                 bulged = NA) standardGeneric("hasAcceptorStem")
+)
+#' @rdname tRNA-subset
+#' @export
+setGeneric ( 
+  name = "hasAnticodonStem",
+  def = function(gr,
+                 length = NA,
+                 unpaired = NA,
+                 mismatches = NA,
+                 bulged = NA) standardGeneric("hasAnticodonStem")
+)
+#' @rdname tRNA-subset
+#' @export
+setGeneric ( 
+  name = "hasTloop",
+  def = function(gr,
+                 length = NA) standardGeneric("hasTloop")
+)
+#' @rdname tRNA-subset
+#' @export
+setGeneric ( 
+  name = "hasDloop",
+  def = function(gr,
+                 length = NA) standardGeneric("hasDloop")
+)
+#' @rdname tRNA-subset
+#' @export
+setGeneric ( 
+  name = "hasAnticodonLoop",
+  def = function(gr,
+                 length = NA) standardGeneric("hasAnticodonLoop")
+)
+#' @rdname tRNA-subset
+#' @export
+setGeneric ( 
+  name = "hasVariableLoop",
+  def = function(gr,
+                 length = NA,
+                 paired = NA,
+                 mismatches = NA,
+                 bulged = NA) standardGeneric("hasVariableLoop")
+)
+
 # Visualization ----------------------------------------------------------------
 
 #' @rdname gettRNAscanSummary

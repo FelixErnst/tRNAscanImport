@@ -309,7 +309,7 @@ import.tRNAscanAsGRanges <- function(input,
 #'
 #' @export
 tRNAscan2GFF <- function(input) {
-  .check_trnascan_granges(input)
+  .check_trnascan_granges(input, TRNASCAN_FEATURES_ADDITIONAL)
   tRNAscan <- input
   # patch GRanges object with necessary columns for gff3 comptability
   S4Vectors::mcols(tRNAscan)$tRNA_seq <- 

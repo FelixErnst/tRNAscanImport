@@ -32,7 +32,7 @@ setMethod(
                         joinFeatures,
                         padSequences) {
     # input check
-    .check_trnascan_granges(gr)
+    .check_trnascan_granges(gr, TRNASCAN_FEATURES)
     .check_trna_structure_ident(structure)
     if(structure == ""){
       structure <- TRNA_STRUCTURES
