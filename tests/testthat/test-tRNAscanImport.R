@@ -46,17 +46,6 @@ test_that("tests:",{
   
   gr <- tRNAscanImport::import.tRNAscanAsGRanges(file)
   length <- as.numeric(S4Vectors::mcols(gr)$tRNA_length)
-  intron_locstart <- as.numeric(S4Vectors::mcols(gr)$tRNAscan_intron.locstart)
-  intron_locstart[is.na(intron_locstart)] <- 0
-  intron_locend <- as.numeric(S4Vectors::mcols(gr)$tRNAscan_intron.locend)
-  intron_locend[is.na(intron_locend)] <- 0
-  intron_length <- intron_locend - intron_locstart
-  length <- length - vapply(intron_length, function(l){
-    if(l > 0){
-      return(l + 1)
-    }
-    0
-  },numeric(1))
   expect_equal(length,BiocGenerics::width(S4Vectors::mcols(gr)$tRNA_seq))
   expect_equal(length,BiocGenerics::width(S4Vectors::mcols(gr)$tRNA_str))
 })
@@ -67,6 +56,7 @@ test_that("type tests gr:",{
                       file = "sacCer3-tRNAs.ss.sort", 
                       package = "tRNAscanImport")
   gr <- tRNAscanImport::import.tRNAscanAsGRanges(file)
+  expect_true(checktRNAscanGRanges(gr))
   expect_type(mcols(gr)$no, "integer")
   expect_type(mcols(gr)$tRNA_length, "integer")
   expect_type(mcols(gr)$tRNA_type, "character")
@@ -85,6 +75,7 @@ test_that("type tests gr:",{
   expect_type(mcols(gr)$tRNAscan_hmm.score, "double")
   expect_type(mcols(gr)$tRNAscan_sec.str.score, "double")
   expect_type(mcols(gr)$tRNAscan_infernal, "double")
+  expect_true(all(gr$tRNAscan_potential.pseudogene == FALSE))
 })
 
 context("type tests gff")
@@ -171,3 +162,56 @@ test_that("input failure test:",{
     'argument "df" is missing'
   )
 })
+
+context("tRNA structure seqs")
+test_that("tRNA structure seqs:",{
+  file <- system.file("extdata", 
+                      file = "sacCer3-tRNAs.ss.sort", 
+                      package = "tRNAscanImport")
+  tRNA <- tRNAscanImport::import.tRNAscanAsGRanges(file)
+  tRNA <- tRNA[1]
+  strList <- gettRNABasePairing(tRNA)
+  actual <- tRNAscanImport:::.getAcceptorStem(tRNA, strList)
+  expect_named(actual, c("prime5","prime3"))
+  expect_named(actual[[1]], c("start","end"))
+  expect_named(actual[[2]], c("start","end"))
+  expect_equal(actual[[2]], list(start = 65,end = 71))
+  actual <- tRNAscanImport:::.getDiscriminator(tRNA, strList)
+  expect_equal(actual, 72)
+  actual <- tRNAscanImport:::.getDstem(tRNA, strList)
+  expect_named(actual, c("prime5","prime3"))
+  expect_named(actual[[1]], c("start","end"))
+  expect_named(actual[[2]], c("start","end"))
+  expect_equal(actual[[2]], list(start = 21,end = 25))
+  actual <- tRNAscanImport:::.getAnticodonStem(tRNA, strList)
+  expect_named(actual, c("prime5","prime3"))
+  expect_named(actual[[1]], c("start","end"))
+  expect_named(actual[[2]], c("start","end"))
+  expect_equal(actual[[2]], list(start = 38,end = 42))
+  actual <- tRNAscanImport:::.getTstem(tRNA, strList)
+  expect_named(actual, c("prime5","prime3"))
+  expect_named(actual[[1]], c("start","end"))
+  expect_named(actual[[2]], c("start","end"))
+  expect_equal(actual[[2]], list(start = 60,end = 64))
+  actual <- tRNAscanImport:::.getDloop(tRNA, strList)
+  expect_named(actual, c("start","end"))
+  expect_equal(actual, list(start = 14,end = 20))
+  actual <- tRNAscanImport:::.getAnticodonloop(tRNA, strList)
+  expect_named(actual, c("start","end"))
+  expect_equal(actual, list(start = 31,end = 37))
+  actual <- tRNAscanImport:::.getVariableLoop(tRNA, strList)
+  expect_named(actual, c("start","end"))
+  expect_equal(actual, list(start = 43,end = 47))
+  actual <- tRNAscanImport:::.getTloop(tRNA, strList)
+  expect_named(actual, c("start","end"))
+  expect_equal(actual, list(start = 53,end = 59))
+  # check that the sequences are unharmed by chopping it into pieces
+  tRNA <- tRNAscanImport::import.tRNAscanAsGRanges(file)
+  seqs <- tRNAscanImport::gettRNAstructureSeqs(tRNA,
+                                               joinCompletely = TRUE,
+                                               joinFeatures = FALSE)
+  seqsChars <- gsub("-","",as.character(seqs))
+  expect_equal(seqsChars,as.character(tRNA$tRNA_seq))
+  expect_named(S4Vectors::metadata(seqs),"tRNA_structures")
+})
+
