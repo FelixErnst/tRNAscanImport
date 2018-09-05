@@ -1,57 +1,59 @@
 Package: tRNAscanImport
 Title: Imports a tRNAscan-SE result file as GRanges object
-Version: 1.1.4
-Date: 2018-08-26
+Version: 1.1.5
+Date: 2018-09-05
 Authors@R: person("Felix GM", 
                   "Ernst", 
                   email = "felix.gm.ernst@outlook.com", 
                   role = c("aut", "cre"))
 Description: 
-  The package imports the result of tRNAscan-SE as a GRanges object. It also
-  contains functions for visualization and structure/sequence subsetting of
-  the imported tRNA information. These functions are also available for 
-  compatible GRanges objects containing the necessary informations.
+    The package imports the result of tRNAscan-SE as a GRanges object. It also
+    contains functions for visualization and structure/sequence subsetting of
+    the imported tRNA information. These functions are also available for 
+    compatible GRanges objects containing the necessary informations.
 Depends: 
-  R (>= 3.5),
-  GenomicRanges
+    R (>= 3.5),
+    GenomicRanges
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
 biocViews:
-  Software,
-  DataImport,
-  WorkflowStep,
-  Preprocessing,
-  Visualization
+    Software,
+    DataImport,
+    WorkflowStep,
+    Preprocessing,
+    Visualization
 Imports:
-  methods,
-  assertive,
-  stringr,
-  reshape2,
-  BiocGenerics,
-  Biostrings,
-  IRanges,
-  XVector,
-  S4Vectors,
-  GenomeInfoDb,
-  rtracklayer
+    methods,
+    assertive,
+    stringr,
+    reshape2,
+    BiocGenerics,
+    Biostrings,
+    IRanges,
+    XVector,
+    S4Vectors,
+    GenomeInfoDb,
+    rtracklayer
 Collate: 
+    'tRNA.R'
     'tRNAscanImport.R'
     'AllGenerics.R'
+    'tRNA-dotbracket.R'
+    'tRNA-sequences.R'
+    'tRNA-structures.R'
+    'tRNA-subset.R'
+    'tRNA-utils.R'
     'tRNAscanImport-checks.R'
-    'tRNAscanImport-dotbracket.R'
+    'tRNAscanImport-import.R'
     'tRNAscanImport-plot.R'
-    'tRNAscanImport-sequences.R'
-    'tRNAscanImport-structures.R'
-    'tRNAscanImport-subset.R'
-    'tRNAscanImport-utils.R'
-RoxygenNote: 6.0.1
 Suggests: 
-  BiocStyle, 
-  knitr,
-  rmarkdown,
-  testthat,
-  graphics,
-  ggplot2,
-  scales
+    BiocStyle, 
+    knitr,
+    rmarkdown,
+    testthat,
+    graphics,
+    ggplot2,
+    scales
+RoxygenNote: 6.0.1
 VignetteBuilder: knitr

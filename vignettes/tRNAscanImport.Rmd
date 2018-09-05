@@ -137,52 +137,6 @@ plots$gc
 plots$introns
 ```
 
-# Subsetting tRNA sequences
-
-To retrieve the sequences for individual tRNA structure elements 
-`gettRNAstructureGRanges` or `gettRNAstructureSeqs` can be used. Be aware, that
-`gettRNAstructureSeqs` is currently a bit experimental.
-
-```{r}
-# just retreve the coordinates of the anticodonloop
-gettRNAstructureGRanges(gr,
-                        structure = "anticodonloop")
-gettRNAstructureSeqs(gr,
-                     joinFeatures = TRUE,
-                     structure = "anticodonloop")
-```
-
-In addition the sequences can be returned already joined to get a fully blank
-padded set of sequences.
-
-```{r}
-seqs <- gettRNAstructureSeqs(gr[1:10],
-                             joinCompletely = TRUE)
-seqs
-# getting the tRNA structure boundaries
-metadata(seqs)[["tRNA_structures"]]
-```
-
-The structure information can be queried for subsetting using the 
-`hasAccpeptorStem()` as an example.
-
-```{r}
-
-```
-
-
-# Base pairing
-
-If something goes wrong with the blank padding of sequences,
-please have a look at base pairing as returned by `gettRNABasePairing`. This
-converts the dot bracket annotation into a ct like data.frame per sequence
-describing the base pairing.
-
-```{r}
-head(gettRNABasePairing(gr)[[1]])
-getBasePairing(gr[1]$tRNA_str)
-```
-
 # Session info
 
 ```{r}

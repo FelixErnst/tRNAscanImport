@@ -1,4 +1,4 @@
-#' @include tRNAscanImport.R
+#' @include tRNA.R
 NULL
 
 TRNA_STRUCTURE_ORDER <- c("acceptorStem.prime5",
@@ -8,7 +8,7 @@ TRNA_STRUCTURE_ORDER <- c("acceptorStem.prime5",
                           "anticodonStem.prime5",
                           "anticodonloop",
                           "anticodonStem.prime3",
-                          "variableLoop",
+                          "variableloop",
                           "TStem.prime5",
                           "Tloop",
                           "TStem.prime3",
@@ -32,7 +32,7 @@ setMethod(
                         joinFeatures,
                         padSequences) {
     # input check
-    .check_trnascan_granges(gr, TRNASCAN_FEATURES)
+    .check_trnascan_granges(gr, TRNA_FEATURES)
     .check_trna_structure_ident(structure)
     if(structure == ""){
       structure <- TRNA_STRUCTURES
@@ -51,7 +51,7 @@ setMethod(
     # join completly or get splitup sequences
     if(joinCompletely){
       # get Ranges
-      strList <- gettRNABasePairing(gr)
+      strList <- .get_base_pairing(gr$tRNA_str)
       res <- .get_tRNA_structures(tRNAStructureFunctionList,
                                   gr,
                                   strList)
@@ -64,6 +64,7 @@ setMethod(
                                      padSequences = TRUE,
                                      strList))
       # assemble boundaries IRanges
+      z <- unlist(seqs)[TRNA_STRUCTURE_ORDER]
       ir <- lapply(lapply(unlist(seqs)[TRNA_STRUCTURE_ORDER],
                           BiocGenerics::width),
                    unique)
@@ -80,7 +81,7 @@ setMethod(
       names(ir) <- names(end)
       # concat sequences
       seqs <- do.call(Biostrings::xscat,
-                      unlist(seqs)[TRNA_STRUCTURE_ORDER])
+                      z)
       # store boundaries as metadata
       S4Vectors::metadata(seqs) <- list("tRNA_structures" = ir)
     } else {
