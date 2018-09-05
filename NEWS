@@ -2,6 +2,7 @@ tRNAscanImport 1.2 (Release date: 2018-11)
 ==============
 
 Changes:
+* added structure subsetting functions, for example hasDStem(), hasVariableLoop()
 * added gettRNAstructureGRanges()
 * added gettRNAstructureSeqs()
 * added checktRNAscanGRanges()

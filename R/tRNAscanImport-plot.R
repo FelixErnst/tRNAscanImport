@@ -57,7 +57,7 @@ setMethod(
   f = "gettRNAscanSummary",
   signature = signature(gr = "GRanges"),
   definition = function(gr) {
-    .check_trnascan_granges(gr, TRNASCAN_FEATURES_ADDITIONAL)
+    .check_trnascan_granges(gr, TRNASCAN_FEATURES)
     df <- S4Vectors::DataFrame(width = .get_widths(gr),
                                length = .get_lengths(gr),
                                gc = .get_gc_content(gr),

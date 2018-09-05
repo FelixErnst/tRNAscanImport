@@ -1,6 +1,10 @@
 #' @include tRNAscanImport.R
 NULL
 
+################################################################################
+# tRNAscanImport
+################################################################################
+
 #' @rdname checktRNAscanGRanges
 #' 
 #' @export
@@ -15,6 +19,28 @@ setGeneric (
   name = "gettRNAscanSummary",
   def = function(gr) standardGeneric("gettRNAscanSummary")
 ) 
+
+# Visualization ----------------------------------------------------------------
+
+#' @rdname gettRNAscanSummary
+#' 
+#' @export
+setGeneric ( 
+  name = "plottRNAscan",
+  def = function(grl) standardGeneric("plottRNAscan")
+) 
+
+#' @rdname gettRNAscanSummary
+#' 
+#' @export
+setGeneric ( 
+  name = "gettRNAscanPlots",
+  def = function(grl) standardGeneric("gettRNAscanPlots")
+) 
+
+################################################################################
+# tRNA 
+################################################################################
 
 # Structures and Sequences -----------------------------------------------------
 
@@ -118,21 +144,3 @@ setGeneric (
                  mismatches = NA,
                  bulged = NA) standardGeneric("hasVariableLoop")
 )
-
-# Visualization ----------------------------------------------------------------
-
-#' @rdname gettRNAscanSummary
-#' 
-#' @export
-setGeneric ( 
-  name = "plottRNAscan",
-  def = function(grl) standardGeneric("plottRNAscan")
-) 
-
-#' @rdname gettRNAscanSummary
-#' 
-#' @export
-setGeneric ( 
-  name = "gettRNAscanPlots",
-  def = function(grl) standardGeneric("gettRNAscanPlots")
-) 

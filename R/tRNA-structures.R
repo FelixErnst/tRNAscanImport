@@ -1,4 +1,4 @@
-#' @include tRNAscanImport.R
+#' @include tRNA.R
 NULL
 
 #' @name gettRNAstructureSeqs
@@ -64,7 +64,7 @@ tRNAStructureFunctionList <- list(
   anticodonStem = ".getAnticodonStem",
   DStem = ".getDstem",
   TStem = ".getTstem",
-  variableLoop = ".getVariableLoop",
+  variableloop = ".getVariableLoop",
   discriminator = ".getDiscriminator")
 
 #' @rdname gettRNAstructureSeqs
@@ -78,7 +78,7 @@ setMethod(
   definition = function(gr,
                         structure) {
     # input check
-    .check_trnascan_granges(gr, TRNASCAN_FEATURES)
+    .check_trnascan_granges(gr, TRNA_FEATURES)
     .check_trna_structure_ident(structure)
     if(structure == ""){
       structure <- TRNA_STRUCTURES
@@ -138,8 +138,8 @@ setMethod(
   coord <- list("prime5" = list(start = rep(1,length(x)),
                                 # one position more is attributed to the 
                                 # acceptor stem
-                                end = unlist(last5primePaired) + 1), 
-                "prime3" = list(start = unlist(first3primePaired),
+                                end = unname(unlist(last5primePaired) + 1)), 
+                "prime3" = list(start = unname(unlist(first3primePaired)),
                                 # discriminator base is remove
                                 end = end))
   return(coord)

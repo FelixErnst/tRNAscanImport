@@ -1,42 +1,6 @@
 #' @include tRNAscanImport.R
 NULL
 
-TRNASCAN_FEATURES <- c(
-  "tRNA_length",
-  "tRNA_type",
-  "tRNA_anticodon",
-  "tRNA_anticodon.start",
-  "tRNA_anticodon.end",
-  "tRNAscan_score",
-  "tRNA_seq",
-  "tRNA_str",
-  "tRNA_CCA.end"
-)
-
-TRNASCAN_FEATURES_ADDITIONAL <- c(
-  TRNASCAN_FEATURES,
-  "tRNAscan_potential.pseudogene",
-  "tRNAscan_intron.start",
-  "tRNAscan_intron.end",
-  "tRNAscan_intron.locstart",
-  "tRNAscan_intron.locend",
-  "tRNAscan_hmm.score",
-  "tRNAscan_sec.str.score",
-  "tRNAscan_infernal"
-)
-
-TRNA_STRUCTURES <- c(
-  "anticodonloop",
-  "Dloop",
-  "Tloop",
-  "acceptorStem",
-  "anticodonStem",
-  "DStem",
-  "TStem",
-  "variableLoop",
-  "discriminator"
-)
-
 #' @name checktRNAscanGRanges
 #' @aliases checktRNAscanGRanges
 #' 
@@ -63,7 +27,7 @@ setMethod(
   f = "checktRNAscanGRanges",
   signature = signature(gr = "GRanges"),
   definition = function(gr) .check_trnascan_granges(gr,
-                                                    TRNASCAN_FEATURES_ADDITIONAL))
+                                                    TRNASCAN_FEATURES))
 
 # checks whether a GRanges object is trnascan compatible
 .check_trnascan_granges <- function(gr,features){
