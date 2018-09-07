@@ -26,11 +26,11 @@ use the package: \href{../doc/tRNAscanImport.html}{tRNAscanImport}
 \references{
 Chan, Patricia P., and Todd M. Lowe. 2016. “GtRNAdb 2.0: An Expanded Database
 of Transfer Rna Genes Identified in Complete and Draft Genomes.” Nucleic
-Acids Research 44 (D1): D184–9. doi:10.1093/nar/gkv1309.
+Acids Research 44 (D1): D184–189.. doi:10.1093/nar/gkv1309.
 
 Lowe, T. M., and S. R. Eddy. 1997. “TRNAscan-Se: A Program for Improved
 Detection of Transfer Rna Genes in Genomic Sequence.” Nucleic Acids Research
-25 (5): 955–64.
+25 (5): 955–964.
 }
 \author{
 Felix G M Ernst [aut]

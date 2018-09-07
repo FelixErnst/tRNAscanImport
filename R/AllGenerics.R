@@ -38,24 +38,25 @@ setGeneric (
   def = function(grl) standardGeneric("gettRNAscanPlots")
 ) 
 
+
 ################################################################################
-# tRNA 
+# tRNA
 ################################################################################
 
 # Structures and Sequences -----------------------------------------------------
 
 #' @rdname gettRNAstructureSeqs
-#' 
+#'
 #' @export
-setGeneric ( 
+setGeneric (
   name = "gettRNAstructureGRanges",
   def = function(gr,
                  structure = "") standardGeneric("gettRNAstructureGRanges")
 )
 #' @rdname gettRNAstructureSeqs
-#' 
+#'
 #' @export
-setGeneric ( 
+setGeneric (
   name = "gettRNAstructureSeqs",
   def = function(gr,
                  structure = "",
@@ -64,9 +65,9 @@ setGeneric (
                  padSequences = TRUE) standardGeneric("gettRNAstructureSeqs")
 )
 #' @rdname getBasePairing
-#' 
+#'
 #' @export
-setGeneric ( 
+setGeneric (
   name = "gettRNABasePairing",
   def = function(gr) standardGeneric("gettRNABasePairing")
 )
@@ -75,7 +76,7 @@ setGeneric (
 
 #' @rdname tRNA-subset
 #' @export
-setGeneric ( 
+setGeneric (
   name = "hasTStem",
   def = function(gr,
                  length = NA,
@@ -85,7 +86,7 @@ setGeneric (
 )
 #' @rdname tRNA-subset
 #' @export
-setGeneric ( 
+setGeneric (
   name = "hasDStem",
   def = function(gr,
                  length = NA,
@@ -95,7 +96,7 @@ setGeneric (
 )
 #' @rdname tRNA-subset
 #' @export
-setGeneric ( 
+setGeneric (
   name = "hasAcceptorStem",
   def = function(gr,
                  length = NA,
@@ -105,7 +106,7 @@ setGeneric (
 )
 #' @rdname tRNA-subset
 #' @export
-setGeneric ( 
+setGeneric (
   name = "hasAnticodonStem",
   def = function(gr,
                  length = NA,
@@ -115,28 +116,28 @@ setGeneric (
 )
 #' @rdname tRNA-subset
 #' @export
-setGeneric ( 
+setGeneric (
   name = "hasTloop",
   def = function(gr,
                  length = NA) standardGeneric("hasTloop")
 )
 #' @rdname tRNA-subset
 #' @export
-setGeneric ( 
+setGeneric (
   name = "hasDloop",
   def = function(gr,
                  length = NA) standardGeneric("hasDloop")
 )
 #' @rdname tRNA-subset
 #' @export
-setGeneric ( 
+setGeneric (
   name = "hasAnticodonLoop",
   def = function(gr,
                  length = NA) standardGeneric("hasAnticodonLoop")
 )
 #' @rdname tRNA-subset
 #' @export
-setGeneric ( 
+setGeneric (
   name = "hasVariableLoop",
   def = function(gr,
                  length = NA,

@@ -120,6 +120,7 @@ setMethod(
 .getAcceptorStem <- function(x, strList){
   # acceptor stem must be 7 nt long
   # remove discriminator
+  browser()
   end <- as.integer(ifelse(x$tRNA_CCA.end,
                            .get_tRNA_length(x) - 3,
                            .get_tRNA_length(x))) - 1

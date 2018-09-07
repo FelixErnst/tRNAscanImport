@@ -11,9 +11,6 @@ Description:
     contains functions for visualization and structure/sequence subsetting of
     the imported tRNA information. These functions are also available for 
     compatible GRanges objects containing the necessary informations.
-Depends: 
-    R (>= 3.5),
-    GenomicRanges
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -23,6 +20,9 @@ biocViews:
     WorkflowStep,
     Preprocessing,
     Visualization
+Depends: 
+    R (>= 3.5),
+    GenomicRanges
 Imports:
     methods,
     assertive,

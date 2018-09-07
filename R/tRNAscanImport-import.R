@@ -45,8 +45,6 @@ NULL
 #' @return a GRanges object
 #' @export
 #' 
-#' @importFrom GenomicRanges GRanges
-#' @importFrom assertive is_a_bool is_an_empty_string
 #' @importFrom Biostrings DNAStringSet
 #' @importFrom BiocGenerics start
 #' @importFrom GenomeInfoDb seqnames
