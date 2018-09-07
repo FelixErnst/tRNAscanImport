@@ -1,6 +1,40 @@
 #' @include tRNA.R
 NULL
 
+# checks whether a string is a valid tRNA structure
+.check_trna_structure_ident <- function(value,
+                                        .xvalue = assertive::get_name_in_parent(value)){
+  # check input
+  checkValues <- c("",TRNA_STRUCTURES)
+  if(!(value %in% checkValues)){
+    stop("'",.xvalue,
+         "' must be one of the following values: '",
+         paste(checkValues, collapse = "', '"),
+         "'.",
+         call. = FALSE)
+  }
+  return(invisible(TRUE))
+}
+
+# checks whether only dot bracket characters are present
+.check_dot_bracket <- function(value,
+                               .xvalue = assertive::get_name_in_parent(value)){
+  checkChars <- c(STRUCTURE_OPEN_CHR,
+                  STRUCTURE_CLOSE_CHR,
+                  ".")
+  checkChars <- gsub("\\\\","",checkChars)
+  testChars <- unique(unlist(strsplit(value,"")))
+  if(!all(testChars %in% checkChars)){
+    prob <- testChars[!(testChars %in% checkChars)]
+    stop("'",.xvalue,
+         "' contains invalid characters for dot bracket annotation: '",
+         paste(prob, collapse = "', '"),
+         "'.",
+         call. = FALSE)
+  }
+  return(invisible(TRUE))
+}
+
 # get the tRNA length without the intron
 .get_tRNA_length_c <- function(x){
   nchar(as.character(x$tRNA_seq))

@@ -6,14 +6,12 @@ NULL
 ################################################################################
 
 #' @rdname checktRNAscanGRanges
-#' 
 #' @export
 setGeneric ( 
   name = "checktRNAscanGRanges",
   def = function(gr) standardGeneric("checktRNAscanGRanges")
 )
 #' @rdname gettRNAscanSummary
-#' 
 #' @export
 setGeneric ( 
   name = "gettRNAscanSummary",
@@ -23,7 +21,6 @@ setGeneric (
 # Visualization ----------------------------------------------------------------
 
 #' @rdname gettRNAscanSummary
-#' 
 #' @export
 setGeneric ( 
   name = "plottRNAscan",
@@ -31,7 +28,6 @@ setGeneric (
 ) 
 
 #' @rdname gettRNAscanSummary
-#' 
 #' @export
 setGeneric ( 
   name = "gettRNAscanPlots",
@@ -46,7 +42,6 @@ setGeneric (
 # Structures and Sequences -----------------------------------------------------
 
 #' @rdname gettRNAstructureSeqs
-#'
 #' @export
 setGeneric (
   name = "gettRNAstructureGRanges",
@@ -54,7 +49,6 @@ setGeneric (
                  structure = "") standardGeneric("gettRNAstructureGRanges")
 )
 #' @rdname gettRNAstructureSeqs
-#'
 #' @export
 setGeneric (
   name = "gettRNAstructureSeqs",
@@ -65,7 +59,6 @@ setGeneric (
                  padSequences = TRUE) standardGeneric("gettRNAstructureSeqs")
 )
 #' @rdname getBasePairing
-#'
 #' @export
 setGeneric (
   name = "gettRNABasePairing",
