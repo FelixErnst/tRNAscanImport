@@ -22,14 +22,15 @@ gettRNAstructureSeqs(gr, structure = "", joinCompletely = FALSE,
 \S4method{gettRNAstructureGRanges}{GRanges}(gr, structure = "")
 }
 \arguments{
-\item{gr}{a GRanges object created by \code{import.tRNAscanAsGRanges} or 
-GRanges with equivalent information.}
+\item{gr}{a GRanges object with tRNA information. It has to pass the
+\code{istRNAGRanges} function.}
 
 \item{structure}{optional parameter for returning just partial sequences.
-The following values are accepted: 
-\code{anticodonloop}, \code{Dloop}, \code{Tloop}, \code{acceptorStem}, 
-\code{anticodonStem}, \code{DStem}, \code{TStem}, \code{variableLoop}, 
-\code{discriminator}. (default: \code{structure = ""})}
+The following values are accepted:
+\code{anticodonStem}, \code{Dprime5}, \code{DStem}, \code{Dloop},
+\code{Dprime3}, \code{acceptorStem}, \code{anticodonloop},
+\code{variableLoop}, \code{TStem}, \code{Tloop}, \code{discriminator}.
+(default: \code{structure = ""})}
 
 \item{joinCompletely}{Should the sequence parts, which are to be returned, be
 joined into one sequence? (default: \code{joinCompletely = FALSE}))
@@ -39,13 +40,13 @@ structures.}
 
 \item{joinFeatures}{Should the sequence parts, which are to be returned and
 are from the same structure type, be joined into one sequence?
-(default: \code{joinCompletely = FALSE})) Setting this to TRUE excludes 
+(default: \code{joinCompletely = FALSE})) Setting this to TRUE excludes
 \code{joinCompletely} be set to TRUE as well. \code{joinCompletely} takes
 precedence.}
 
-\item{padSequences}{parameter whether sequences of the same type 
+\item{padSequences}{parameter whether sequences of the same type
 should be returned with the same length. For stems missing positions will be
-filled up in the middle, for loops at the ends. 
+filled up in the middle, for loops at the ends.
 (default: \code{padSequences = TRUE}). If \code{joinCompletely == TRUE} this
 is set to TRUE automatically.}
 }
@@ -60,18 +61,19 @@ The dot bracket annotation is parsed using \code{gettRNABasePairing}, which
 internally uses \code{getBasePairing}.
 
 \code{gettRNAstructureSeq} returns split or partial tRNA sequences based on
-the structure information of tRNAscan. Variances in length of certain 
+the structure information of tRNAscan. Variances in length of certain
 structure features can be padded. If sequences are joined by setting
 \code{joinCompletely = FALSE}, the boundaries of the tRNA structure are
-stored in the result as metadata. They can be accessesed as an IRanges 
+stored in the result as metadata. They can be accessesed as an IRanges
 object by using \code{metadata()[["tRNA_structures"]]}.
 }
 \examples{
-gr <- import.tRNAscanAsGRanges(system.file("extdata", 
-                               file = "sacCer3-tRNAs.ss.sort", 
-                               package = "tRNAscanImport"))
-gettRNAstructureGRanges(gr, structure = "anticodonloop")
-gettRNAstructureSeqs(gr, structure = "anticodonloop")
+file <- system.file("extdata", 
+                    file = "sacCer3-tRNAs.ss.sort", 
+                    package = "tRNAscanImport")
+gr <- tRNAscanImport::import.tRNAscanAsGRanges(file)
+gettRNAstructureGRanges(gr, structure = "anticodonLoop")
+gettRNAstructureSeqs(gr, structure = "anticodonLoop")
 gettRNABasePairing(gr[1:10])
 getBasePairing(gr[1:10]$tRNA_str)
 }

@@ -46,7 +46,6 @@ TRNASCAN_FEATURES <- c(
   TRNA_FEATURES,
   "tRNA_anticodon.start",
   "tRNA_anticodon.end",
-  "tRNA_CCA.end",
   "tRNAscan_score",
   "tRNAscan_potential.pseudogene",
   "tRNAscan_intron.start",

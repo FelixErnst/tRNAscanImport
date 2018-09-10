@@ -1,13 +1,13 @@
 #' @include tRNAscanImport.R
 NULL
 
-#' @name checktRNAscanGRanges
-#' @aliases checktRNAscanGRanges
+#' @name istRNAscanGRanges
+#' @aliases istRNAscanGRanges
 #' 
 #' @title tRNAscan compatibility check
 #' 
 #' @description 
-#' \code{checktRNAscanGRanges} checks whether a GRanges object contains the 
+#' \code{istRNAscanGRanges} checks whether a GRanges object contains the 
 #' information expected for a tRNAscan result.
 #' 
 #' @param gr the \code{GRanges} object to test
@@ -19,18 +19,18 @@ NULL
 #'                     file = "sacCer3-tRNAs.ss.sort", 
 #'                     package = "tRNAscanImport")
 #' gr <- tRNAscanImport::import.tRNAscanAsGRanges(file)
-#' checktRNAscanGRanges(gr)
+#' istRNAscanGRanges(gr)
 NULL
-#' @rdname checktRNAscanGRanges
+#' @rdname istRNAscanGRanges
 #' @export
 setMethod(
-  f = "checktRNAscanGRanges",
+  f = "istRNAscanGRanges",
   signature = signature(gr = "GRanges"),
-  definition = function(gr) .check_trna_granges(gr,
-                                                TRNASCAN_FEATURES))
+  definition = function(gr) .check_trnascan_granges(gr,
+                                                    TRNASCAN_FEATURES))
 
 # checks whether a GRanges object is trnascan compatible
-.check_trna_granges <- function(gr,features){
+.check_trnascan_granges <- function(gr,features){
   if(class(gr) != "GRanges"){
     stop("Input is not a GRanges object.",
          call. = FALSE)
@@ -44,4 +44,38 @@ setMethod(
          call. = FALSE)
   }
   return(TRUE)
+}
+
+# checks whether a string is a valid tRNA structure
+.check_trna_structure_ident <- function(value,
+                                        .xvalue = assertive::get_name_in_parent(value)){
+  # check input
+  checkValues <- c("",TRNA_STRUCTURES)
+  if(!(value %in% checkValues)){
+    stop("'",.xvalue,
+         "' must be one of the following values: '",
+         paste(checkValues, collapse = "', '"),
+         "'.",
+         call. = FALSE)
+  }
+  return(invisible(TRUE))
+}
+
+# checks whether only dot bracket characters are present
+.check_dot_bracket <- function(value,
+                               .xvalue = assertive::get_name_in_parent(value)){
+  checkChars <- c(STRUCTURE_OPEN_CHR,
+                  STRUCTURE_CLOSE_CHR,
+                  ".")
+  checkChars <- gsub("\\\\","",checkChars)
+  testChars <- unique(unlist(strsplit(value,"")))
+  if(!all(testChars %in% checkChars)){
+    prob <- testChars[!(testChars %in% checkChars)]
+    stop("'",.xvalue,
+         "' contains invalid characters for dot bracket annotation: '",
+         paste(prob, collapse = "', '"),
+         "'.",
+         call. = FALSE)
+  }
+  return(invisible(TRUE))
 }

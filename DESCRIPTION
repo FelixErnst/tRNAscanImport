@@ -39,6 +39,7 @@ Collate:
     'tRNA.R'
     'tRNAscanImport.R'
     'AllGenerics.R'
+    'tRNA-checks.R'
     'tRNA-dotbracket.R'
     'tRNA-sequences.R'
     'tRNA-structures.R'

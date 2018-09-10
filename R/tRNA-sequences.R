@@ -1,27 +1,14 @@
 #' @include tRNA.R
 NULL
 
-TRNA_STRUCTURE_ORDER <- c("acceptorStem.prime5",
-                          "DStem.prime5",
-                          "Dloop",
-                          "DStem.prime3",
-                          "anticodonStem.prime5",
-                          "anticodonloop",
-                          "anticodonStem.prime3",
-                          "variableloop",
-                          "TStem.prime5",
-                          "Tloop",
-                          "TStem.prime3",
-                          "acceptorStem.prime3",
-                          "discriminator")
-
 #' @rdname gettRNAstructureSeqs
-#' 
+#'
 #' @importFrom stringr str_locate
 #' @importFrom BiocGenerics width
 #' @importFrom IRanges reverse
 #' @importFrom XVector subseq
-#' 
+#' @importFrom Biostrings DNAStringSet
+#'
 #' @export
 setMethod(
   f = "gettRNAstructureSeqs",
@@ -32,7 +19,7 @@ setMethod(
                         joinFeatures,
                         padSequences) {
     # input check
-    .check_trnascan_granges(gr, TRNA_FEATURES)
+    .check_trna_granges(gr, TRNA_FEATURES)
     .check_trna_structure_ident(structure)
     if(structure == ""){
       structure <- TRNA_STRUCTURES
@@ -41,12 +28,12 @@ setMethod(
     assertive::assert_is_a_bool(joinFeatures)
     assertive::assert_is_a_bool(padSequences)
     if(joinCompletely == TRUE && joinCompletely == joinFeatures){
-      warning("Both 'joinCompletely' and 'joinFeatures' are set to TRUE. 
+      warning("Both 'joinCompletely' and 'joinFeatures' are set to TRUE.
               'joinCompletely' takes precedence.")
     }
     # Make sure sequences are a DNAStringSet
     if(class(gr$tRNA_seq) != "DNAStringSet"){
-      gr$tRNA_seq <- DNAStringSet(gr$tRNA_seq)
+      gr$tRNA_seq <- Biostrings::DNAStringSet(gr$tRNA_seq)
     }
     # join completly or get splitup sequences
     if(joinCompletely){
@@ -158,12 +145,12 @@ setMethod(
     prime3 <- .pad_left(x$prime3)
     maxWidth <- max(BiocGenerics::width(prime5) + BiocGenerics::width(prime3))
     addN <- maxWidth - (BiocGenerics::width(prime5) + BiocGenerics::width(prime3))
-    addString <- DNAStringSet(rep("--",length(seqs)))
+    addString <- Biostrings::DNAStringSet(rep("--",length(seqs)))
     addString <- Biostrings::xscat(
-      addString, 
-      DNAStringSet(unlist(
-        lapply(addN, 
-               function(n){ 
+      addString,
+      Biostrings::DNAStringSet(unlist(
+        lapply(addN,
+               function(n){
                  do.call(paste0,as.list(rep("-",(n + 1))))
                })
       ))
@@ -246,11 +233,11 @@ setMethod(
     BiocGenerics::end(ir5[!is.na(GGpos)]) <- GGpos[!is.na(GGpos)] - 1
     # split in the middle if no GG like found
     if(any(is.na(GGpos))){
-      BiocGenerics::start(irM[is.na(GGpos)]) <- 
-        BiocGenerics::start(irM[is.na(GGpos)]) + 
+      BiocGenerics::start(irM[is.na(GGpos)]) <-
+        BiocGenerics::start(irM[is.na(GGpos)]) +
         floor(BiocGenerics::width(irM[is.na(GGpos)])/2)
-      BiocGenerics::end(ir5[is.na(GGpos)]) <- 
-        BiocGenerics::end(ir5[is.na(GGpos)]) + 
+      BiocGenerics::end(ir5[is.na(GGpos)]) <-
+        BiocGenerics::end(ir5[is.na(GGpos)]) +
         floor(BiocGenerics::width(irM[is.na(GGpos)])/2)
     }
     #
@@ -298,7 +285,7 @@ setMethod(
     facLong <- BiocGenerics::width(ir) > 4
     facBasePaired <- rep(FALSE, length(ir))
     if(any(facLong)){
-      startPaired5 <- BiocGenerics::start(irM) - 1 + 
+      startPaired5 <- BiocGenerics::start(irM) - 1 +
         stringr::str_locate(substr(gr$tRNA_str,
                                    BiocGenerics::start(irM),
                                    BiocGenerics::end(irM)),
@@ -308,12 +295,12 @@ setMethod(
       if(any(facBasePaired)){
         startPaired5 <- BiocGenerics::start(irM[facBasePaired])
         # test for different loop types
-        endPaired5 <- BiocGenerics::start(irM[facBasePaired]) - 1 + 
+        endPaired5 <- BiocGenerics::start(irM[facBasePaired]) - 1 +
           stringr::str_locate(substr(gr$tRNA_str[facBasePaired],
                                      BiocGenerics::start(irM[facBasePaired]),
                                      BiocGenerics::end(irM[facBasePaired])),
                               ">\\.\\.|>\\.<|><")[,"start"]
-        startPaired3 <- BiocGenerics::start(irM[facBasePaired]) + 1 + 
+        startPaired3 <- BiocGenerics::start(irM[facBasePaired]) + 1 +
           stringr::str_locate(substr(gr$tRNA_str[facBasePaired],
                                      BiocGenerics::start(irM[facBasePaired]),
                                      BiocGenerics::end(irM[facBasePaired])),
@@ -342,9 +329,9 @@ setMethod(
                                     strList[facBasePaired][f])
         # add spacer for missing loops
         addWidth <- rep(max(BiocGenerics::width(m[f])),length(m[!f]))
-        m[!f] <- DNAStringSet(unlist(
-          lapply(addWidth, 
-                 function(n){ 
+        m[!f] <- Biostrings::DNAStringSet(unlist(
+          lapply(addWidth,
+                 function(n){
                    do.call(paste0,as.list(rep("-",n)))
                  })
         ))
@@ -355,15 +342,15 @@ setMethod(
     # pad non paired region sequences in the middle
     maxWidth <- max(BiocGenerics::width(middle))
     addNMiddle <- maxWidth - BiocGenerics::width(middle)
-    addMiddle <- DNAStringSet(unlist(
-      lapply(addNMiddle, 
-             function(n){ 
+    addMiddle <- Biostrings::DNAStringSet(unlist(
+      lapply(addNMiddle,
+             function(n){
                do.call(paste0,as.list(rep("-",n)))
              })
     ))
     middle[addNMiddle > 0] <- Biostrings::xscat(
-      XVector::subseq(middle[addNMiddle > 0], 
-                      1, 
+      XVector::subseq(middle[addNMiddle > 0],
+                      1,
                       ceiling(width(middle[addNMiddle > 0])/2)),
       addMiddle,
       XVector::subseq(middle[addNMiddle > 0],
@@ -409,9 +396,9 @@ setMethod(
 .pad_left <- function(ans){
   maxWidth <- max(BiocGenerics::width(ans))
   addNLeft <- maxWidth - BiocGenerics::width(ans)
-  addLeft <- DNAStringSet(unlist(
-    lapply(addNLeft, 
-           function(n){ 
+  addLeft <- Biostrings::DNAStringSet(unlist(
+    lapply(addNLeft,
+           function(n){
              do.call(paste0,as.list(rep("-",n)))
            })
   ))
@@ -426,9 +413,9 @@ setMethod(
 .pad_right <- function(ans){
   maxWidth <- max(BiocGenerics::width(ans))
   addNRight <- maxWidth - BiocGenerics::width(ans)
-  addRight <- DNAStringSet(unlist(
-    lapply(addNRight, 
-           function(n){ 
+  addRight <- Biostrings::DNAStringSet(unlist(
+    lapply(addNRight,
+           function(n){
              do.call(paste0,as.list(rep("-",n)))
            })
   ))
@@ -443,15 +430,15 @@ setMethod(
 .pad_center <- function(ans){
   maxWidth <- max(BiocGenerics::width(ans))
   addNMiddle <- maxWidth - BiocGenerics::width(ans)
-  addMiddle <- DNAStringSet(unlist(
-    lapply(addNMiddle, 
-           function(n){ 
+  addMiddle <- Biostrings::DNAStringSet(unlist(
+    lapply(addNMiddle,
+           function(n){
              do.call(paste0,as.list(rep("-",n)))
            })
   ))
   ans[addNMiddle > 0] <- Biostrings::xscat(
-    XVector::subseq(ans[addNMiddle > 0], 
-                    1, 
+    XVector::subseq(ans[addNMiddle > 0],
+                    1,
                     ceiling(width(ans[addNMiddle > 0])/2)),
     addMiddle,
     XVector::subseq(ans[addNMiddle > 0],
@@ -471,15 +458,15 @@ setMethod(
   f <- addNRight > 0 & (missingWidth %% 2) == 1
   addNLeft[f] <- addNLeft[f] + 1
   addNRight[f] <- addNRight[f] - 1
-  addLeft <- DNAStringSet(unlist(
-    lapply(addNLeft, 
-           function(n){ 
+  addLeft <- Biostrings::DNAStringSet(unlist(
+    lapply(addNLeft,
+           function(n){
              do.call(paste0,as.list(rep("-",n)))
            })
   ))
-  addRight <- DNAStringSet(unlist(
-    lapply(addNRight, 
-           function(n){ 
+  addRight <- Biostrings::DNAStringSet(unlist(
+    lapply(addNRight,
+           function(n){
              do.call(paste0,as.list(rep("-",n)))
            })
   ))
@@ -527,9 +514,9 @@ setMethod(
                    zz <- vapply(seq_len(nrow(z)),
                                 function(j){
                                   # missing pos on reverse
-                                  z[j,]$reverse - 1 > z[j + 1,]$reverse & 
+                                  z[j,]$reverse - 1 > z[j + 1,]$reverse &
                                     # not the last position
-                                    j != nrow(z) & 
+                                    j != nrow(z) &
                                     # not the same bulge on the other side
                                     (z[j,]$reverse - 1 - z[j + 1,]$reverse) != (z[j + 1,]$forward - 1 - z[j,]$forward)
                                 },logical(1))
@@ -539,13 +526,13 @@ setMethod(
                      return(NULL)
                    }
                    return(list(start = z[zz,]$forward + 1 - BiocGenerics::start(ir[i]),
-                               stop = z[which(zz) + 1,]$forward + 
-                                 1 - 
-                                 BiocGenerics::start(ir[i]) - 
+                               stop = z[which(zz) + 1,]$forward +
+                                 1 -
+                                 BiocGenerics::start(ir[i]) -
                                  (z[which(zz) + 1,]$forward - z[which(zz),]$forward - 1),
-                               length = z[zz,]$reverse - 
-                                 z[which(zz) + 1,]$reverse - 
-                                 1 - 
+                               length = z[zz,]$reverse -
+                                 z[which(zz) + 1,]$reverse -
+                                 1 -
                                  (z[which(zz) + 1,]$forward - z[which(zz),]$forward - 1)))
                  })
   dims <- dims[!vapply(dims,is.null,logical(1))]
@@ -561,9 +548,9 @@ setMethod(
 
 #
 .add_padding_to_pos <- function(seqs, start, stop, length){
-  add <- DNAStringSet(unlist(
-    lapply(length, 
-           function(n){ 
+  add <- Biostrings::DNAStringSet(unlist(
+    lapply(length,
+           function(n){
              do.call(paste0,as.list(rep("-",n)))
            })
   ))

@@ -5,11 +5,11 @@ NULL
 # tRNAscanImport
 ################################################################################
 
-#' @rdname checktRNAscanGRanges
+#' @rdname istRNAscanGRanges
 #' @export
 setGeneric ( 
-  name = "checktRNAscanGRanges",
-  def = function(gr) standardGeneric("checktRNAscanGRanges")
+  name = "istRNAscanGRanges",
+  def = function(gr) standardGeneric("istRNAscanGRanges")
 )
 #' @rdname gettRNAscanSummary
 #' @export
@@ -38,6 +38,13 @@ setGeneric (
 ################################################################################
 # tRNA
 ################################################################################
+
+#' @rdname istRNAGRanges
+#' @export
+setGeneric ( 
+  name = "istRNAGRanges",
+  def = function(gr) standardGeneric("istRNAGRanges")
+)
 
 # Structures and Sequences -----------------------------------------------------
 

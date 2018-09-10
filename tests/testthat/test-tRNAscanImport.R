@@ -56,7 +56,7 @@ test_that("type tests gr:",{
                       file = "sacCer3-tRNAs.ss.sort", 
                       package = "tRNAscanImport")
   gr <- tRNAscanImport::import.tRNAscanAsGRanges(file)
-  expect_true(checktRNAscanGRanges(gr))
+  expect_true(istRNAscanGRanges(gr))
   expect_type(mcols(gr)$no, "integer")
   expect_type(mcols(gr)$tRNA_length, "integer")
   expect_type(mcols(gr)$tRNA_type, "character")

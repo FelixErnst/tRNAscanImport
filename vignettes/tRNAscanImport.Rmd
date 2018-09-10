@@ -68,7 +68,7 @@ each text block using regular expressions.
 gr <- import.tRNAscanAsGRanges(sacCer3_file)
 head(gr, 2)
 # Any GRanges passing this, can be used for subsequent function
-checktRNAscanGRanges(gr)
+istRNAscanGRanges(gr)
 ```
 
 The result can be used directly in R or saved as gff3/fasta file for further
