@@ -61,7 +61,7 @@ metadata(seqs)[["tRNA_structures"]]
 The structure information can be queried for subsetting using the 
 `hasAccpeptorStem()` as an example.
 
-```{r}
+```{r echo=TRUE, results="hide"}
 gr[hasAcceptorStem(gr, unpaired = TRUE)]
 # mismatches and bulged are subsets of unpaired
 gr[hasAcceptorStem(gr, mismatches = TRUE)]
