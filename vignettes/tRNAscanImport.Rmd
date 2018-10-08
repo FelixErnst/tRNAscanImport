@@ -47,13 +47,13 @@ suppressPackageStartupMessages({
 ```
 ```{r}
 library(tRNAscanImport)
-sacCer3_file <- system.file("extdata",
-                            file = "sacCer3-tRNAs.ss.sort",
-                            package = "tRNAscanImport")
+yeast_file <- system.file("extdata",
+                          file = "yeast.tRNAscan",
+                          package = "tRNAscanImport")
 
 # output for sacCer3
 # Before
-readLines(con = sacCer3_file, n = 7L)
+readLines(con = yeast_file, n = 7L)
 ```
 
 # Importing as GRanges
@@ -65,7 +65,7 @@ each text block using regular expressions.
 ```{r}
 # output for sacCer3
 # After
-gr <- import.tRNAscanAsGRanges(sacCer3_file)
+gr <- import.tRNAscanAsGRanges(yeast_file)
 head(gr, 2)
 # Any GRanges passing this, can be used for subsequent function
 istRNAscanGRanges(gr)
@@ -93,36 +93,30 @@ export.gff3(gff, con = tempfile())
 
 # Visualization
 
-The tRNAscan-SE information can be visualized using the `gettRNAscanPlots()`
-function, returning a named list of ggplot2 plots, which can be plotted or
-further modified. `gettRNAscanPlots()` requires ggplot2 to be installed.
-Alternatively, `gettRNAscanSummary()` returns the aggregated information for
-further use. `plottRNAscan()` plots the output of `gettRNAscanPlots()`
-directly to the output.
-```{r, echo=FALSE}
-suppressPackageStartupMessages({
-  library(GenomicRanges)
-})
-```
+The tRNAscan-SE information can be visualized using the `gettRNAFeaturePlots()`
+function of the `tRNA` package, returning a named list of ggplot2 plots, which 
+can be plotted or further modified.
+Alternatively, `gettRNASummary()` returns the aggregated information for
+further use.
+
 ```{r}
-library(GenomicRanges)
 # tRNAscan-SE output for hg38
-hg38_file <- system.file("extdata",
-                         file = "hg38-tRNAs.ss.sort",
-                         package = "tRNAscanImport")
+human_file <- system.file("extdata",
+                          file = "human.tRNAscan",
+                          package = "tRNAscanImport")
 # tRNAscan-SE output for E. coli MG1655
 eco_file <- system.file("extdata",
-                        file = "eschColi_K_12_MG1655-tRNAs.ss.sort",
+                        file = "ecoli.tRNAscan",
                         package = "tRNAscanImport")
 # import tRNAscan-SE files
-gr_hg <- import.tRNAscanAsGRanges(hg38_file)
+gr_human <- import.tRNAscanAsGRanges(human_file)
 gr_eco <- import.tRNAscanAsGRanges(eco_file)
 
-# get summary plots if ggplot2 is installed
+# get summary plots
 grl <- GRangesList(Sce = gr,
-                   Hsa = gr_hg,
+                   Hsa = gr_human,
                    Eco = gr_eco)
-plots <- gettRNAscanPlots(grl)
+plots <- gettRNAFeaturePlots(grl)
 ```
 ```{r, fig.cap = "tRNA length."}
 plots$length
@@ -134,8 +128,16 @@ plots$tRNAscan_score
 plots$gc
 ```
 ```{r, fig.cap = "tRNAs with introns."}
-plots$introns
+plots$tRNAscan_intron
 ```
+```{r, fig.cap = "Length of the variable loop."}
+plots$variableLoop_length
+```
+
+# Further reading
+
+Further examples of working with tRNA information can be found in the 
+[vignette](tRNA.html) of the `tRNA` package.
 
 # Session info
 

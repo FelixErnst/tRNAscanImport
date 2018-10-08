@@ -32,8 +32,6 @@
 #' @name tRNAscanImport
 NULL
 
-#' @include tRNA.R
-#' 
 #' @import methods
 #' @import GenomicRanges
 #' @import assertive
@@ -43,7 +41,7 @@ requireNamespace("assertive")
 # constants tRNAscanImport -----------------------------------------------------
 
 TRNASCAN_FEATURES <- c(
-  TRNA_FEATURES,
+  tRNA:::TRNA_FEATURES,
   "tRNA_anticodon.start",
   "tRNA_anticodon.end",
   "tRNAscan_score",

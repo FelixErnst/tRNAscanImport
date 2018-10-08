@@ -185,7 +185,7 @@ import.tRNAscanAsGRanges <- function(input,
   handle <- file(file, "r")
   res <- list()
   lines <- readLines(handle) 
-  close(handle)
+  on.exit(close(handle))
   if(length(lines) <= 1) stop("Empty file.", call. = FALSE)
   # determine empty line positions
   cuts <- unlist(lapply(seq_along(lines), function(i){
@@ -377,6 +377,7 @@ tRNAscan2GFF <- function(input) {
               "SeC" = "U", 
               "Und" = "X",
               "fMe" = "M",
+              "iMe" = "M",
               "Sup" = "X")
   aa <- unlist(lapply(tRNAscan$tRNA_type, 
                       function(type){
@@ -385,7 +386,8 @@ tRNAscan2GFF <- function(input) {
   if( length(aa) != length(tRNAscan$tRNA_anticodon) ||
       length(aa) != length(chromLetters[chromIndex]) ){
     stop("Unknown tRNA type identifier: ",
-         tRNAscan$tRNA_type[!(tRNAscan$tRNA_type %in% names(aacode))],
+         paste(tRNAscan$tRNA_type[!(tRNAscan$tRNA_type %in% names(aacode))],
+               collapse = ", "),
          "\nKnown type identifier are: ",
          paste(names(aacode), collapse = "','"),
          "'. If this is a genuine identifier, please let us know.",

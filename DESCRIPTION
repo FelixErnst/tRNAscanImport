@@ -22,7 +22,8 @@ biocViews:
     Visualization
 Depends: 
     R (>= 3.5),
-    GenomicRanges
+    GenomicRanges,
+    tRNA
 Imports:
     methods,
     assertive,
@@ -36,18 +37,10 @@ Imports:
     GenomeInfoDb,
     rtracklayer
 Collate: 
-    'tRNA.R'
     'tRNAscanImport.R'
     'AllGenerics.R'
-    'tRNA-checks.R'
-    'tRNA-dotbracket.R'
-    'tRNA-sequences.R'
-    'tRNA-structures.R'
-    'tRNA-subset.R'
-    'tRNA-utils.R'
     'tRNAscanImport-checks.R'
     'tRNAscanImport-import.R'
-    'tRNAscanImport-plot.R'
 Suggests: 
     BiocStyle, 
     knitr,
