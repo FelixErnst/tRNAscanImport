@@ -1,5 +1,5 @@
-tRNAscanImport 0.99.21 (Release date: 2018-03-17)
-==============
+Changes in version 0.99.0 (2018-10-02)
++ Submitted to Bioconductor
 
-Changes:
-* Initial version
+Changes in version 1.1.1 (2018-08-16)
++ bugfix for recognizing pseudogene annotation
