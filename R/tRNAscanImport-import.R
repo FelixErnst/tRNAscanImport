@@ -54,11 +54,11 @@ NULL
 #'
 #' @examples
 #' gr <- import.tRNAscanAsGRanges(system.file("extdata", 
-#'                                file = "sacCer3-tRNAs.ss.sort", 
+#'                                file = "yeast.tRNAscan", 
 #'                                package = "tRNAscanImport"))
 #' gff <- tRNAscan2GFF(gr)
 #' identical(gff,import.tRNAscanAsGRanges(system.file("extdata", 
-#'                                file = "sacCer3-tRNAs.ss.sort", 
+#'                                file = "yeast.tRNAscan", 
 #'                                package = "tRNAscanImport"),
 #'                                as.GFF3 = TRUE))
 import.tRNAscanAsGRanges <- function(input,

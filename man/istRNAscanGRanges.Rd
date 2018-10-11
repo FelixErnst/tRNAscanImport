@@ -23,7 +23,7 @@ information expected for a tRNAscan result.
 }
 \examples{
 file <- system.file("extdata", 
-                    file = "sacCer3-tRNAs.ss.sort", 
+                    file = "yeast.tRNAscan", 
                     package = "tRNAscanImport")
 gr <- tRNAscanImport::import.tRNAscanAsGRanges(file)
 istRNAscanGRanges(gr)

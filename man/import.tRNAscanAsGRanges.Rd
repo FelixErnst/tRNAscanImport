@@ -46,11 +46,11 @@ The function \code{tRNAScan2GFF} formats the output of
 }
 \examples{
 gr <- import.tRNAscanAsGRanges(system.file("extdata", 
-                               file = "sacCer3-tRNAs.ss.sort", 
+                               file = "yeast.tRNAscan", 
                                package = "tRNAscanImport"))
 gff <- tRNAscan2GFF(gr)
 identical(gff,import.tRNAscanAsGRanges(system.file("extdata", 
-                               file = "sacCer3-tRNAs.ss.sort", 
+                               file = "yeast.tRNAscan", 
                                package = "tRNAscanImport"),
                                as.GFF3 = TRUE))
 }
