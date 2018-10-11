@@ -3,7 +3,7 @@ library(tRNAscanImport)
 context("tests")
 test_that("tests:",{
   file <- system.file("extdata", 
-                      file = "sacCer3-tRNAs.ss.sort", 
+                      file = "yeast.tRNAscan", 
                       package = "tRNAscanImport")
   lines <- readLines(con = file, n = 7L)
   actual <- tRNAscanImport:::.parse_tRNAscan_block(lines)
@@ -38,10 +38,12 @@ test_that("tests:",{
   df <- tRNAscanImport:::.read_tRNAscan(file)
   actual <- tRNAscanImport:::.cut_introns(df)
   expect_false(identical(df[1,"tRNA_seq"], actual[1,"tRNA_seq"]))
-  expect_true(identical("GGGCGTGTGGTCTAGTGGTATGATTCTCGCTTTGGGTGCGAGAGGcCCTGGGTTCAATTCCCAGCTCGCCCC", 
+  expect_true(identical(
+    "GGGCGTGTGGTCTAGTGGTATGATTCTCGCTTTGGGTGCGAGAGGcCCTGGGTTCAATTCCCAGCTCGCCCC", 
                         actual[1,"tRNA_seq"]))
   expect_false(identical(df[1,"seq"], actual[1,"tRNA_str"]))
-  expect_true(identical(">>>>>.>..>>>.........<<<.>>>>>.......<<<<<.....>>>>>.......<<<<<<.<<<<<.", 
+  expect_true(identical(
+    ">>>>>.>..>>>.........<<<.>>>>>.......<<<<<.....>>>>>.......<<<<<<.<<<<<.", 
                         actual[1,"tRNA_str"]))
   
   gr <- tRNAscanImport::import.tRNAscanAsGRanges(file)
@@ -53,7 +55,7 @@ test_that("tests:",{
 context("type tests gr")
 test_that("type tests gr:",{
   file <- system.file("extdata", 
-                      file = "sacCer3-tRNAs.ss.sort", 
+                      file = "yeast.tRNAscan", 
                       package = "tRNAscanImport")
   gr <- tRNAscanImport::import.tRNAscanAsGRanges(file)
   expect_true(istRNAscanGRanges(gr))
@@ -81,7 +83,7 @@ test_that("type tests gr:",{
 context("type tests gff")
 test_that("type tests gff:",{
   file <- system.file("extdata", 
-                      file = "sacCer3-tRNAs.ss.sort", 
+                      file = "yeast.tRNAscan", 
                       package = "tRNAscanImport")
   gr <- tRNAscanImport::import.tRNAscanAsGRanges(file)
   gff <- tRNAscanImport::tRNAscan2GFF(gr)
@@ -134,7 +136,7 @@ test_that("input failure test:",{
   )
   
   file <- system.file("extdata", 
-                      file = "sacCer3-tRNAs.ss.sort", 
+                      file = "yeast.tRNAscan", 
                       package = "tRNAscanImport")
   lines <- readLines(con = file, n = 7L)
   actual <- tRNAscanImport:::.parse_tRNAscan_block(lines[1:2])
