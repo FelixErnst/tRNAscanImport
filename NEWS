@@ -1,21 +1,8 @@
-tRNAscanImport 1.2 (Release date: 2018-11)
-==============
+Changes in version 0.99.0 (2018-03-17)
++ Submitted to Bioconductor
 
-Changes:
-* added structure subsetting functions, for example hasDStem(), hasVariableLoop()
-* added gettRNAstructureGRanges()
-* added gettRNAstructureSeqs()
-* added checktRNAscanGRanges()
-* added gettRNABasePairing/getBasePairing() for accessing dot bracket annotation
-* bugfix for recognizing pseudogene annotation
+Changes in version 1.1.1 (2018-08-16)
++ bugfix for recognizing pseudogene annotation
 
-tRNAscanImport 1.0 (Release date: 2018-05-01)
-==============
-
-Release on Bioconductor 3.7
-
-tRNAscanImport 0.99.21 (Release date: 2018-03-17)
-==============
-
-Changes:
-* Initial version
+Changes in version 1.1.7 (2018-10-12)
++ added dependency for tRNA package
