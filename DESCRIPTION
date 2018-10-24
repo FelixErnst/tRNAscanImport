@@ -18,7 +18,6 @@ Imports:
     methods,
     assertive,
     stringr,
-    reshape2,
     BiocGenerics,
     Biostrings,
     S4Vectors,
