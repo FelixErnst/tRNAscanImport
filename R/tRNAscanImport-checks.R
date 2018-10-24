@@ -1,38 +1,66 @@
 #' @include tRNAscanImport.R
 NULL
 
+#' @name istRNAscanGRanges
+#' @aliases istRNAscanGRanges
+#' 
+#' @title tRNAscan compatibility check
+#' 
+#' @description 
+#' \code{istRNAscanGRanges} checks whether a GRanges object contains the 
+#' information expected for a tRNAscan result.
+#' 
+#' @param gr the \code{GRanges} object to test
+#' 
+#' @return a logical value
+#' 
+#' @examples 
+#' file <- system.file("extdata", 
+#'                     file = "yeast.tRNAscan", 
+#'                     package = "tRNAscanImport")
+#' gr <- tRNAscanImport::import.tRNAscanAsGRanges(file)
+#' istRNAscanGRanges(gr)
+NULL
+#' @rdname istRNAscanGRanges
+#' @export
+setMethod(
+  f = "istRNAscanGRanges",
+  signature = signature(gr = "GRanges"),
+  definition = function(gr) .check_trnascan_granges(gr,
+                                                    TRNASCAN_FEATURES))
+
 # checks whether a GRanges object is trnascan compatible
-.check_trnascan_granges <- function(gr){
+.check_trnascan_granges <- function(gr,features){
   if(class(gr) != "GRanges"){
     stop("Input is not a GRanges object.",
          call. = FALSE)
   }
-  
   # check input
-  checkCols <- c(
-    "tRNA_length",
-    "tRNA_type",
-    "tRNA_anticodon",
-    "tRNA_anticodon.start",
-    "tRNA_anticodon.end",
-    "tRNAscan_score",
-    "tRNA_seq",
-    "tRNA_str",
-    "tRNA_CCA.end",
-    "tRNAscan_potential.pseudogene",
-    "tRNAscan_intron.start",
-    "tRNAscan_intron.end",
-    "tRNAscan_intron.locstart",
-    "tRNAscan_intron.locend",
-    "tRNAscan_hmm.score",
-    "tRNAscan_sec.str.score",
-    "tRNAscan_infernal"
-  )
-  if(length(intersect(checkCols,colnames(S4Vectors::mcols(gr)))) !=
-     length(checkCols)){
+  if(length(intersect(features,colnames(S4Vectors::mcols(gr)))) !=
+     length(features)){
     stop("Input GRanges object does not meet the requirements of the ",
          "function. Please refer to the vignette of tRNAscanImport for ",
          "an exmaple on what information is expected.",
          call. = FALSE)
   }
+  return(TRUE)
+}
+
+# checks whether only dot bracket characters are present
+.check_dot_bracket <- function(value,
+                               .xvalue = assertive::get_name_in_parent(value)){
+  checkChars <- c(tRNA:::STRUCTURE_OPEN_CHR,
+                  tRNA:::STRUCTURE_CLOSE_CHR,
+                  ".")
+  checkChars <- gsub("\\\\","",checkChars)
+  testChars <- unique(unlist(strsplit(value,"")))
+  if(!all(testChars %in% checkChars)){
+    prob <- testChars[!(testChars %in% checkChars)]
+    stop("'",.xvalue,
+         "' contains invalid characters for dot bracket annotation: '",
+         paste(prob, collapse = "', '"),
+         "'.",
+         call. = FALSE)
+  }
+  return(invisible(TRUE))
 }

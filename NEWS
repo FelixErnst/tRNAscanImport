@@ -1,5 +1,9 @@
-Changes in version 0.99.0 (2018-10-02)
+Changes in version 0.99.0 (2018-03-17)
 + Submitted to Bioconductor
 
 Changes in version 1.1.1 (2018-08-16)
 + bugfix for recognizing pseudogene annotation
+
+Changes in version 1.1.8 (2018-10-24)
++ moved some functionality to tRNA package
++ added dependency for tRNA package

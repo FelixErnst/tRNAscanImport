@@ -3,7 +3,7 @@ library(tRNAscanImport)
 context("tests")
 test_that("tests:",{
   file <- system.file("extdata", 
-                      file = "sacCer3-tRNAs.ss.sort", 
+                      file = "yeast.tRNAscan", 
                       package = "tRNAscanImport")
   lines <- readLines(con = file, n = 7L)
   actual <- tRNAscanImport:::.parse_tRNAscan_block(lines)
@@ -38,25 +38,16 @@ test_that("tests:",{
   df <- tRNAscanImport:::.read_tRNAscan(file)
   actual <- tRNAscanImport:::.cut_introns(df)
   expect_false(identical(df[1,"tRNA_seq"], actual[1,"tRNA_seq"]))
-  expect_true(identical("GGGCGTGTGGTCTAGTGGTATGATTCTCGCTTTGGGTGCGAGAGGcCCTGGGTTCAATTCCCAGCTCGCCCC", 
-                        actual[1,"tRNA_seq"]))
+  expect_true(identical(
+    "GGGCGTGTGGTCTAGTGGTATGATTCTCGCTTTGGGTGCGAGAGGcCCTGGGTTCAATTCCCAGCTCGCCCC", 
+    actual[1,"tRNA_seq"]))
   expect_false(identical(df[1,"seq"], actual[1,"tRNA_str"]))
-  expect_true(identical(">>>>>.>..>>>.........<<<.>>>>>.......<<<<<.....>>>>>.......<<<<<<.<<<<<.", 
-                        actual[1,"tRNA_str"]))
+  expect_true(identical(
+    ">>>>>.>..>>>.........<<<.>>>>>.......<<<<<.....>>>>>.......<<<<<<.<<<<<.", 
+    actual[1,"tRNA_str"]))
   
   gr <- tRNAscanImport::import.tRNAscanAsGRanges(file)
   length <- as.numeric(S4Vectors::mcols(gr)$tRNA_length)
-  intron_locstart <- as.numeric(S4Vectors::mcols(gr)$tRNAscan_intron.locstart)
-  intron_locstart[is.na(intron_locstart)] <- 0
-  intron_locend <- as.numeric(S4Vectors::mcols(gr)$tRNAscan_intron.locend)
-  intron_locend[is.na(intron_locend)] <- 0
-  intron_length <- intron_locend - intron_locstart
-  length <- length - vapply(intron_length, function(l){
-    if(l > 0){
-      return(l + 1)
-    }
-    0
-  },numeric(1))
   expect_equal(length,BiocGenerics::width(S4Vectors::mcols(gr)$tRNA_seq))
   expect_equal(length,BiocGenerics::width(S4Vectors::mcols(gr)$tRNA_str))
 })
@@ -64,9 +55,10 @@ test_that("tests:",{
 context("type tests gr")
 test_that("type tests gr:",{
   file <- system.file("extdata", 
-                      file = "sacCer3-tRNAs.ss.sort", 
+                      file = "yeast.tRNAscan", 
                       package = "tRNAscanImport")
   gr <- tRNAscanImport::import.tRNAscanAsGRanges(file)
+  expect_true(istRNAscanGRanges(gr))
   expect_type(mcols(gr)$no, "integer")
   expect_type(mcols(gr)$tRNA_length, "integer")
   expect_type(mcols(gr)$tRNA_type, "character")
@@ -85,12 +77,13 @@ test_that("type tests gr:",{
   expect_type(mcols(gr)$tRNAscan_hmm.score, "double")
   expect_type(mcols(gr)$tRNAscan_sec.str.score, "double")
   expect_type(mcols(gr)$tRNAscan_infernal, "double")
+  expect_true(all(gr$tRNAscan_potential.pseudogene == FALSE))
 })
 
 context("type tests gff")
 test_that("type tests gff:",{
   file <- system.file("extdata", 
-                      file = "sacCer3-tRNAs.ss.sort", 
+                      file = "yeast.tRNAscan", 
                       package = "tRNAscanImport")
   gr <- tRNAscanImport::import.tRNAscanAsGRanges(file)
   gff <- tRNAscanImport::tRNAscan2GFF(gr)
@@ -143,7 +136,7 @@ test_that("input failure test:",{
   )
   
   file <- system.file("extdata", 
-                      file = "sacCer3-tRNAs.ss.sort", 
+                      file = "yeast.tRNAscan", 
                       package = "tRNAscanImport")
   lines <- readLines(con = file, n = 7L)
   actual <- tRNAscanImport:::.parse_tRNAscan_block(lines[1:2])

@@ -1,26 +1,13 @@
 #' @include tRNAscanImport.R
 NULL
 
-#' @rdname gettRNAscanSummary
-#' 
-#' @export
-setGeneric ( 
-  name = "gettRNAscanSummary",
-  def = function(gr) standardGeneric("gettRNAscanSummary")
-) 
+################################################################################
+# tRNAscanImport
+################################################################################
 
-#' @rdname gettRNAscanSummary
-#' 
+#' @rdname istRNAscanGRanges
 #' @export
-setGeneric ( 
-  name = "plottRNAscan",
-  def = function(grl) standardGeneric("plottRNAscan")
-) 
-
-#' @rdname gettRNAscanSummary
-#' 
-#' @export
-setGeneric ( 
-  name = "gettRNAscanPlots",
-  def = function(grl) standardGeneric("gettRNAscanPlots")
-) 
+setGeneric (
+  name = "istRNAscanGRanges",
+  def = function(gr) standardGeneric("istRNAscanGRanges")
+)

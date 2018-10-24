@@ -1,18 +1,19 @@
 Package: tRNAscanImport
-Title: Importing a tRNAscan-SE file as GRanges object
-Version: 1.1.7
-Date: 2018-10-08
-Authors@R: person("Felix GM", 
-                  "Ernst", 
-                  email = "felix.gm.ernst@outlook.com", 
+Title: Imports a tRNAscan-SE result file as GRanges object
+Version: 1.1.8
+Date: 2018-10-24
+Authors@R: person("Felix GM",
+                  "Ernst",
+                  email = "felix.gm.ernst@outlook.com",
                   role = c("aut", "cre"))
 Description: The package imports the result of tRNAscan-SE as a GRanges object.
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Depends: 
+Depends:
     R (>= 3.5),
-    GenomicRanges
+    GenomicRanges,
+    tRNA
 Imports:
     methods,
     assertive,
@@ -23,19 +24,17 @@ Imports:
     S4Vectors,
     GenomeInfoDb,
     rtracklayer
-Suggests: 
+Collate:
+    'tRNAscanImport.R'
+    'AllGenerics.R'
+    'tRNAscanImport-checks.R'
+    'tRNAscanImport-import.R'
+Suggests:
     BiocStyle, 
     knitr,
     rmarkdown,
     testthat,
-    graphics,
-    ggplot2,
-    scales
-Collate: 
-    'tRNAscanImport.R'
-    'AllGenerics.R'
-    'tRNAscanImport-checks.R'
-    'tRNAscanImport-plot.R'
+    ggplot2
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
 biocViews:
