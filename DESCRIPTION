@@ -1,7 +1,7 @@
 Package: tRNAscanImport
 Title: Imports a tRNAscan-SE result file as GRanges object
-Version: 1.1.7
-Date: 2018-10-14
+Version: 1.1.8
+Date: 2018-10-24
 Authors@R: person("Felix GM", 
                   "Ernst", 
                   email = "felix.gm.ernst@outlook.com", 
