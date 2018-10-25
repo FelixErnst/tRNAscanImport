@@ -31,7 +31,7 @@ setMethod(
 
 # checks whether a GRanges object is trnascan compatible
 .check_trnascan_granges <- function(gr,features){
-  if(is(gr,"GRanges")){
+  if(!is(gr,"GRanges")){
     stop("Input is not a GRanges object.",
          call. = FALSE)
   }
