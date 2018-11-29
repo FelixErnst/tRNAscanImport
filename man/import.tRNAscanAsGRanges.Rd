@@ -3,7 +3,6 @@
 \name{import.tRNAscanAsGRanges}
 \alias{import.tRNAscanAsGRanges}
 \alias{tRNAscan2GFF}
-\alias{tRNAscan2GFF}
 \title{Importing a tRNAscan output file as a GRanges object}
 \usage{
 import.tRNAscanAsGRanges(input, as.GFF3 = FALSE, trim.intron = TRUE,

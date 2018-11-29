@@ -31,6 +31,7 @@ Imports:
     reshape2,
     BiocGenerics,
     Biostrings,
+    Structstrings,
     IRanges,
     XVector,
     S4Vectors,
@@ -47,5 +48,5 @@ Suggests:
     rmarkdown,
     testthat,
     ggplot2
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 VignetteBuilder: knitr

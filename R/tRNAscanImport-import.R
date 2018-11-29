@@ -83,7 +83,11 @@ import.tRNAscanAsGRanges <- function(input,
   }
   # Contruct GRanges object
   gr <- GRanges(df)
-  S4Vectors::mcols(gr)$tRNA_seq <- DNAStringSet(S4Vectors::mcols(gr)$tRNA_seq)
+  S4Vectors::mcols(gr)$tRNA_seq <- 
+    as(Biostrings::DNAStringSet(S4Vectors::mcols(gr)$tRNA_seq),
+       "RNAStringSet")
+  S4Vectors::mcols(gr)$tRNA_str <- 
+    Structstrings::DotBracketStringSet(S4Vectors::mcols(gr)$tRNA_str)
   S4Vectors::mcols(gr)$tRNA_length <- 
     nchar(as.character(S4Vectors::mcols(gr)$tRNA_seq))
   # sort GRanges object
@@ -169,7 +173,6 @@ import.tRNAscanAsGRanges <- function(input,
   df$tRNAscan_sec.str.score <- as.numeric(df$tRNAscan_sec.str.score)
   df$tRNAscan_infernal <- as.numeric(df$tRNAscan_infernal)
   df[is.na(df$tRNA_type),"tRNA_type"] <- "Und"
-  .check_dot_bracket(df$tRNA_str)
   return(df)
 }
 
@@ -315,6 +318,8 @@ tRNAscan2GFF <- function(input) {
   # patch GRanges object with necessary columns for gff3 comptability
   S4Vectors::mcols(tRNAscan)$tRNA_seq <- 
     as.character(S4Vectors::mcols(tRNAscan)$tRNA_seq)
+  S4Vectors::mcols(tRNAscan)$tRNA_str <- 
+    as.character(S4Vectors::mcols(tRNAscan)$tRNA_str)
   # generate unique tRNA ID
   # SGD like format is used 
   # t*AminoAcidSingleLetter*(*Anticodon*)*ChromosomeIdentifier*

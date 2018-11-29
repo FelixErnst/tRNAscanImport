@@ -45,22 +45,3 @@ setMethod(
   }
   return(TRUE)
 }
-
-# checks whether only dot bracket characters are present
-.check_dot_bracket <- function(value,
-                               .xvalue = assertive::get_name_in_parent(value)){
-  checkChars <- c(tRNA:::STRUCTURE_OPEN_CHR,
-                  tRNA:::STRUCTURE_CLOSE_CHR,
-                  ".")
-  checkChars <- gsub("\\\\","",checkChars)
-  testChars <- unique(unlist(strsplit(value,"")))
-  if(!all(testChars %in% checkChars)){
-    prob <- testChars[!(testChars %in% checkChars)]
-    stop("'",.xvalue,
-         "' contains invalid characters for dot bracket annotation: '",
-         paste(prob, collapse = "', '"),
-         "'.",
-         call. = FALSE)
-  }
-  return(invisible(TRUE))
-}
