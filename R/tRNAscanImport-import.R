@@ -84,8 +84,7 @@ import.tRNAscanAsGRanges <- function(input,
   # Contruct GRanges object
   gr <- GRanges(df)
   S4Vectors::mcols(gr)$tRNA_seq <- 
-    as(Biostrings::DNAStringSet(S4Vectors::mcols(gr)$tRNA_seq),
-       "RNAStringSet")
+    Biostrings::DNAStringSet(S4Vectors::mcols(gr)$tRNA_seq)
   S4Vectors::mcols(gr)$tRNA_str <- 
     Structstrings::DotBracketStringSet(S4Vectors::mcols(gr)$tRNA_str)
   S4Vectors::mcols(gr)$tRNA_length <- 
