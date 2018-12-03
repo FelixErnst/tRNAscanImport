@@ -14,6 +14,7 @@ Refer to the vignette for an example usage case.
 Depending on the development on tRNAscan-SE this might become redundant, since
 a gff3 export by tRNAscan-SE might resolve the conversion issue. 
 
-- Lowe, T.M. & Eddy, S.R. (1997) tRNAscan-SE: A program for 
-improved detection of transfer RNA genes in genomic sequence. Nucl. Acids Res. 
-25: 955-964.
+- Lowe, T.M. & Eddy, S.R.: "tRNAscan-SE: A program for 
+improved detection of transfer RNA genes in genomic sequence". Nucl. Acids Res. 
+25: 955-964 (1997). 
+doi:[10.1093/nar/25.5.955](https://doi.org/10.1093/nar/25.5.955)
