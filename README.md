@@ -9,6 +9,18 @@ can be used directly or saved as gff3 file for further use.
 
 Refer to the vignette for an example usage case.
 
+# Installation
+
+The current version of the `tRNAscanImport` package is available from Bioconductor.
+ 
+```{r}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("tRNAscanImport")
+# Load and attach thepackage
+library("tRNAscanImport")
+```
+
 # Literature
 
 Depending on the development on tRNAscan-SE this might become redundant, since
