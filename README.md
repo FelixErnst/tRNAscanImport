@@ -1,7 +1,7 @@
 # tRNAscanImport
 
-The default tRNAscan-SE [Lowe et el. 1997](#Literature) output is formatted text document containing 
-text blocks per tRNA delimited by an empty line. 
+The default tRNAscan-SE ([Lowe et el. 1997](#Literature)) output is formatted text
+document containing text blocks per tRNA delimited by an empty line. 
 To access the information in a BioC context the conversion to a GRanges object 
 comes to mind. This task is performed by `import.tRNAscanAsGRanges()`, which uses 
 regular expressions to extract the information from the text blocks. The result
