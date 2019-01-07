@@ -1,4 +1,5 @@
 # tRNAscanImport
+<img src="https://raw.githubusercontent.com/Bioconductor/BiocStickers/master/tRNA/tRNA.png" height="120">
 
 The default tRNAscan-SE ([Lowe et el. 1997](#Literature)) output is formatted text
 document containing text blocks per tRNA delimited by an empty line. 
