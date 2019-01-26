@@ -7,7 +7,7 @@ NULL
 
 #' @rdname istRNAscanGRanges
 #' @export
-setGeneric ( 
+setGeneric (
   name = "istRNAscanGRanges",
   def = function(gr) standardGeneric("istRNAscanGRanges")
 )

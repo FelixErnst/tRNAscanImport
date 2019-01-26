@@ -39,7 +39,6 @@ NULL
 #' @import assertive
 #' @import tRNA
 NULL
-requireNamespace("assertive")
 requireNamespace("tRNA")
 
 # constants tRNAscanImport -----------------------------------------------------

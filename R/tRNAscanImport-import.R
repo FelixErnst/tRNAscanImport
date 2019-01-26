@@ -106,48 +106,48 @@ import.tRNAscanAsGRanges <- function(input,
   # aggregate the data
   result <- lapply(result, 
                    function(trna){
-    res <- list(no = as.numeric(trna$trna[3]),
-                chr = as.character(trna$trna[2]))
-    # If on minus strand
-    if( as.numeric(trna$trna[5]) < as.numeric(trna$trna[4])){
-      res <- append(res,
-                    list(start = as.numeric(trna$trna[5]),
-                         end = as.numeric(trna$trna[4]),
-                         strand = "-"))  
-    } else {
-      res <- append(res,
-                    list(start = as.numeric(trna$trna[4]),
-                         end = as.numeric(trna$trna[5]),
-                         strand = "+"))  
-    }
-    res <- append(res,
-                  list(tRNA_length = as.numeric(trna$trna[6]),
-                       tRNA_type = as.character(trna$type[2]),
-                       tRNA_anticodon = as.character(trna$type[3]),
-                       tRNA_anticodon.start = as.integer(trna$type[4]),
-                       tRNA_anticodon.end = as.integer(trna$type[5]),
-                       tRNAscan_score = as.numeric(trna$type[6]),
-                       tRNA_seq = as.character(trna$seq[2]),
-                       tRNA_str = as.character(trna$str[2]),
-                       tRNA_CCA.end = as.logical(.has_CCA_end(trna$seq[2], 
-                                                         trna$str[2])),
-                       # do not force type - optional data
-                       tRNAscan_potential.pseudogene = 
-                         ifelse(length(!is.na(trna$pseudogene[2])) != 0,
-                                !is.na(trna$pseudogene[2]),
-                                FALSE),
-                       tRNAscan_intron.start = trna$intron[4],
-                       tRNAscan_intron.end = trna$intron[5],
-                       tRNAscan_intron.locstart = trna$intron[2],
-                       tRNAscan_intron.locend = trna$intron[3],
-                       tRNAscan_hmm.score = trna$hmm[2],
-                       tRNAscan_sec.str.score = trna$secstruct[2],
-                       tRNAscan_infernal = trna$infernal[2]))
-    # if a field returns NULL because it is not set switch to NA, since this
-    # will persist for data.frame creation
-    res[vapply(res, is.null, logical(1))] <- NA
-    return(res)
-  })
+                     res <- list(no = as.numeric(trna$trna[3]),
+                                 chr = as.character(trna$trna[2]))
+                     # If on minus strand
+                     if( as.numeric(trna$trna[5]) < as.numeric(trna$trna[4])){
+                       res <- append(res,
+                                     list(start = as.numeric(trna$trna[5]),
+                                          end = as.numeric(trna$trna[4]),
+                                          strand = "-"))  
+                     } else {
+                       res <- append(res,
+                                     list(start = as.numeric(trna$trna[4]),
+                                          end = as.numeric(trna$trna[5]),
+                                          strand = "+"))  
+                     }
+                     res <- append(res,
+                                   list(tRNA_length = as.numeric(trna$trna[6]),
+                                        tRNA_type = as.character(trna$type[2]),
+                                        tRNA_anticodon = as.character(trna$type[3]),
+                                        tRNA_anticodon.start = as.integer(trna$type[4]),
+                                        tRNA_anticodon.end = as.integer(trna$type[5]),
+                                        tRNAscan_score = as.numeric(trna$type[6]),
+                                        tRNA_seq = as.character(trna$seq[2]),
+                                        tRNA_str = as.character(trna$str[2]),
+                                        tRNA_CCA.end = as.logical(.has_CCA_end(trna$seq[2], 
+                                                                               trna$str[2])),
+                                        # do not force type - optional data
+                                        tRNAscan_potential.pseudogene = 
+                                          ifelse(length(!is.na(trna$pseudogene[2])) != 0,
+                                                 !is.na(trna$pseudogene[2]),
+                                                 FALSE),
+                                        tRNAscan_intron.start = trna$intron[4],
+                                        tRNAscan_intron.end = trna$intron[5],
+                                        tRNAscan_intron.locstart = trna$intron[2],
+                                        tRNAscan_intron.locend = trna$intron[3],
+                                        tRNAscan_hmm.score = trna$hmm[2],
+                                        tRNAscan_sec.str.score = trna$secstruct[2],
+                                        tRNAscan_infernal = trna$infernal[2]))
+                     # if a field returns NULL because it is not set switch to NA, since this
+                     # will persist for data.frame creation
+                     res[vapply(res, is.null, logical(1))] <- NA
+                     return(res)
+                   })
   # create data.frame
   df <- lapply(names(result[[1]]), 
                function(name){ 
@@ -368,7 +368,7 @@ tRNAscan2GFF <- function(input) {
   chromIndex <- unlist(lapply(seq_along(unique(chrom)), 
                               function(i){
                                 rep(i,length(which(chrom == unique(chrom)[i])))
-                                }))
+                              }))
   chromLetters <- .get_chrom_letters(length(unique(chromIndex)))
   # Modified version of AA code since the tRNAscan uses a slight deviation
   # from the one defined in Biostrings

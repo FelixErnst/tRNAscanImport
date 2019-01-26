@@ -40,11 +40,11 @@ test_that("tests:",{
   expect_false(identical(df[1,"tRNA_seq"], actual[1,"tRNA_seq"]))
   expect_true(identical(
     "GGGCGTGTGGTCTAGTGGTATGATTCTCGCTTTGGGTGCGAGAGGcCCTGGGTTCAATTCCCAGCTCGCCCC", 
-                        actual[1,"tRNA_seq"]))
+    actual[1,"tRNA_seq"]))
   expect_false(identical(df[1,"seq"], actual[1,"tRNA_str"]))
   expect_true(identical(
     ">>>>>.>..>>>.........<<<.>>>>>.......<<<<<.....>>>>>.......<<<<<<.<<<<<.", 
-                        actual[1,"tRNA_str"]))
+    actual[1,"tRNA_str"]))
   
   gr <- tRNAscanImport::import.tRNAscanAsGRanges(file)
   length <- as.numeric(S4Vectors::mcols(gr)$tRNA_length)
@@ -164,4 +164,3 @@ test_that("input failure test:",{
     'argument "df" is missing'
   )
 })
-
