@@ -46,6 +46,7 @@ NULL
 #' @export
 #' 
 #' @importFrom Biostrings DNAStringSet
+#' @importFrom Structstrings DotBracketStringSet
 #' @importFrom BiocGenerics start
 #' @importFrom GenomeInfoDb seqnames
 #' @importFrom S4Vectors mcols
