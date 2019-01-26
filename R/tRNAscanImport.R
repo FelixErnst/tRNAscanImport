@@ -33,11 +33,12 @@
 NULL
 
 #' @import methods
-#' @import assertive
 #' @import GenomicRanges
+#' @import Biostrings
+#' @import Structstrings
+#' @import assertive
 #' @import tRNA
 NULL
-requireNamespace("GenomicRanges")
 requireNamespace("tRNA")
 
 # constants tRNAscanImport -----------------------------------------------------

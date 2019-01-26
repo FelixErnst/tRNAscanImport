@@ -3,7 +3,6 @@
 \docType{methods}
 \name{istRNAscanGRanges}
 \alias{istRNAscanGRanges}
-\alias{istRNAscanGRanges}
 \alias{istRNAscanGRanges,GRanges-method}
 \title{tRNAscan compatibility check}
 \usage{
