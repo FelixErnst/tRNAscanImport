@@ -20,6 +20,7 @@ Imports:
     stringr,
     BiocGenerics,
     Biostrings,
+    Structstrings,
     S4Vectors,
     GenomeInfoDb,
     rtracklayer
@@ -34,7 +35,7 @@ Suggests:
     rmarkdown,
     testthat,
     ggplot2
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 VignetteBuilder: knitr
 biocViews:
     Software,

@@ -67,7 +67,7 @@ test_that("type tests gr:",{
   expect_type(mcols(gr)$tRNA_anticodon.end, "integer")
   expect_type(mcols(gr)$tRNAscan_score, "double")
   expect_type(mcols(gr)$tRNA_seq, "S4")
-  expect_type(mcols(gr)$tRNA_str, "character")
+  expect_type(mcols(gr)$tRNA_str, "S4")
   expect_type(mcols(gr)$tRNA_CCA.end, "logical")
   expect_type(mcols(gr)$tRNAscan_potential.pseudogene, "logical")
   expect_type(mcols(gr)$tRNAscan_intron.start, "integer")
