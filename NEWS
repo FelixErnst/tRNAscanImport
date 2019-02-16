@@ -10,3 +10,6 @@ Changes in version 1.1.9 (2018-10-24)
 
 Changes in version 1.3.1 (2018-01-26)
 + now uses the DotBracketStringSet from the Structstrings package to store the structure information
+
+Changes in version 1.3.2 (2018-02-16)
++ now exits with error message, if empty lines as delimiter of tRNA entries is found

@@ -195,6 +195,11 @@ import.tRNAscanAsGRanges <- function(input,
     if(stringr::str_trim(lines[i]) == "") return(i)
   }))
   # generate splitting factor
+  if(is.null(cuts)){
+    stop("Invalid format. No empty lines found as delimiter for individual",
+         " tRNA entries. Please check the format of the input file.",
+         call. = FALSE)
+  }
   cuts <- c(1,cuts,(max(cuts)+1))
   f <- as.factor(.get_factor_numbers(cuts,1))
   # parse the blocks for tRNA data
