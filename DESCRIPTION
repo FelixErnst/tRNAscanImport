@@ -42,4 +42,5 @@ biocViews:
     DataImport,
     WorkflowStep,
     Preprocessing,
-    Visualization
+    Visualization    
+BugReports: https://github.com/FelixErnst/tRNAscanImport/issues
