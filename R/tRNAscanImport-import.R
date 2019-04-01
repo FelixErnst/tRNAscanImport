@@ -372,7 +372,9 @@ tRNAscan2GFF <- function(input) {
 #' @rdname import.tRNAscanAsGRanges
 #'
 #' @export
-tRNAscanID <- function(tRNAscan){
+tRNAscanID <- function(input){
+  .check_trnascan_granges(input, TRNASCAN_FEATURES)
+  tRNAscan <- input
   # create ids based on type, anticodon and chromosome
   chrom <- as.character(GenomeInfoDb::seqnames(tRNAscan))
   chromIndex <- unlist(lapply(seq_along(unique(chrom)), 

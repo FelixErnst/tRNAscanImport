@@ -11,7 +11,7 @@ import.tRNAscanAsGRanges(input, as.GFF3 = FALSE, trim.intron = TRUE,
 
 tRNAscan2GFF(input)
 
-tRNAscanID(tRNAscan)
+tRNAscanID(input)
 }
 \arguments{
 \item{input}{\itemize{
