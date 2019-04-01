@@ -3,12 +3,15 @@
 \name{import.tRNAscanAsGRanges}
 \alias{import.tRNAscanAsGRanges}
 \alias{tRNAscan2GFF}
+\alias{tRNAscanID}
 \title{Importing a tRNAscan output file as a GRanges object}
 \usage{
 import.tRNAscanAsGRanges(input, as.GFF3 = FALSE, trim.intron = TRUE,
   remove.lowerCase = FALSE)
 
 tRNAscan2GFF(input)
+
+tRNAscanID(tRNAscan)
 }
 \arguments{
 \item{input}{\itemize{
@@ -42,6 +45,13 @@ returned as imported.
 
 The function \code{tRNAScan2GFF} formats the output of 
 \code{import.tRNAscanAsGRanges} to be GFF3 compliant.
+
+\code{tRNAscanID} generates a unique tRNA ID, which is like the format used 
+in the SGD annotation 
+
+\code{t*AminoAcidSingleLetter*(*Anticodon*)*ChromosomeIdentifier**optionalNumberIfOnTheSameChromosome*}
+ 
+Example: tP(UGG)L or tE(UUC)E1.
 }
 \examples{
 gr <- import.tRNAscanAsGRanges(system.file("extdata", 

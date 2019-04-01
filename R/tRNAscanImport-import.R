@@ -2,7 +2,7 @@
 NULL
 
 #' @name import.tRNAscanAsGRanges
-#' @aliases import.tRNAscanAsGRanges tRNAscan2GFF
+#' @aliases import.tRNAscanAsGRanges tRNAscan2GFF tRNAscanID
 #' 
 #' @title Importing a tRNAscan output file as a GRanges object
 #' 
@@ -14,6 +14,13 @@ NULL
 #' 
 #' The function \code{tRNAScan2GFF} formats the output of 
 #' \code{import.tRNAscanAsGRanges} to be GFF3 compliant.
+#' 
+#' \code{tRNAscanID} generates a unique tRNA ID, which is like the format used 
+#' in the SGD annotation 
+#' 
+#' \code{t*AminoAcidSingleLetter*(*Anticodon*)*ChromosomeIdentifier**optionalNumberIfOnTheSameChromosome*}
+#'  
+#' Example: tP(UGG)L or tE(UUC)E1.
 #'
 #' @references 
 #' Chan, Patricia P., and Todd M. Lowe. 2016. “GtRNAdb 2.0: An Expanded Database
@@ -195,6 +202,11 @@ import.tRNAscanAsGRanges <- function(input,
     if(stringr::str_trim(lines[i]) == "") return(i)
   }))
   # generate splitting factor
+  if(is.null(cuts)){
+    stop("Invalid format. No empty lines found as delimiter for individual",
+         " tRNA entries. Please check the format of the input file.",
+         call. = FALSE)
+  }
   cuts <- c(1,cuts,(max(cuts)+1))
   f <- as.factor(.get_factor_numbers(cuts,1))
   # parse the blocks for tRNA data
@@ -325,7 +337,7 @@ tRNAscan2GFF <- function(input) {
   # t*AminoAcidSingleLetter*(*Anticodon*)*ChromosomeIdentifier*
   # *optionalNumberIfOnTheSameChromosome*
   # Example: tP(UGG)L or tE(UUC)E1
-  S4Vectors::mcols(tRNAscan)$ID <- .create_tRNAscan_id(tRNAscan)
+  S4Vectors::mcols(tRNAscan)$ID <- tRNAscanID(tRNAscan)
   S4Vectors::mcols(tRNAscan)$type <- "tRNA"
   S4Vectors::mcols(tRNAscan)$type <- 
     as.factor(S4Vectors::mcols(tRNAscan)$type)
@@ -357,12 +369,10 @@ tRNAscan2GFF <- function(input) {
   return(tRNAscan)
 }
 
-# generate unique tRNA ID
-# SGD like format is used 
-# t*AminoAcidSingleLetter*(*Anticodon*)*ChromosomeIdentifier*
-# *optionalNumberIfOnTheSameChromosome*
-# Example: tP(UGG)L or tE(UUC)E1
-.create_tRNAscan_id <- function(tRNAscan){
+#' @rdname import.tRNAscanAsGRanges
+#'
+#' @export
+tRNAscanID <- function(tRNAscan){
   # create ids based on type, anticodon and chromosome
   chrom <- as.character(GenomeInfoDb::seqnames(tRNAscan))
   chromIndex <- unlist(lapply(seq_along(unique(chrom)), 

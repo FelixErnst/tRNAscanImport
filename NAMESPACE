@@ -3,6 +3,7 @@
 export(import.tRNAscanAsGRanges)
 export(istRNAscanGRanges)
 export(tRNAscan2GFF)
+export(tRNAscanID)
 exportMethods(istRNAscanGRanges)
 import(Biostrings)
 import(GenomicRanges)
