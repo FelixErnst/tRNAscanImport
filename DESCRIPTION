@@ -1,11 +1,12 @@
 Package: tRNAscanImport
 Title: Imports a tRNAscan-SE result file as GRanges object
-Version: 1.5.0
-Date: 2019-02-16
-Authors@R: person("Felix GM",
-                  "Ernst",
-                  email = "felix.gm.ernst@outlook.com",
-                  role = c("aut", "cre"))
+Version: 1.5.1
+Date: 2019-06-11
+Authors@R: person("Felix G.M.", 
+                  "Ernst", 
+                  email = "felix.gm.ernst@outlook.com", 
+                  role = c("aut", "cre"),
+                  comment = c(ORCID = "0000-0001-5064-0928"))
 Description: The package imports the result of tRNAscan-SE as a GRanges object.
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
