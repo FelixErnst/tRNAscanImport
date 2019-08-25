@@ -23,19 +23,25 @@ Imports:
     Biostrings,
     Structstrings,
     S4Vectors,
+    IRanges,
+    XVector,
     GenomeInfoDb,
-    rtracklayer
+    rtracklayer,
+    BSgenome,
+    Rsamtools
 Collate:
     'tRNAscanImport.R'
     'AllGenerics.R'
     'tRNAscanImport-checks.R'
+    'tRNAscanImport-genome.R'
     'tRNAscanImport-import.R'
 Suggests:
     BiocStyle, 
     knitr,
     rmarkdown,
     testthat,
-    ggplot2
+    ggplot2,
+    BSgenome.Scerevisiae.UCSC.sacCer3
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
 biocViews:

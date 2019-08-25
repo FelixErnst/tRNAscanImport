@@ -16,8 +16,8 @@ tRNAscanID(input)
 \arguments{
 \item{input}{\itemize{
 \item \code{import.tRNAscanAsGRanges}: a tRNAscan-SE input file
-\item \code{tRNAscan2GFF}: a compatible GRanges object such as the output of 
-\code{import.tRNAscanAsGRanges}
+\item \code{tRNAscan2GFF}: a compatible \code{GRanges} object such as the 
+output of \code{import.tRNAscanAsGRanges}
 }}
 
 \item{as.GFF3}{optional logical for \code{import.tRNAscanAsGRanges}: returns 

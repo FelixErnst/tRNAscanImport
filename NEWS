@@ -8,8 +8,13 @@ Changes in version 1.1.9 (2018-10-24)
 + moved some functionality to tRNA package
 + added dependency for tRNA package
 
-Changes in version 1.3.1 (2018-01-26)
+Changes in version 1.3.1 (2019-01-26)
 + now uses the DotBracketStringSet from the Structstrings package to store the structure information
 
-Changes in version 1.3.2 (2018-02-16)
+Changes in version 1.3.2 (2019-02-16)
 + now exits with error message, if empty lines as delimiter of tRNA entries is found
+
+Changes in version 1.5.3 (2019-08-25)
++ added get.tRNAprecursor function to retrieve tRNA precursor sequences in combination with genomic sequences
++ fixed typos in the NEWS file
++ updated tRNAscan example file for human (the high confidence set is now included)

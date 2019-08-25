@@ -34,8 +34,8 @@ NULL
 #' @param input 
 #' \itemize{
 #' \item \code{import.tRNAscanAsGRanges}: a tRNAscan-SE input file
-#' \item \code{tRNAscan2GFF}: a compatible GRanges object such as the output of 
-#' \code{import.tRNAscanAsGRanges}
+#' \item \code{tRNAscan2GFF}: a compatible \code{GRanges} object such as the 
+#' output of \code{import.tRNAscanAsGRanges}
 #' }
 #' @param as.GFF3 optional logical for \code{import.tRNAscanAsGRanges}: returns 
 #' a gff3 compatible GRanges object directly. (default: \code{as.GFF3 = FALSE})

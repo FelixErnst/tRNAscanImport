@@ -134,6 +134,31 @@ plots$tRNAscan_intron
 plots$variableLoop_length
 ```
 
+# Getting tRNA precursor sequences
+
+Since tRNAscan reports the genomic location for tRNAs found, approximate tRNA
+precursor sequences can be retrieved by combining a tRNAscan input object with 
+matching genomic sequences for the function `get.tRNAprecursor`.
+
+```{r, echo=FALSE}
+suppressPackageStartupMessages({
+  library(BSgenome.Scerevisiae.UCSC.sacCer3)
+})
+```
+```{r tRNA_precursor}
+library(BSgenome.Scerevisiae.UCSC.sacCer3)
+genome <- getSeq(BSgenome.Scerevisiae.UCSC.sacCer3)
+# renaming chromosome to match tRNAscan output
+names(genome) <- c(names(genome)[-17],"chrmt")
+tRNAprecursor <- get.tRNAprecursor(gr, genome)
+head(tRNAprecursor)
+```
+
+The length of the overhangs can be defined with the arguments `add.5prime` and 
+`add.3prime`, respectively. Both support individual lengths for each tRNA and 
+require values to be integer only. In addition, introns can be removed by 
+setting `trim.introns = TRUE`. 
+
 # Further reading
 
 Further examples of working with tRNA information can be found in the 
