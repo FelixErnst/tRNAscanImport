@@ -6,8 +6,12 @@
 \alias{tRNAscanID}
 \title{Importing a tRNAscan output file as a GRanges object}
 \usage{
-import.tRNAscanAsGRanges(input, as.GFF3 = FALSE, trim.intron = TRUE,
-  remove.lowerCase = FALSE)
+import.tRNAscanAsGRanges(
+  input,
+  as.GFF3 = FALSE,
+  trim.intron = TRUE,
+  remove.lowerCase = FALSE
+)
 
 tRNAscan2GFF(input)
 

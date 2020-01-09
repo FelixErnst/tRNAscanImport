@@ -149,7 +149,7 @@ suppressPackageStartupMessages({
 library(BSgenome.Scerevisiae.UCSC.sacCer3)
 genome <- getSeq(BSgenome.Scerevisiae.UCSC.sacCer3)
 # renaming chromosome to match tRNAscan output
-names(genome) <- c(names(genome)[-17],"chrmt")
+names(genome) <- c(names(genome)[-17L],"chrmt")
 tRNAprecursor <- get.tRNAprecursor(gr, genome)
 head(tRNAprecursor)
 ```

@@ -1,7 +1,7 @@
 Package: tRNAscanImport
 Title: Importing a tRNAscan-SE result file as GRanges object
-Version: 1.7.0
-Date: 2019-08-25
+Version: 1.7.1
+Date: 2020-01-09
 Authors@R: person("Felix G.M.", 
                   "Ernst", 
                   email = "felix.gm.ernst@outlook.com", 
@@ -10,7 +10,6 @@ Authors@R: person("Felix G.M.",
 Description: The package imports the result of tRNAscan-SE as a GRanges object.
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
-LazyData: true
 Depends:
     R (>= 3.5),
     GenomicRanges,
@@ -42,7 +41,7 @@ Suggests:
     testthat,
     ggplot2,
     BSgenome.Scerevisiae.UCSC.sacCer3
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 VignetteBuilder: knitr
 biocViews:
     Software,
@@ -51,3 +50,4 @@ biocViews:
     Preprocessing,
     Visualization    
 BugReports: https://github.com/FelixErnst/tRNAscanImport/issues
+URL: https://github.com/FelixErnst/tRNAscanImport

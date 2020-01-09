@@ -3,7 +3,6 @@
 \docType{package}
 \name{tRNAscanImport}
 \alias{tRNAscanImport}
-\alias{tRNAscanImport-package}
 \title{tRNAscanImport: Importing tRNAscan-SE output as GRanges}
 \description{
 tRNAscan-SE can be used for prediction of tRNA genes in whole

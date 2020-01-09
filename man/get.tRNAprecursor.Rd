@@ -4,8 +4,13 @@
 \alias{get.tRNAprecursor}
 \title{Get tRNA precursor sequences}
 \usage{
-get.tRNAprecursor(input, genome, add.5prime = 50L,
-  add.3prime = add.5prime, trim.intron = FALSE)
+get.tRNAprecursor(
+  input,
+  genome,
+  add.5prime = 50L,
+  add.3prime = add.5prime,
+  trim.intron = FALSE
+)
 }
 \arguments{
 \item{input}{a compatible \code{GRanges} object}
