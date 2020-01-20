@@ -8,6 +8,7 @@ before_install:
 # for codecov
 r_packages:
   - covr
+  - magick
 cache:
   packages: true
   directories:
