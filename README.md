@@ -1,4 +1,4 @@
-# tRNAscanImport
+# tRNAscanImport [![Build Status](https://travis-ci.com/FelixErnst/tRNAscanImport.svg?branch=master)](https://travis-ci.com/FelixErnst/tRNAscanImport) [![codecov](https://codecov.io/gh/FelixErnst/tRNAscanImport/branch/master/graph/badge.svg)](https://codecov.io/gh/FelixErnst/tRNAscanImport)
 
 <img src="https://raw.githubusercontent.com/Bioconductor/BiocStickers/master/tRNA/tRNA.png" height="300" align="right">
 
