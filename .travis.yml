@@ -4,7 +4,10 @@ r:
   - bioc-devel
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -y libpoppler-cpp-dev
+  - sudo apt-get install -y libpoppler-cpp-dev libmagick++-dev
+# for codecov
+r_packages:
+  - covr
 cache:
   packages: true
   directories:
