@@ -40,6 +40,16 @@ NULL
 #' genome <- getSeq(BSgenome.Scerevisiae.UCSC.sacCer3)
 #' names(genome) <- c(names(genome)[-17],"chrmt")
 #' get.tRNAprecursor(gr, genome)
+#' # this produces an error since the seqnames do not match
+#' \dontrun{
+#' genome <- BSgenome.Scerevisiae.UCSC.sacCer3
+#' names(genome) <- c(names(genome)[-17],"chrmt")
+#' get.tRNAprecursor(gr, genome)
+#' }
+#' # ... but it can also be fixed
+#' genome <- BSgenome.Scerevisiae.UCSC.sacCer3
+#' seqnames(genome) <- c(seqnames(genome)[-17],"chrmt")
+#' get.tRNAprecursor(gr, genome)
 get.tRNAprecursor <- function(input, genome, add.5prime = 50L,
                               add.3prime = add.5prime, trim.intron = FALSE) {
   # input checks
@@ -67,7 +77,11 @@ get.tRNAprecursor <- function(input, genome, add.5prime = 50L,
   } else {
     add.3prime <- rep(add.3prime,length(input))
   }
-  if(!assertive::is_a_bool(trim.intron)) trim.intron <- TRUE
+  if(!assertive::is_a_bool(trim.intron)) {
+    warning("'trim.intron' is not a bool. Resetting 'trim.intron' == TRUE.",
+            call. = FALSE)
+    trim.intron <- TRUE
+  }
   # pre-check that input and genome are compatible
   chrNamesTSC <- as.character(seqnames(input))
   chrNamesGenome <- seqnames(seqinfo(genome))
@@ -112,8 +126,6 @@ get.tRNAprecursor <- function(input, genome, add.5prime = 50L,
   }
   # clip 5' and 3' additions
   ircomp <- IRanges::IRanges(add.5prime + 1L, lengths(comp) - add.3prime)
-  ircomp[strandM] <- IRanges::IRanges(add.3prime + 1L,
-                                      lengths(comp[strandM]) - add.5prime)
   comp <- XVector::subseq(comp,ircomp)
   # check that reconstructed sequences match the sequences reported in tRNAscan
   if(any(input$tRNA_seq != comp)){

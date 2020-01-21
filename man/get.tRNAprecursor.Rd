@@ -48,4 +48,14 @@ gr <- tRNAscanImport::import.tRNAscanAsGRanges(file)
 genome <- getSeq(BSgenome.Scerevisiae.UCSC.sacCer3)
 names(genome) <- c(names(genome)[-17],"chrmt")
 get.tRNAprecursor(gr, genome)
+# this produces an error since the seqnames do not match
+\dontrun{
+genome <- BSgenome.Scerevisiae.UCSC.sacCer3
+names(genome) <- c(names(genome)[-17],"chrmt")
+get.tRNAprecursor(gr, genome)
+}
+# ... but it can also be fixed
+genome <- BSgenome.Scerevisiae.UCSC.sacCer3
+seqnames(genome) <- c(seqnames(genome)[-17],"chrmt")
+get.tRNAprecursor(gr, genome)
 }

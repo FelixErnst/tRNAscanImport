@@ -1,7 +1,7 @@
 library(tRNAscanImport)
 
-context("tests")
-test_that("tests:",{
+context("tRNAscan import")
+test_that("tRNAscan import:",{
   file <- system.file("extdata", 
                       file = "yeast.tRNAscan", 
                       package = "tRNAscanImport")
@@ -52,8 +52,8 @@ test_that("tests:",{
   expect_equal(length,BiocGenerics::width(S4Vectors::mcols(gr)$tRNA_str))
 })
 
-context("type tests gr")
-test_that("type tests gr:",{
+context("tRNAscan data integrity")
+test_that("tRNAscan data integrity:",{
   file <- system.file("extdata", 
                       file = "yeast.tRNAscan", 
                       package = "tRNAscanImport")
@@ -78,10 +78,17 @@ test_that("type tests gr:",{
   expect_type(mcols(gr)$tRNAscan_sec.str.score, "double")
   expect_type(mcols(gr)$tRNAscan_infernal, "double")
   expect_true(all(gr$tRNAscan_potential.pseudogene == FALSE))
+  #
+  mcols(gr)$tRNA_seq <- NULL
+  expect_warning(expect_false(istRNAscanGRanges(gr)),
+                 "Input GRanges object does not meet the requirements")
+  expect_error(istRNAscanGRanges(data.frame()))
+  expect_warning(expect_false(.check_trnascan_granges(data.frame(),"")),
+                 "Input is not a GRanges object")
 })
 
-context("type tests gff")
-test_that("type tests gff:",{
+context("tRNAscan gff integrity")
+test_that("tRNAscan gff integrity:",{
   file <- system.file("extdata", 
                       file = "yeast.tRNAscan", 
                       package = "tRNAscanImport")
@@ -113,6 +120,56 @@ test_that("type tests gff:",{
   expect_type(mcols(gff)$tRNAscan_hmm.score, "double")
   expect_type(mcols(gff)$tRNAscan_sec.str.score, "double")
   expect_type(mcols(gff)$tRNAscan_infernal, "double")
+})
+
+context("tRNA precursor")
+test_that("tRNA precursor:",{
+  library(BSgenome.Scerevisiae.UCSC.sacCer3)
+  file <- system.file("extdata",
+                      file = "yeast.tRNAscan",
+                      package = "tRNAscanImport")
+  gr <- tRNAscanImport::import.tRNAscanAsGRanges(file)
+  genome <- getSeq(BSgenome.Scerevisiae.UCSC.sacCer3)
+  #
+  expect_error(get.tRNAprecursor(gr, genome),
+               "Not all chromosomes referenced in the tRNAscan data are")
+  #
+  names(genome) <- c(names(genome)[-17],"chrmt")
+  expect_equal(BSgenome.Scerevisiae.UCSC.sacCer3,
+               tRNAscanImport:::.norm_genome(BSgenome.Scerevisiae.UCSC.sacCer3))
+  expect_equal(genome,tRNAscanImport:::.norm_genome(genome))
+  fl <- system.file("extdata", "ce2dict1.fa", package="Rsamtools",
+                    mustWork=TRUE)
+  ff <- Rsamtools::FaFile(fl)
+  expect_equal(ff,tRNAscanImport:::.norm_genome(ff))
+  #
+  expect_error(get.tRNAprecursor(gr, genome, add.5prime = 1.2),
+               "'add.5prime' and 'add.3prime' must be integer values")
+  expect_error(get.tRNAprecursor(gr, genome, add.3prime = 1.2),
+               "'add.5prime' and 'add.3prime' must be integer values")
+  expect_error(get.tRNAprecursor(gr, genome, add.3prime = c(1,2)),
+               "'add.5prime' and 'add.3prime' must be integer values")
+  expect_error(get.tRNAprecursor(gr, genome, add.3prime = c(1L,2L)),
+               "'add.3prime' must be a single integer value")
+  expect_error(get.tRNAprecursor(gr, genome, add.5prime = c(1L,2L)),
+               "'add.5prime' must be a single integer value")
+  expect_warning(get.tRNAprecursor(gr, genome, trim.intron = 1),
+                 "'trim.intron' is not a bool. Resetting ")
+  #
+  actual <- get.tRNAprecursor(gr, genome)
+  genome2 <- BSgenome.Scerevisiae.UCSC.sacCer3
+  seqnames(genome2) <- c(seqnames(genome2)[-17],"chrmt")
+  actual2 <- get.tRNAprecursor(gr, genome2)
+  expect_equal(as.character(actual), as.character(actual2))
+  expect_equal(width(head(actual,n=5)), c(203L, 173L, 214L, 182L, 184L))
+  #
+  actual <- get.tRNAprecursor(gr, genome, trim.intron = TRUE)
+  expect_equal(width(head(actual,n=5)), c(172L, 173L, 182L, 182L, 184L))
+  actual <- get.tRNAprecursor(gr, genome, trim.intron = TRUE, add.5prime = 10L)
+  expect_equal(width(head(actual,n=5)), c(92L, 93L, 102L, 102L, 104L))
+  actual <- get.tRNAprecursor(gr, genome, trim.intron = TRUE, add.5prime = 10L,
+                              add.3prime = 50L)
+  expect_equal(width(head(actual,n=5)), c(132L, 133L, 142L, 142L, 144L))
 })
 
 context("input failure tests")
@@ -163,4 +220,8 @@ test_that("input failure test:",{
     tRNAscanImport:::.cut_introns(),
     'argument "df" is missing'
   )
+  expect_error(tRNAscanImport:::.norm_genome(),
+               'argument "genome" is missing, with no default')
+  expect_error(tRNAscanImport:::.norm_genome(data.frame()),
+               "'genome' must be an object of class 'BSgenome'")
 })

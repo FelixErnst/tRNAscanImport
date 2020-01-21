@@ -31,16 +31,17 @@ setMethod(
 # checks whether a GRanges object is trnascan compatible
 .check_trnascan_granges <- function(gr,features){
   if(!is(gr,"GRanges")){
-    stop("Input is not a GRanges object.",
-         call. = FALSE)
+    warning("Input is not a GRanges object.", call. = FALSE)
+    return(FALSE)
   }
   # check input
   if(length(intersect(features,colnames(S4Vectors::mcols(gr)))) !=
      length(features)){
-    stop("Input GRanges object does not meet the requirements of the ",
-         "function. Please refer to the vignette of tRNAscanImport for ",
-         "an exmaple on what information is expected.",
-         call. = FALSE)
+    warning("Input GRanges object does not meet the requirements of the ",
+            "function. Please refer to the vignette of tRNAscanImport for ",
+            "an exmaple on what information is expected.",
+            call. = FALSE)
+    return(FALSE)
   }
   return(TRUE)
 }
