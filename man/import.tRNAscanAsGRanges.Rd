@@ -6,12 +6,7 @@
 \alias{tRNAscanID}
 \title{Importing a tRNAscan output file as a GRanges object}
 \usage{
-import.tRNAscanAsGRanges(
-  input,
-  as.GFF3 = FALSE,
-  trim.intron = TRUE,
-  remove.lowerCase = FALSE
-)
+import.tRNAscanAsGRanges(input, as.GFF3 = FALSE, trim.intron = TRUE)
 
 tRNAscan2GFF(input)
 
@@ -31,12 +26,6 @@ a gff3 compatible GRanges object directly. (default: \code{as.GFF3 = FALSE})}
 remove intron sequences. This changes the tRNA length reported. To retrieve
 the original length fo the tRNA gene, use the \code{width()} function on the 
 GRanges object. (default: \code{trim.intron = TRUE})}
-
-\item{remove.lowerCase}{optional logical for \code{import.tRNAscanAsGRanges}: 
-remove lower case characters from sequence and corresponding positions in 
-structure annotation. Be aware, that this might lead to incorrect structures
-since it depends completely on how the mismatch is marked in the structure 
-annotations. (default: \code{remove.lowerCase = FALSE})}
 }
 \value{
 a GRanges object

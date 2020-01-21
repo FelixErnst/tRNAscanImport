@@ -85,6 +85,12 @@ test_that("tRNAscan data integrity:",{
   expect_error(istRNAscanGRanges(data.frame()))
   expect_warning(expect_false(.check_trnascan_granges(data.frame(),"")),
                  "Input is not a GRanges object")
+  #
+  expect_warning(tRNAscanImport::import.tRNAscanAsGRanges(file, as.GFF3 = 1),
+                 "'as.GFF3' is not a bool. Resetting")
+  expect_warning(tRNAscanImport::import.tRNAscanAsGRanges(file,
+                                                          trim.intron = 1),
+                 "'trim.intron' is not a bool. Resetting")
 })
 
 context("tRNAscan gff integrity")
@@ -120,6 +126,9 @@ test_that("tRNAscan gff integrity:",{
   expect_type(mcols(gff)$tRNAscan_hmm.score, "double")
   expect_type(mcols(gff)$tRNAscan_sec.str.score, "double")
   expect_type(mcols(gff)$tRNAscan_infernal, "double")
+  #
+  gff2 <- tRNAscanImport::import.tRNAscanAsGRanges(file, as.GFF3 = TRUE)
+  expect_equal(gff, gff2)
 })
 
 context("tRNA precursor")

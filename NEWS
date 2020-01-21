@@ -19,6 +19,7 @@ Changes in version 1.5.3 (2019-08-25)
 + fixed typos in the NEWS file
 + updated tRNAscan example file for human (the high confidence set is now included)
 
-Changes in version 1.7.2 (2020-01-21)
+Changes in version 1.7.3 (2020-01-21)
 + fixed get.tRNAprecursor() function if length of flanking sequences was not equal
 + fixed istRNAscanGRanges() not returing a boolean value on fail
++ removed remove.LowerCase argument from import.tRNAscanAsGRanges() since it was redundant
