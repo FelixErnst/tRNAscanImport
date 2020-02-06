@@ -89,6 +89,8 @@ import.tRNAscanAsGRanges <-
     Biostrings::DNAStringSet(S4Vectors::mcols(gr)$tRNA_seq)
   S4Vectors::mcols(gr)$tRNA_str <- 
     Structstrings::DotBracketStringSet(S4Vectors::mcols(gr)$tRNA_str)
+  names(S4Vectors::mcols(gr)$tRNA_seq) <- as.character(seqnames(gr))
+  names(S4Vectors::mcols(gr)$tRNA_str) <- as.character(seqnames(gr))
   S4Vectors::mcols(gr)$tRNA_length <- 
     nchar(as.character(S4Vectors::mcols(gr)$tRNA_seq))
   # sort GRanges object
