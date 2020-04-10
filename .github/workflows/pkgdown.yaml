@@ -52,6 +52,7 @@ jobs:
           install.packages("remotes")
           remotes::install_deps(dependencies = TRUE)
           remotes::install_dev("pkgdown")
+          remotes::install_cran("magick")
         shell: Rscript {0}
 
       - name: Install package
