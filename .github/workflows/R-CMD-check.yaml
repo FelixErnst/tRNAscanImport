@@ -64,13 +64,15 @@ jobs:
         run: |
           sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
           sudo -s eval "$sysreqs libcurl4-openssl-dev"
-        
+          
+      # BSgenome* package dont get installed otherwise  
       - name: Install R dependencies
         run: |
-          remotes::install_deps(dependencies = TRUE)
+          remotes::install_bioc("GenomeInfoDbData") 
           remotes::install_cran("rcmdcheck")
           remotes::install_cran("covr")
           remotes::install_cran("magick")
+          remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
 
       - name: Check
