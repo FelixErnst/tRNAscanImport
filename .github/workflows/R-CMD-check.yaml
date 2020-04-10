@@ -68,11 +68,12 @@ jobs:
       # BSgenome* package dont get installed otherwise  
       - name: Install R dependencies
         run: |
-          remotes::install_bioc("GenomeInfoDbData") 
+          install.packages("BiocManager")
+          BiocManager::install("GenomeInfoDbData")
+          remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
           remotes::install_cran("covr")
           remotes::install_cran("magick")
-          remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
 
       - name: Check
