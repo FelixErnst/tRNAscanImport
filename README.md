@@ -1,6 +1,13 @@
-# tRNAscanImport [![Build Status](https://travis-ci.com/FelixErnst/tRNAscanImport.svg?branch=master)](https://travis-ci.com/FelixErnst/tRNAscanImport) [![codecov](https://codecov.io/gh/FelixErnst/tRNAscanImport/branch/master/graph/badge.svg)](https://codecov.io/gh/FelixErnst/tRNAscanImport)
+# tRNAscanImport <img src="https://raw.githubusercontent.com/Bioconductor/BiocStickers/master/tRNA/tRNA.png" height="200" align="right">
 
-<img src="https://raw.githubusercontent.com/Bioconductor/BiocStickers/master/tRNA/tRNA.png" height="300" align="right">
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/FelixErnst/tRNAscanImport/workflows/R-CMD-check/badge.svg)](https://github.com/FelixErnst/tRNAscanImport/actions/)
+[![codecov](https://codecov.io/gh/FelixErnst/tRNAscanImport/branch/master/graph/badge.svg)](https://codecov.io/gh/FelixErnst/tRNAscanImport)
+[![BioC Years](https://bioconductor.org/shields/years-in-bioc/tRNAscanImport.svg)](https://doi.org/doi:10.18129/B9.bioc.tRNAscanImport)
+[![BioC Build](https://bioconductor.org/shields/build/release/bioc/tRNAdbImport.svg)](http://bioconductor.org/checkResults/release/bioc-LATEST/tRNAdbImport/)
+<!-- badges: end -->
+
+
 
 The default tRNAscan-SE ([Lowe et el. 1997](#Literature)) output is formatted text
 document containing text blocks per tRNA delimited by an empty line. 

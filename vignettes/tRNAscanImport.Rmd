@@ -1,5 +1,5 @@
 ---
-title: "Importing tRNAscan-SE output as GRanges"
+title: "Importing tRNAscan-SE output as `GRanges`"
 author: "Felix G.M. Ernst"
 date: "`r Sys.Date()`"
 package: tRNAscanImport
@@ -56,7 +56,7 @@ yeast_file <- system.file("extdata",
 readLines(con = yeast_file, n = 7L)
 ```
 
-# Importing as GRanges
+# Importing as `GRanges`
 
 To access the information in a BioC context the import as a GRanges object
 comes to mind. `import.tRNAscanAsGRanges()` performs this task by evaluating
