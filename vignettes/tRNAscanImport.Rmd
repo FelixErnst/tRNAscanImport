@@ -118,19 +118,19 @@ grl <- GRangesList(Sce = gr,
                    Eco = gr_eco)
 plots <- gettRNAFeaturePlots(grl)
 ```
-```{r, fig.cap = "tRNA length."}
+```{r plot1, fig.cap = "tRNA length."}
 plots$length
 ```
-```{r, fig.cap = "tRNAscan-SE scores."}
+```{r plot2, fig.cap = "tRNAscan-SE scores."}
 plots$tRNAscan_score
 ```
-```{r, fig.cap = "tRNA GC content."}
+```{r plot3, fig.cap = "tRNA GC content."}
 plots$gc
 ```
-```{r, fig.cap = "tRNAs with introns."}
+```{r plot4, fig.cap = "tRNAs with introns."}
 plots$tRNAscan_intron
 ```
-```{r, fig.cap = "Length of the variable loop."}
+```{r plot5, fig.cap = "Length of the variable loop."}
 plots$variableLoop_length
 ```
 
