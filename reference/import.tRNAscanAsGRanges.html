@@ -81,7 +81,7 @@ Example: tP(UGG)L or tE(UUC)E1." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tRNAscanImport</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.1</span>
       </span>
     </div>
 
@@ -138,11 +138,11 @@ in the SGD annotation</p>
 <p>Example: tP(UGG)L or tE(UUC)E1.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>import.tRNAscanAsGRanges</span>(<span class='no'>input</span>, <span class='kw'>as.GFF3</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>trim.intron</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+    <pre class="usage"><span class='fu'>import.tRNAscanAsGRanges</span>(<span class='kw'>input</span>, as.GFF3 = <span class='fl'>FALSE</span>, trim.intron = <span class='fl'>TRUE</span>)
 
-<span class='fu'>tRNAscan2GFF</span>(<span class='no'>input</span>)
+<span class='fu'>tRNAscan2GFF</span>(<span class='kw'>input</span>)
 
-<span class='fu'>tRNAscanID</span>(<span class='no'>input</span>)</pre>
+<span class='fu'>tRNAscanID</span>(<span class='kw'>input</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -182,14 +182,14 @@ Detection of Transfer Rna Genes in Genomic Sequence.” Nucleic Acids Research
 25 (5): 955–64.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>gr</span> <span class='kw'>&lt;-</span> <span class='fu'>import.tRNAscanAsGRanges</span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>,
-                               <span class='kw'>file</span> <span class='kw'>=</span> <span class='st'>"yeast.tRNAscan"</span>,
-                               <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"tRNAscanImport"</span>))
-<span class='no'>gff</span> <span class='kw'>&lt;-</span> <span class='fu'>tRNAscan2GFF</span>(<span class='no'>gr</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span>(<span class='no'>gff</span>,<span class='fu'>import.tRNAscanAsGRanges</span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>,
-                               <span class='kw'>file</span> <span class='kw'>=</span> <span class='st'>"yeast.tRNAscan"</span>,
-                               <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"tRNAscanImport"</span>),
-                               <span class='kw'>as.GFF3</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>))</div><div class='output co'>#&gt; [1] TRUE</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>gr</span> <span class='op'>&lt;-</span> <span class='fu'>import.tRNAscanAsGRanges</span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, 
+                               file = <span class='st'>"yeast.tRNAscan"</span>, 
+                               package = <span class='st'>"tRNAscanImport"</span>))
+<span class='kw'>gff</span> <span class='op'>&lt;-</span> <span class='fu'>tRNAscan2GFF</span>(<span class='kw'>gr</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span>(<span class='kw'>gff</span>,<span class='fu'>import.tRNAscanAsGRanges</span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, 
+                               file = <span class='st'>"yeast.tRNAscan"</span>, 
+                               package = <span class='st'>"tRNAscanImport"</span>),
+                               as.GFF3 = <span class='fl'>TRUE</span>))</div><div class='output co'>#&gt; [1] TRUE</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

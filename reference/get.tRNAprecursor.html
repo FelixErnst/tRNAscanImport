@@ -77,7 +77,7 @@ compatible." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tRNAscanImport</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.1</span>
       </span>
     </div>
 
@@ -131,11 +131,11 @@ compatible.</p>
     </div>
 
     <pre class="usage"><span class='fu'>get.tRNAprecursor</span>(
-  <span class='no'>input</span>,
-  <span class='no'>genome</span>,
-  <span class='kw'>add.5prime</span> <span class='kw'>=</span> <span class='fl'>50L</span>,
-  <span class='kw'>add.3prime</span> <span class='kw'>=</span> <span class='no'>add.5prime</span>,
-  <span class='kw'>trim.intron</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>input</span>,
+  <span class='kw'>genome</span>,
+  add.5prime = <span class='fl'>50L</span>,
+  add.3prime = <span class='kw'>add.5prime</span>,
+  trim.intron = <span class='fl'>FALSE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -170,46 +170,46 @@ included in the precursor sequences? (default <code>trim.intron = FALSE</code>)<
     <p>a <code>DNAStringSet</code> object, containing the precursor sequences.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>BSgenome.Scerevisiae.UCSC.sacCer3</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: BSgenome</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: rtracklayer</span></div><div class='input'><span class='no'>file</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>,
-                    <span class='kw'>file</span> <span class='kw'>=</span> <span class='st'>"yeast.tRNAscan"</span>,
-                    <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"tRNAscanImport"</span>)
-<span class='no'>gr</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>tRNAscanImport</span><span class='kw ns'>::</span><span class='fu'><a href='import.tRNAscanAsGRanges.html'>import.tRNAscanAsGRanges</a></span>(<span class='no'>file</span>)
-<span class='no'>genome</span> <span class='kw'>&lt;-</span> <span class='fu'>getSeq</span>(<span class='no'>BSgenome.Scerevisiae.UCSC.sacCer3</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>genome</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>genome</span>)[-<span class='fl'>17</span>],<span class='st'>"chrmt"</span>)
-<span class='fu'>get.tRNAprecursor</span>(<span class='no'>gr</span>, <span class='no'>genome</span>)</div><div class='output co'>#&gt;   A DNAStringSet instance of length 299
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'>BSgenome.Scerevisiae.UCSC.sacCer3</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: BSgenome</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: rtracklayer</span></div><div class='input'><span class='kw'>file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>,
+                    file = <span class='st'>"yeast.tRNAscan"</span>,
+                    package = <span class='st'>"tRNAscanImport"</span>)
+<span class='kw'>gr</span> <span class='op'>&lt;-</span> <span class='kw'>tRNAscanImport</span>::<span class='fu'><a href='https://rdrr.io/pkg/tRNAscanImport/man/import.tRNAscanAsGRanges.html'>import.tRNAscanAsGRanges</a></span>(<span class='kw'>file</span>)
+<span class='kw'>genome</span> <span class='op'>&lt;-</span> <span class='fu'>getSeq</span>(<span class='kw'>BSgenome.Scerevisiae.UCSC.sacCer3</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='kw'>genome</span>) <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='kw'>genome</span>)[<span class='op'>-</span><span class='fl'>17</span>],<span class='st'>"chrmt"</span>)
+<span class='fu'>get.tRNAprecursor</span>(<span class='kw'>gr</span>, <span class='kw'>genome</span>)</div><div class='output co'>#&gt; DNAStringSet object of length 299:
 #&gt;       width seq                                             names               
-#&gt;   [1]   203 CAATTTGTATATATATACATCT...ATTAAAGTAGCAGTACTTCAAC pre_chrI.tRNA1
-#&gt;   [2]   173 AGCTTCTAAGCACTTACCATTC...ATTCGTGAATAGCTGACTGTCA pre_chrI.tRNA2
-#&gt;   [3]   214 GTCAGTGTCCAAATAGTTAAAA...ATAATCTACGTAGGAATGAAAG pre_chrI.tRNA3
-#&gt;   [4]   182 GTCATACTGACATATCTCATTT...CTCTTCAAAGCATACTCATCTT pre_chrI.tRNA4
-#&gt;   [5]   184 GGGTAAAATAGGGTATTTAACT...TTAACTAGAATAATAGGGAAAT pre_chrII.tRNA1
+#&gt;   [1]   203 <span style='color: #000000;background-color: #BBBBBB;'>CAATTTGTATATATATACATCT</span><span>...</span><span style='color: #000000;background-color: #BBBBBB;'>ATTAAAGTAGCAGTACTTCAAC</span><span> pre_chrI.tRNA1
+#&gt;   [2]   173 </span><span style='color: #000000;background-color: #BBBBBB;'>AGCTTCTAAGCACTTACCATTC</span><span>...</span><span style='color: #000000;background-color: #BBBBBB;'>ATTCGTGAATAGCTGACTGTCA</span><span> pre_chrI.tRNA2
+#&gt;   [3]   214 </span><span style='color: #000000;background-color: #BBBBBB;'>GTCAGTGTCCAAATAGTTAAAA</span><span>...</span><span style='color: #000000;background-color: #BBBBBB;'>ATAATCTACGTAGGAATGAAAG</span><span> pre_chrI.tRNA3
+#&gt;   [4]   182 </span><span style='color: #000000;background-color: #BBBBBB;'>GTCATACTGACATATCTCATTT</span><span>...</span><span style='color: #000000;background-color: #BBBBBB;'>CTCTTCAAAGCATACTCATCTT</span><span> pre_chrI.tRNA4
+#&gt;   [5]   184 </span><span style='color: #000000;background-color: #BBBBBB;'>GGGTAAAATAGGGTATTTAACT</span><span>...</span><span style='color: #000000;background-color: #BBBBBB;'>TTAACTAGAATAATAGGGAAAT</span><span> pre_chrII.tRNA1
 #&gt;   ...   ... ...
-#&gt; [295]   174 TAATAAAGAGTAAATATTGTAT...AAATAATATTAATAAATAATTA pre_chrmt.tRNA20
-#&gt; [296]   172 TATATATATATATTATATTATA...ATTTATAATAAATATATTATAA pre_chrmt.tRNA21
-#&gt; [297]   172 TTATATAATTAATATATTATAT...AATCATTTATAAATTTATTATA pre_chrmt.tRNA24
-#&gt; [298]   173 ATAATTAATAAGAGTTTTGGAT...AATATAATAATATTTATTTATT pre_chrmt.tRNA22
-#&gt; [299]   173 TATATATATTAGATTTTATAAG...AGTATAATAAAATATATTATAA pre_chrmt.tRNA23</div><div class='input'><span class='co'># this produces an error since the seqnames do not match</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>genome</span> <span class='kw'>&lt;-</span> <span class='no'>BSgenome.Scerevisiae.UCSC.sacCer3</span>
-<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>genome</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>genome</span>)[-<span class='fl'>17</span>],<span class='st'>"chrmt"</span>)
-<span class='fu'>get.tRNAprecursor</span>(<span class='no'>gr</span>, <span class='no'>genome</span>)
+#&gt; [295]   174 </span><span style='color: #000000;background-color: #BBBBBB;'>TAATAAAGAGTAAATATTGTAT</span><span>...</span><span style='color: #000000;background-color: #BBBBBB;'>AAATAATATTAATAAATAATTA</span><span> pre_chrmt.tRNA20
+#&gt; [296]   172 </span><span style='color: #000000;background-color: #BBBBBB;'>TATATATATATATTATATTATA</span><span>...</span><span style='color: #000000;background-color: #BBBBBB;'>ATTTATAATAAATATATTATAA</span><span> pre_chrmt.tRNA21
+#&gt; [297]   172 </span><span style='color: #000000;background-color: #BBBBBB;'>TTATATAATTAATATATTATAT</span><span>...</span><span style='color: #000000;background-color: #BBBBBB;'>AATCATTTATAAATTTATTATA</span><span> pre_chrmt.tRNA24
+#&gt; [298]   173 </span><span style='color: #000000;background-color: #BBBBBB;'>ATAATTAATAAGAGTTTTGGAT</span><span>...</span><span style='color: #000000;background-color: #BBBBBB;'>AATATAATAATATTTATTTATT</span><span> pre_chrmt.tRNA22
+#&gt; [299]   173 </span><span style='color: #000000;background-color: #BBBBBB;'>TATATATATTAGATTTTATAAG</span><span>...</span><span style='color: #000000;background-color: #BBBBBB;'>AGTATAATAAAATATATTATAA</span><span> pre_chrmt.tRNA23</div><div class='input'><span class='co'># this produces an error since the seqnames do not match</span>
+<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='kw'>genome</span> <span class='op'>&lt;-</span> <span class='kw'>BSgenome.Scerevisiae.UCSC.sacCer3</span>
+<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='kw'>genome</span>) <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='kw'>genome</span>)[<span class='op'>-</span><span class='fl'>17</span>],<span class='st'>"chrmt"</span>)
+<span class='fu'>get.tRNAprecursor</span>(<span class='kw'>gr</span>, <span class='kw'>genome</span>)
 }
 <span class='co'># ... but it can also be fixed</span>
-<span class='no'>genome</span> <span class='kw'>&lt;-</span> <span class='no'>BSgenome.Scerevisiae.UCSC.sacCer3</span>
-<span class='fu'>seqnames</span>(<span class='no'>genome</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'>seqnames</span>(<span class='no'>genome</span>)[-<span class='fl'>17</span>],<span class='st'>"chrmt"</span>)
-<span class='fu'>get.tRNAprecursor</span>(<span class='no'>gr</span>, <span class='no'>genome</span>)</div><div class='output co'>#&gt;   A DNAStringSet instance of length 299
+<span class='kw'>genome</span> <span class='op'>&lt;-</span> <span class='kw'>BSgenome.Scerevisiae.UCSC.sacCer3</span>
+<span class='fu'>seqnames</span>(<span class='kw'>genome</span>) <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'>seqnames</span>(<span class='kw'>genome</span>)[<span class='op'>-</span><span class='fl'>17</span>],<span class='st'>"chrmt"</span>)
+<span class='fu'>get.tRNAprecursor</span>(<span class='kw'>gr</span>, <span class='kw'>genome</span>)</div><div class='output co'>#&gt; DNAStringSet object of length 299:
 #&gt;       width seq                                             names               
-#&gt;   [1]   203 CAATTTGTATATATATACATCT...ATTAAAGTAGCAGTACTTCAAC pre_chrI.tRNA1
-#&gt;   [2]   173 AGCTTCTAAGCACTTACCATTC...ATTCGTGAATAGCTGACTGTCA pre_chrI.tRNA2
-#&gt;   [3]   214 GTCAGTGTCCAAATAGTTAAAA...ATAATCTACGTAGGAATGAAAG pre_chrI.tRNA3
-#&gt;   [4]   182 GTCATACTGACATATCTCATTT...CTCTTCAAAGCATACTCATCTT pre_chrI.tRNA4
-#&gt;   [5]   184 GGGTAAAATAGGGTATTTAACT...TTAACTAGAATAATAGGGAAAT pre_chrII.tRNA1
+#&gt;   [1]   203 </span><span style='color: #000000;background-color: #BBBBBB;'>CAATTTGTATATATATACATCT</span><span>...</span><span style='color: #000000;background-color: #BBBBBB;'>ATTAAAGTAGCAGTACTTCAAC</span><span> pre_chrI.tRNA1
+#&gt;   [2]   173 </span><span style='color: #000000;background-color: #BBBBBB;'>AGCTTCTAAGCACTTACCATTC</span><span>...</span><span style='color: #000000;background-color: #BBBBBB;'>ATTCGTGAATAGCTGACTGTCA</span><span> pre_chrI.tRNA2
+#&gt;   [3]   214 </span><span style='color: #000000;background-color: #BBBBBB;'>GTCAGTGTCCAAATAGTTAAAA</span><span>...</span><span style='color: #000000;background-color: #BBBBBB;'>ATAATCTACGTAGGAATGAAAG</span><span> pre_chrI.tRNA3
+#&gt;   [4]   182 </span><span style='color: #000000;background-color: #BBBBBB;'>GTCATACTGACATATCTCATTT</span><span>...</span><span style='color: #000000;background-color: #BBBBBB;'>CTCTTCAAAGCATACTCATCTT</span><span> pre_chrI.tRNA4
+#&gt;   [5]   184 </span><span style='color: #000000;background-color: #BBBBBB;'>GGGTAAAATAGGGTATTTAACT</span><span>...</span><span style='color: #000000;background-color: #BBBBBB;'>TTAACTAGAATAATAGGGAAAT</span><span> pre_chrII.tRNA1
 #&gt;   ...   ... ...
-#&gt; [295]   174 TAATAAAGAGTAAATATTGTAT...AAATAATATTAATAAATAATTA pre_chrmt.tRNA20
-#&gt; [296]   172 TATATATATATATTATATTATA...ATTTATAATAAATATATTATAA pre_chrmt.tRNA21
-#&gt; [297]   172 TTATATAATTAATATATTATAT...AATCATTTATAAATTTATTATA pre_chrmt.tRNA24
-#&gt; [298]   173 ATAATTAATAAGAGTTTTGGAT...AATATAATAATATTTATTTATT pre_chrmt.tRNA22
-#&gt; [299]   173 TATATATATTAGATTTTATAAG...AGTATAATAAAATATATTATAA pre_chrmt.tRNA23</div></pre>
+#&gt; [295]   174 </span><span style='color: #000000;background-color: #BBBBBB;'>TAATAAAGAGTAAATATTGTAT</span><span>...</span><span style='color: #000000;background-color: #BBBBBB;'>AAATAATATTAATAAATAATTA</span><span> pre_chrmt.tRNA20
+#&gt; [296]   172 </span><span style='color: #000000;background-color: #BBBBBB;'>TATATATATATATTATATTATA</span><span>...</span><span style='color: #000000;background-color: #BBBBBB;'>ATTTATAATAAATATATTATAA</span><span> pre_chrmt.tRNA21
+#&gt; [297]   172 </span><span style='color: #000000;background-color: #BBBBBB;'>TTATATAATTAATATATTATAT</span><span>...</span><span style='color: #000000;background-color: #BBBBBB;'>AATCATTTATAAATTTATTATA</span><span> pre_chrmt.tRNA24
+#&gt; [298]   173 </span><span style='color: #000000;background-color: #BBBBBB;'>ATAATTAATAAGAGTTTTGGAT</span><span>...</span><span style='color: #000000;background-color: #BBBBBB;'>AATATAATAATATTTATTTATT</span><span> pre_chrmt.tRNA22
+#&gt; [299]   173 </span><span style='color: #000000;background-color: #BBBBBB;'>TATATATATTAGATTTTATAAG</span><span>...</span><span style='color: #000000;background-color: #BBBBBB;'>AGTATAATAAAATATATTATAA</span><span> pre_chrmt.tRNA23</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

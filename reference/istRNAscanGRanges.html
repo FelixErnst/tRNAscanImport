@@ -73,7 +73,7 @@ information expected for a tRNAscan result." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tRNAscanImport</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.1</span>
       </span>
     </div>
 
@@ -122,10 +122,10 @@ information expected for a tRNAscan result." />
 information expected for a tRNAscan result.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>istRNAscanGRanges</span>(<span class='no'>gr</span>)
+    <pre class="usage"><span class='fu'>istRNAscanGRanges</span>(<span class='kw'>gr</span>)
 
 <span class='co'># S4 method for GRanges</span>
-<span class='fu'>istRNAscanGRanges</span>(<span class='no'>gr</span>)</pre>
+<span class='fu'>istRNAscanGRanges</span>(<span class='kw'>gr</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -141,11 +141,11 @@ information expected for a tRNAscan result.</p>
     <p>a logical value</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>file</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>,
-                    <span class='kw'>file</span> <span class='kw'>=</span> <span class='st'>"yeast.tRNAscan"</span>,
-                    <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"tRNAscanImport"</span>)
-<span class='no'>gr</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>tRNAscanImport</span><span class='kw ns'>::</span><span class='fu'><a href='import.tRNAscanAsGRanges.html'>import.tRNAscanAsGRanges</a></span>(<span class='no'>file</span>)
-<span class='fu'>istRNAscanGRanges</span>(<span class='no'>gr</span>)</div><div class='output co'>#&gt; [1] TRUE</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, 
+                    file = <span class='st'>"yeast.tRNAscan"</span>, 
+                    package = <span class='st'>"tRNAscanImport"</span>)
+<span class='kw'>gr</span> <span class='op'>&lt;-</span> <span class='kw'>tRNAscanImport</span>::<span class='fu'><a href='https://rdrr.io/pkg/tRNAscanImport/man/import.tRNAscanAsGRanges.html'>import.tRNAscanAsGRanges</a></span>(<span class='kw'>file</span>)
+<span class='fu'>istRNAscanGRanges</span>(<span class='kw'>gr</span>)</div><div class='output co'>#&gt; [1] TRUE</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

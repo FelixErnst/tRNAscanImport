@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tRNAscanImport</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.1</span>
       </span>
     </div>
 
@@ -67,14 +67,14 @@
 
       
 
-      </header><div class="row">
+      </header><script src="tRNAscanImport_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Importing tRNAscan-SE output as <code>GRanges</code>
 </h1>
                         <h4 class="author">Felix G.M. Ernst</h4>
             
-            <h4 class="date">2020-04-10</h4>
+            <h4 class="date">2020-07-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/FelixErnst/tRNAscanImport/blob/master/vignettes/tRNAscanImport.Rmd"><code>vignettes/tRNAscanImport.Rmd</code></a></small>
       <div class="hidden name"><code>tRNAscanImport.Rmd</code></div>
@@ -107,14 +107,16 @@ document.addEventListener("DOMContentLoaded", function() {
 <h1 class="hasAnchor">
 <a href="#getting-started" class="anchor"></a>Getting started</h1>
 <p>The default tRNAscan-SE output, either from running tRNAscan-SE <span class="citation">(Lowe and Eddy 1997)</span> locally or retrieving the output from the gtRNADb <span class="citation">(Chan and Lowe 2016)</span>, consist of a formatted text document containing individual text blocks per tRNA delimited by an empty line.</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">tRNAscanImport</span>)
-<span class="no">yeast_file</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>,
-                          <span class="kw">file</span> <span class="kw">=</span> <span class="st">"yeast.tRNAscan"</span>,
-                          <span class="kw">package</span> <span class="kw">=</span> <span class="st">"tRNAscanImport"</span>)
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/FelixErnst/tRNAscanImport">tRNAscanImport</a></span>)
+<span class="kw">yeast_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>,
+                          file = <span class="st">"yeast.tRNAscan"</span>,
+                          package = <span class="st">"tRNAscanImport"</span>)
 
 <span class="co"># output for sacCer3</span>
 <span class="co"># Before</span>
-<span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span>(<span class="kw">con</span> <span class="kw">=</span> <span class="no">yeast_file</span>, <span class="kw">n</span> <span class="kw">=</span> <span class="fl">7L</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span>(con = <span class="kw">yeast_file</span>, n = <span class="fl">7L</span>)
+</pre></div>
 <pre><code>## [1] "chrI.trna1 (139152-139254)\tLength: 103 bp"                                                                  
 ## [2] "Type: Pro\tAnticodon: TGG at 33-35 (139184-139186)\tScore: 62.1"                                             
 ## [3] "Possible intron: 37-67 (139188-139218)"                                                                      
@@ -128,10 +130,12 @@ document.addEventListener("DOMContentLoaded", function() {
 <a href="#importing-as-granges" class="anchor"></a>Importing as <code>GRanges</code>
 </h1>
 <p>To access the information in a BioC context the import as a GRanges object comes to mind. <code><a href="../reference/import.tRNAscanAsGRanges.html">import.tRNAscanAsGRanges()</a></code> performs this task by evaluating each text block using regular expressions.</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co"># output for sacCer3</span>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="co"># output for sacCer3</span>
 <span class="co"># After</span>
-<span class="no">gr</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/import.tRNAscanAsGRanges.html">import.tRNAscanAsGRanges</a></span>(<span class="no">yeast_file</span>)
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">gr</span>, <span class="fl">2</span>)</pre></body></html></div>
+<span class="kw">gr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/import.tRNAscanAsGRanges.html">import.tRNAscanAsGRanges</a></span>(<span class="kw">yeast_file</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">gr</span>, <span class="fl">2</span>)
+</pre></div>
 <pre><code>## GRanges object with 2 ranges and 18 metadata columns:
 ##       seqnames        ranges strand |        no tRNA_length   tRNA_type
 ##          &lt;Rle&gt;     &lt;IRanges&gt;  &lt;Rle&gt; | &lt;integer&gt;   &lt;integer&gt; &lt;character&gt;
@@ -140,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ##       tRNA_anticodon tRNA_anticodon.start tRNA_anticodon.end tRNAscan_score
 ##          &lt;character&gt;            &lt;integer&gt;          &lt;integer&gt;      &lt;numeric&gt;
 ##   [1]            TGG                   33                 35           62.1
-##   [2]            TGC                   34                 36             76
+##   [2]            TGC                   34                 36           76.0
 ##                      tRNA_seq                tRNA_str tRNA_CCA.end
 ##                &lt;DNAStringSet&gt;   &lt;DotBracketStringSet&gt;    &lt;logical&gt;
 ##   [1] GGGCGTGTGG...AGCTCGCCCC &lt;&lt;&lt;&lt;&lt;.&lt;..&lt;...&gt;&gt;&gt;.&gt;&gt;&gt;&gt;&gt;.        FALSE
@@ -155,69 +159,85 @@ document.addEventListener("DOMContentLoaded", function() {
 ##   [2]                     &lt;NA&gt;                   &lt;NA&gt;               53.4
 ##       tRNAscan_sec.str.score tRNAscan_infernal
 ##                    &lt;numeric&gt;         &lt;numeric&gt;
-##   [1]                   24.2              &lt;NA&gt;
-##   [2]                   22.6              &lt;NA&gt;
+##   [1]                   24.2                NA
+##   [2]                   22.6                NA
 ##   -------
 ##   seqinfo: 17 sequences from an unspecified genome; no seqlengths</code></pre>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="co"># Any GRanges passing this, can be used for subsequent function</span>
-<span class="fu"><a href="../reference/istRNAscanGRanges.html">istRNAscanGRanges</a></span>(<span class="no">gr</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="co"># Any GRanges passing this, can be used for subsequent function</span>
+<span class="fu"><a href="../reference/istRNAscanGRanges.html">istRNAscanGRanges</a></span>(<span class="kw">gr</span>)
+</pre></div>
 <pre><code>## [1] TRUE</code></pre>
 <p>The result can be used directly in R or saved as gff3/fasta file for further use, including processing the sequences for HTS read mapping or statistical analysis on tRNA content of the analyzed genome.</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">Biostrings</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">rtracklayer</span>)
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">Biostrings</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">rtracklayer</span>)
 <span class="co"># suppressMessages(library(rtracklayer, quietly = TRUE))</span>
 <span class="co"># Save tRNA sequences</span>
-<span class="fu"><a href="https://rdrr.io/pkg/Biostrings/man/XStringSet-io.html">writeXStringSet</a></span>(<span class="no">gr</span>$<span class="no">tRNA_seq</span>, <span class="kw">filepath</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span>())
+<span class="fu"><a href="https://rdrr.io/pkg/Biostrings/man/XStringSet-io.html">writeXStringSet</a></span>(<span class="kw">gr</span><span class="op">$</span><span class="kw">tRNA_seq</span>, filepath = <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span>())
 <span class="co"># to be GFF3 compliant use tRNAscan2GFF</span>
-<span class="no">gff</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/import.tRNAscanAsGRanges.html">tRNAscan2GFF</a></span>(<span class="no">gr</span>)
-<span class="fu"><a href="https://rdrr.io/pkg/rtracklayer/man/GFFFile-class.html">export.gff3</a></span>(<span class="no">gff</span>, <span class="kw">con</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span>())</pre></body></html></div>
+<span class="kw">gff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/import.tRNAscanAsGRanges.html">tRNAscan2GFF</a></span>(<span class="kw">gr</span>)
+<span class="fu"><a href="https://rdrr.io/pkg/rtracklayer/man/GFFFile-class.html">export.gff3</a></span>(<span class="kw">gff</span>, con = <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span>())
+</pre></div>
 </div>
 <div id="visualization" class="section level1">
 <h1 class="hasAnchor">
 <a href="#visualization" class="anchor"></a>Visualization</h1>
 <p>The tRNAscan-SE information can be visualized using the <code>gettRNAFeaturePlots()</code> function of the <code>tRNA</code> package, returning a named list of ggplot2 plots, which can be plotted or further modified. Alternatively, <code>gettRNASummary()</code> returns the aggregated information for further use.</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="co"># tRNAscan-SE output for hg38</span>
-<span class="no">human_file</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>,
-                          <span class="kw">file</span> <span class="kw">=</span> <span class="st">"human.tRNAscan"</span>,
-                          <span class="kw">package</span> <span class="kw">=</span> <span class="st">"tRNAscanImport"</span>)
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="co"># tRNAscan-SE output for hg38</span>
+<span class="kw">human_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>,
+                          file = <span class="st">"human.tRNAscan"</span>,
+                          package = <span class="st">"tRNAscanImport"</span>)
 <span class="co"># tRNAscan-SE output for E. coli MG1655</span>
-<span class="no">eco_file</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>,
-                        <span class="kw">file</span> <span class="kw">=</span> <span class="st">"ecoli.tRNAscan"</span>,
-                        <span class="kw">package</span> <span class="kw">=</span> <span class="st">"tRNAscanImport"</span>)
+<span class="kw">eco_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>,
+                        file = <span class="st">"ecoli.tRNAscan"</span>,
+                        package = <span class="st">"tRNAscanImport"</span>)
 <span class="co"># import tRNAscan-SE files</span>
-<span class="no">gr_human</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/import.tRNAscanAsGRanges.html">import.tRNAscanAsGRanges</a></span>(<span class="no">human_file</span>)
-<span class="no">gr_eco</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/import.tRNAscanAsGRanges.html">import.tRNAscanAsGRanges</a></span>(<span class="no">eco_file</span>)
+<span class="kw">gr_human</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/import.tRNAscanAsGRanges.html">import.tRNAscanAsGRanges</a></span>(<span class="kw">human_file</span>)
+<span class="kw">gr_eco</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/import.tRNAscanAsGRanges.html">import.tRNAscanAsGRanges</a></span>(<span class="kw">eco_file</span>)
 
 <span class="co"># get summary plots</span>
-<span class="no">grl</span> <span class="kw">&lt;-</span> <span class="fu">GRangesList</span>(<span class="kw">Sce</span> <span class="kw">=</span> <span class="no">gr</span>,
-                   <span class="kw">Hsa</span> <span class="kw">=</span> <span class="no">gr_human</span>,
-                   <span class="kw">Eco</span> <span class="kw">=</span> <span class="no">gr_eco</span>)
-<span class="no">plots</span> <span class="kw">&lt;-</span> <span class="fu">gettRNAFeaturePlots</span>(<span class="no">grl</span>)</pre></body></html></div>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">plots</span>$<span class="no">length</span></pre></body></html></div>
+<span class="kw">grl</span> <span class="op">&lt;-</span> <span class="fu">GRangesList</span>(Sce = <span class="kw">gr</span>,
+                   Hsa = <span class="kw">gr_human</span>,
+                   Eco = <span class="kw">gr_eco</span>)
+<span class="kw">plots</span> <span class="op">&lt;-</span> <span class="fu">gettRNAFeaturePlots</span>(<span class="kw">grl</span>)
+</pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="kw">plots</span><span class="op">$</span><span class="kw">length</span>
+</pre></div>
 <div class="figure">
 <img src="tRNAscanImport_files/figure-html/plot1-1.png" alt="tRNA length." width="700"><p class="caption">
 tRNA length.
 </p>
 </div>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">plots</span>$<span class="no">tRNAscan_score</span></pre></body></html></div>
+<div class="sourceCode" id="cb10"><pre class="downlit">
+<span class="kw">plots</span><span class="op">$</span><span class="kw">tRNAscan_score</span>
+</pre></div>
 <div class="figure">
 <img src="tRNAscanImport_files/figure-html/plot2-1.png" alt="tRNAscan-SE scores." width="700"><p class="caption">
 tRNAscan-SE scores.
 </p>
 </div>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">plots</span>$<span class="no">gc</span></pre></body></html></div>
+<div class="sourceCode" id="cb11"><pre class="downlit">
+<span class="kw">plots</span><span class="op">$</span><span class="kw">gc</span>
+</pre></div>
 <div class="figure">
 <img src="tRNAscanImport_files/figure-html/plot3-1.png" alt="tRNA GC content." width="700"><p class="caption">
 tRNA GC content.
 </p>
 </div>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">plots</span>$<span class="no">tRNAscan_intron</span></pre></body></html></div>
+<div class="sourceCode" id="cb12"><pre class="downlit">
+<span class="kw">plots</span><span class="op">$</span><span class="kw">tRNAscan_intron</span>
+</pre></div>
 <div class="figure">
 <img src="tRNAscanImport_files/figure-html/plot4-1.png" alt="tRNAs with introns." width="700"><p class="caption">
 tRNAs with introns.
 </p>
 </div>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="no">plots</span>$<span class="no">variableLoop_length</span></pre></body></html></div>
+<div class="sourceCode" id="cb13"><pre class="downlit">
+<span class="kw">plots</span><span class="op">$</span><span class="kw">variableLoop_length</span>
+</pre></div>
 <div class="figure">
 <img src="tRNAscanImport_files/figure-html/plot5-1.png" alt="Length of the variable loop." width="700"><p class="caption">
 Length of the variable loop.
@@ -228,13 +248,15 @@ Length of the variable loop.
 <h1 class="hasAnchor">
 <a href="#getting-trna-precursor-sequences" class="anchor"></a>Getting tRNA precursor sequences</h1>
 <p>Since tRNAscan reports the genomic location for tRNAs found, approximate tRNA precursor sequences can be retrieved by combining a tRNAscan input object with matching genomic sequences for the function <code>get.tRNAprecursor</code>.</p>
-<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">BSgenome.Scerevisiae.UCSC.sacCer3</span>)
-<span class="no">genome</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Biostrings/man/getSeq.html">getSeq</a></span>(<span class="no">BSgenome.Scerevisiae.UCSC.sacCer3</span>)
+<div class="sourceCode" id="cb14"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">BSgenome.Scerevisiae.UCSC.sacCer3</span>)
+<span class="kw">genome</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Biostrings/man/getSeq.html">getSeq</a></span>(<span class="kw">BSgenome.Scerevisiae.UCSC.sacCer3</span>)
 <span class="co"># renaming chromosome to match tRNAscan output</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">genome</span>) <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">genome</span>)[-<span class="fl">17L</span>],<span class="st">"chrmt"</span>)
-<span class="no">tRNAprecursor</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get.tRNAprecursor.html">get.tRNAprecursor</a></span>(<span class="no">gr</span>, <span class="no">genome</span>)
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">tRNAprecursor</span>)</pre></body></html></div>
-<pre><code>##   A DNAStringSet instance of length 6
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">genome</span>) <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">genome</span>)[<span class="op">-</span><span class="fl">17L</span>],<span class="st">"chrmt"</span>)
+<span class="kw">tRNAprecursor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get.tRNAprecursor.html">get.tRNAprecursor</a></span>(<span class="kw">gr</span>, <span class="kw">genome</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">tRNAprecursor</span>)
+</pre></div>
+<pre><code>## DNAStringSet object of length 6:
 ##     width seq                                               names               
 ## [1]   203 CAATTTGTATATATATACATCTA...AATTAAAGTAGCAGTACTTCAAC pre_chrI.tRNA1
 ## [2]   173 AGCTTCTAAGCACTTACCATTCC...AATTCGTGAATAGCTGACTGTCA pre_chrI.tRNA2
@@ -252,8 +274,10 @@ Length of the variable loop.
 <div id="session-info" class="section level1">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session info</h1>
-<div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</pre></body></html></div>
-<pre><code>## R version 3.6.3 (2020-02-29)
+<div class="sourceCode" id="cb16"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
+</pre></div>
+<pre><code>## R version 4.0.2 (2020-06-22)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
 ## Running under: Ubuntu 18.04.4 LTS
 ## 
@@ -273,60 +297,58 @@ Length of the variable loop.
 ## 
 ## other attached packages:
 ##  [1] BSgenome.Scerevisiae.UCSC.sacCer3_1.4.0
-##  [2] BSgenome_1.54.0                        
-##  [3] rtracklayer_1.46.0                     
-##  [4] tRNAscanImport_1.7.3                   
-##  [5] tRNA_1.4.0                             
-##  [6] Structstrings_1.2.0                    
-##  [7] Biostrings_2.54.0                      
-##  [8] XVector_0.26.0                         
-##  [9] GenomicRanges_1.38.0                   
-## [10] GenomeInfoDb_1.22.1                    
-## [11] IRanges_2.20.2                         
-## [12] S4Vectors_0.24.3                       
-## [13] BiocGenerics_0.32.0                    
-## [14] BiocStyle_2.14.4                       
+##  [2] BSgenome_1.56.0                        
+##  [3] rtracklayer_1.48.0                     
+##  [4] tRNAscanImport_1.9.1                   
+##  [5] tRNA_1.6.0                             
+##  [6] Structstrings_1.4.0                    
+##  [7] Biostrings_2.56.0                      
+##  [8] XVector_0.28.0                         
+##  [9] GenomicRanges_1.40.0                   
+## [10] GenomeInfoDb_1.24.2                    
+## [11] IRanges_2.22.2                         
+## [12] S4Vectors_0.26.1                       
+## [13] BiocGenerics_0.34.0                    
+## [14] BiocStyle_2.16.0                       
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Biobase_2.46.0              assertive.sets_0.0-3       
-##  [3] assertthat_0.2.1            assertive.data_0.0-3       
-##  [5] highr_0.8                   BiocManager_1.30.10        
-##  [7] GenomeInfoDbData_1.2.2      Rsamtools_2.2.3            
-##  [9] yaml_2.2.1                  lattice_0.20-38            
-## [11] pillar_1.4.3                backports_1.1.6            
-## [13] glue_1.4.0                  assertive.data.uk_0.0-2    
-## [15] assertive.matrices_0.0-2    digest_0.6.25              
-## [17] assertive.types_0.0-3       RColorBrewer_1.1-2         
-## [19] colorspace_1.4-1            htmltools_0.4.0            
-## [21] Matrix_1.2-18               XML_3.99-0.3               
-## [23] pkgconfig_2.0.3             assertive.data.us_0.0-2    
-## [25] assertive.properties_0.0-4  assertive.reflection_0.0-4 
-## [27] bookdown_0.18               zlibbioc_1.32.0            
-## [29] scales_1.1.0                assertive_0.3-5            
-## [31] BiocParallel_1.20.1         tibble_3.0.0               
-## [33] farver_2.0.3                ggplot2_3.3.0              
-## [35] ellipsis_0.3.0              withr_2.1.2                
-## [37] SummarizedExperiment_1.16.1 assertive.code_0.0-3       
-## [39] cli_2.0.2                   magrittr_1.5               
-## [41] crayon_1.3.4                assertive.strings_0.0-3    
-## [43] memoise_1.1.0               evaluate_0.14              
-## [45] Modstrings_1.2.1            fs_1.4.1                   
-## [47] fansi_0.4.1                 assertive.numbers_0.0-2    
-## [49] MASS_7.3-51.5               tools_3.6.3                
-## [51] matrixStats_0.56.0          lifecycle_0.2.0            
-## [53] assertive.files_0.0-2       stringr_1.4.0              
-## [55] munsell_0.5.0               DelayedArray_0.12.2        
-## [57] compiler_3.6.3              pkgdown_1.5.1.9000         
-## [59] rlang_0.4.5                 grid_3.6.3                 
-## [61] RCurl_1.98-1.1              assertive.models_0.0-2     
-## [63] assertive.base_0.0-7        labeling_0.3               
-## [65] bitops_1.0-6                rmarkdown_2.1              
-## [67] gtable_0.3.0                codetools_0.2-16           
-## [69] assertive.datetimes_0.0-2   R6_2.4.1                   
-## [71] GenomicAlignments_1.22.1    knitr_1.28                 
-## [73] rprojroot_1.3-2             desc_1.2.0                 
-## [75] stringi_1.4.6               Rcpp_1.0.4.6               
-## [77] vctrs_0.2.4                 xfun_0.12</code></pre>
+##  [1] Biobase_2.48.0               assertive.sets_0.0-3        
+##  [3] assertthat_0.2.1             assertive.data_0.0-3        
+##  [5] highr_0.8                    BiocManager_1.30.10         
+##  [7] GenomeInfoDbData_1.2.3       Rsamtools_2.4.0             
+##  [9] yaml_2.2.1                   pillar_1.4.6                
+## [11] backports_1.1.8              lattice_0.20-41             
+## [13] glue_1.4.1                   assertive.data.uk_0.0-2     
+## [15] assertive.matrices_0.0-2     digest_0.6.25               
+## [17] assertive.types_0.0-3        RColorBrewer_1.1-2          
+## [19] colorspace_1.4-1             htmltools_0.5.0             
+## [21] Matrix_1.2-18                XML_3.99-0.4                
+## [23] pkgconfig_2.0.3              assertive.data.us_0.0-2     
+## [25] assertive.properties_0.0-4   assertive.reflection_0.0-4.1
+## [27] bookdown_0.20                zlibbioc_1.34.0             
+## [29] scales_1.1.1                 assertive_0.3-5.1           
+## [31] BiocParallel_1.22.0          tibble_3.0.3                
+## [33] farver_2.0.3                 ggplot2_3.3.2               
+## [35] ellipsis_0.3.1               withr_2.2.0                 
+## [37] SummarizedExperiment_1.18.2  assertive.code_0.0-3        
+## [39] magrittr_1.5                 crayon_1.3.4                
+## [41] assertive.strings_0.0-3      memoise_1.1.0               
+## [43] evaluate_0.14                Modstrings_1.4.0            
+## [45] fs_1.4.2                     assertive.numbers_0.0-2     
+## [47] tools_4.0.2                  lifecycle_0.2.0             
+## [49] matrixStats_0.56.0           assertive.files_0.0-2       
+## [51] stringr_1.4.0                munsell_0.5.0               
+## [53] DelayedArray_0.14.1          compiler_4.0.2              
+## [55] pkgdown_1.5.1.9000           rlang_0.4.7                 
+## [57] grid_4.0.2                   RCurl_1.98-1.2              
+## [59] assertive.models_0.0-2       assertive.base_0.0-7        
+## [61] bitops_1.0-6                 labeling_0.3                
+## [63] rmarkdown_2.3.2              gtable_0.3.0                
+## [65] codetools_0.2-16             assertive.datetimes_0.0-2   
+## [67] R6_2.4.1                     GenomicAlignments_1.24.0    
+## [69] knitr_1.29                   rprojroot_1.3-2             
+## [71] desc_1.2.0                   stringi_1.4.6               
+## [73] vctrs_0.3.2                  xfun_0.15</code></pre>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
