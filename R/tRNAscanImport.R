@@ -36,7 +36,7 @@ NULL
 #' @import GenomicRanges
 #' @import Biostrings
 #' @import Structstrings
-#' @import assertive
+#' @import assertthat
 #' @import tRNA
 NULL
 requireNamespace("tRNA")

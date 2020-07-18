@@ -67,12 +67,12 @@ NULL
 import.tRNAscanAsGRanges <- 
   function(input, as.GFF3 = FALSE, trim.intron = TRUE){
   # input check
-  if(!assertive::is_a_bool(as.GFF3)){
+  if(!.is_a_bool(as.GFF3)){
     warning("'as.GFF3' is not a bool. Resetting 'as.GFF3' == FALSE.",
             call. = FALSE)
     as.GFF3 <- FALSE
   }
-  if(!assertive::is_a_bool(trim.intron)){
+  if(!.is_a_bool(trim.intron)){
     warning("'trim.intron' is not a bool. Resetting 'trim.intron' == TRUE.",
             call. = FALSE)
     trim.intron <- TRUE

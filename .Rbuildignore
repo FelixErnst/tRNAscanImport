@@ -3,3 +3,4 @@
 ^\.github$
 .travis.yml
 codecov.yml
+^.github$

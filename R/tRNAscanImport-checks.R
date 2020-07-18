@@ -55,7 +55,7 @@ setMethod(
   if(is(genome,"DNAStringSet")){
     return(genome)
   }
-  if(assertive::is_a_string(genome)){
+  if(is.character(genome) && length(genome) == 1){
     genome <- try(Rsamtools::FaFile(genome))
   }
   if(is(genome,"FaFile")){

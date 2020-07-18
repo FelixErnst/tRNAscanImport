@@ -77,7 +77,7 @@ get.tRNAprecursor <- function(input, genome, add.5prime = 50L,
   } else {
     add.3prime <- rep(add.3prime,length(input))
   }
-  if(!assertive::is_a_bool(trim.intron)) {
+  if(!.is_a_bool(trim.intron)) {
     warning("'trim.intron' is not a bool. Resetting 'trim.intron' == TRUE.",
             call. = FALSE)
     trim.intron <- TRUE

@@ -1,7 +1,7 @@
 Package: tRNAscanImport
 Title: Importing a tRNAscan-SE result file as GRanges object
-Version: 1.9.0
-Date: 2020-01-21
+Version: 1.9.1
+Date: 2020-07-18
 Authors@R: person("Felix G.M.", 
                   "Ernst", 
                   email = "felix.gm.ernst@outlook.com", 
@@ -35,6 +35,7 @@ Collate:
     'tRNAscanImport-checks.R'
     'tRNAscanImport-genome.R'
     'tRNAscanImport-import.R'
+    'utils.R'
 Suggests:
     BiocStyle, 
     knitr,
@@ -42,7 +43,7 @@ Suggests:
     testthat,
     ggplot2,
     BSgenome.Scerevisiae.UCSC.sacCer3
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 biocViews:
     Software,
