@@ -1,6 +1,6 @@
 Package: tRNAscanImport
 Title: Importing a tRNAscan-SE result file as GRanges object
-Version: 1.15.0
+Version: 1.16.0
 Date: 2020-07-18
 Authors@R: person("Felix G.M.", 
                   "Ernst", 
