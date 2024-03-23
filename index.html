@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">tRNAscanImport</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.23.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="articles/tRNAscanImport.html">Get started</a>
 </li>
@@ -52,8 +48,8 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/FelixErnst/tRNAscanImport/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/FelixErnst/tRNAscanImport/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -70,31 +66,26 @@
       </header><div class="row">
   <div class="contents col-md-9">
 
-<div id="trnascanimport-" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#trnascanimport-" class="anchor"></a>tRNAscanImport <img src="https://raw.githubusercontent.com/Bioconductor/BiocStickers/master/tRNA/tRNA.png" height="200" align="right">
+<div class="section level1">
+<div class="page-header"><h1 id="trnascanimport-">tRNAscanImport <img src="https://raw.githubusercontent.com/Bioconductor/BiocStickers/master/tRNA/tRNA.png" height="200" align="right"><a class="anchor" aria-label="anchor" href="#trnascanimport-"></a>
 </h1></div>
 <!-- badges: start -->
 
 <p>The default tRNAscan-SE (<a href="#Literature">Lowe et el. 1997</a>) output is formatted text document containing text blocks per tRNA delimited by an empty line. To access the information in a BioC context the conversion to a GRanges object comes to mind. This task is performed by <code><a href="reference/import.tRNAscanAsGRanges.html">import.tRNAscanAsGRanges()</a></code>, which uses regular expressions to extract the information from the text blocks. The result can be used directly or saved as gff3 file for further use.</p>
 <p>Refer to the vignette for an example usage case.</p>
 </div>
-<div id="installation" class="section level1">
-<h1 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h1>
+<div class="section level1">
+<h1 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h1>
 <p>The current version of the <code>tRNAscanImport</code> package is available from Bioconductor.</p>
-<pre class="{r}"><code>if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-BiocManager::install("tRNAscanImport")
-# Load and attach thepackage
-library("tRNAscanImport")</code></pre>
+<p><code>{r} if (!requireNamespace("BiocManager", quietly = TRUE))     install.packages("BiocManager") BiocManager::install("tRNAscanImport") # Load and attach thepackage library("tRNAscanImport")</code></p>
 </div>
-<div id="literature" class="section level1">
-<h1 class="hasAnchor">
-<a href="#literature" class="anchor"></a>Literature</h1>
+<div class="section level1">
+<h1 id="literature">Literature<a class="anchor" aria-label="anchor" href="#literature"></a>
+</h1>
 <p>Depending on the development on tRNAscan-SE this might become redundant, since a gff3 export by tRNAscan-SE might resolve the conversion issue.</p>
 <ul>
-<li>Lowe, T.M.; Eddy, S.R.(1997): “tRNAscan-SE: A program for improved detection of transfer RNA genes in genomic sequence”. Nucl. Acids Res. 25: 955-964. <a href="doi:%5B10.1093/nar/25.5.955" class="uri">doi:[10.1093/nar/25.5.955</a>](<a href="https://doi.org/10.1093/nar/25.5.955" class="uri">https://doi.org/10.1093/nar/25.5.955</a>)</li>
+<li>Lowe, T.M.; Eddy, S.R.(1997): “tRNAscan-SE: A program for improved detection of transfer RNA genes in genomic sequence”. Nucl. Acids Res. 25: 955-964. <a href="doi:%5B10.1093/nar/25.5.955" class="uri">doi:[10.1093/nar/25.5.955</a>](<a href="https://doi.org/10.1093/nar/25.5.955" class="external-link uri">https://doi.org/10.1093/nar/25.5.955</a>)</li>
 </ul>
 </div>
 
@@ -102,51 +93,61 @@ library("tRNAscanImport")</code></pre>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from BIOC at <br><a href="https://www.bioconductor.org/packages/tRNAscanImport">https://​www.bioconductor.org/​packages/​tRNAscanImport</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/FelixErnst/tRNAscanImport/">https://​github.com/​FelixErnst/​tRNAscanImport/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/FelixErnst/tRNAscanImport/issues">https://​github.com/​FelixErnst/​tRNAscanImport/​issues</a>
-</li>
-</ul>
-</div>
-<div class="license">
-<h2>License</h2>
-<ul class="list-unstyled">
-<li>
-<a href="https://www.r-project.org/Licenses/GPL-3">GPL-3</a> + file <a href="LICENSE-text.html">LICENSE</a>
-</li>
-</ul>
-</div>
-<div class="developers">
-<h2>Developers</h2>
-<ul class="list-unstyled">
-<li>Felix G.M. Ernst <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-5064-0928" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li><a href="https://www.bioconductor.org/packages/tRNAscanImport" class="external-link">View on Bioconductor</a></li>
+<li><a href="https://github.com/FelixErnst/tRNAscanImport/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/FelixErnst/tRNAscanImport/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="license">
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/FelixErnst/tRNAscanImport/actions/"><img src="https://github.com/FelixErnst/tRNAscanImport/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://travis-ci.com/FelixErnst/tRNAscanImport"><img src="https://travis-ci.com/FelixErnst/tRNAscanImport.svg?branch=master" alt="Build Status"></a></li>
-<li><a href="http://bioconductor.org/checkResults/release/bioc-LATEST/tRNAdbImport/"><img src="https://bioconductor.org/shields/build/release/bioc/tRNAdbImport.svg" alt="BioC Build"></a></li>
-<li><a href="https://codecov.io/gh/FelixErnst/tRNAscanImport"><img src="https://codecov.io/gh/FelixErnst/tRNAscanImport/branch/master/graph/badge.svg" alt="codecov"></a></li>
-<li><a href="https://doi.org/doi:10.18129/B9.bioc.tRNAscanImport"><img src="https://bioconductor.org/shields/years-in-bioc/tRNAscanImport.svg" alt="BioC Years"></a></li>
+<li>
+<a href="https://www.r-project.org/Licenses/GPL-3" class="external-link">GPL-3</a> + file <a href="LICENSE-text.html">LICENSE</a>
+</li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing tRNAscanImport</a></li>
+</ul>
 </div>
+
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
+<ul class="list-unstyled">
+<li>Felix G.M. Ernst <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-5064-0928" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+</ul>
+</div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/FelixErnst/tRNAscanImport/actions/" class="external-link"><img src="https://github.com/FelixErnst/tRNAscanImport/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://travis-ci.com/FelixErnst/tRNAscanImport" class="external-link"><img src="https://travis-ci.com/FelixErnst/tRNAscanImport.svg?branch=master" alt="Build Status"></a></li>
+<li><a href="http://bioconductor.org/checkResults/release/bioc-LATEST/tRNAdbImport/" class="external-link"><img src="https://bioconductor.org/shields/build/release/bioc/tRNAdbImport.svg" alt="BioC Build"></a></li>
+<li><a href="https://codecov.io/gh/FelixErnst/tRNAscanImport" class="external-link"><img src="https://codecov.io/gh/FelixErnst/tRNAscanImport/branch/master/graph/badge.svg" alt="codecov"></a></li>
+<li><a href="https://doi.org/doi:10.18129/B9.bioc.tRNAscanImport" class="external-link"><img src="https://bioconductor.org/shields/years-in-bioc/tRNAscanImport.svg" alt="BioC Years"></a></li>
+</ul>
+</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Felix G.M. Ernst.</p>
+  <p></p>
+<p>Developed by Felix G.M. Ernst.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -154,6 +155,8 @@ library("tRNAscanImport")</code></pre>
 
   
 
+
+  
 
   </body>
 </html>
