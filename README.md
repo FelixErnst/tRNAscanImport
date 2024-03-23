@@ -1,8 +1,7 @@
 # tRNAscanImport <img src="https://raw.githubusercontent.com/Bioconductor/BiocStickers/master/tRNA/tRNA.png" height="200" align="right">
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/FelixErnst/tRNAscanImport/workflows/R-CMD-check/badge.svg)](https://github.com/FelixErnst/tRNAscanImport/actions/)
-[![Build Status](https://travis-ci.com/FelixErnst/tRNAscanImport.svg?branch=master)](https://travis-ci.com/FelixErnst/tRNAscanImport)
+[![R-CMD-check](https://github.com/FelixErnst/tRNAscanImport/workflows/R-CMD-check-bioc-devel/badge.svg)](https://github.com/FelixErnst/tRNAscanImport/actions/)
 [![BioC Build](https://bioconductor.org/shields/build/release/bioc/tRNAdbImport.svg)](http://bioconductor.org/checkResults/release/bioc-LATEST/tRNAdbImport/)
 [![codecov](https://codecov.io/gh/FelixErnst/tRNAscanImport/branch/master/graph/badge.svg)](https://codecov.io/gh/FelixErnst/tRNAscanImport)
 [![BioC Years](https://bioconductor.org/shields/years-in-bioc/tRNAscanImport.svg)](https://doi.org/doi:10.18129/B9.bioc.tRNAscanImport)
